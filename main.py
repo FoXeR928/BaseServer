@@ -2,10 +2,6 @@ import fastapi
 
 app= fastapi.FastAPI()
 
-
-@app.get('/')
+@app.get('/info')
 async def root():
-    if fastapi.Request.client:
-        return{'message':'Привет'}
-    else:
-        return{'dskf;'}
+    return{'message':'Привет'}
