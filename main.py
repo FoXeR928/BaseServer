@@ -1,7 +1,8 @@
-import fastapi
+import uvicorn
 
-app= fastapi.FastAPI()
-
-@app.get('/info')
-async def root():
-    return{'message':'Привет'}
+if __name__=='__main__':
+    uvicorn.run(
+        'app:app',
+        host='localhost',
+        port=8080,
+        reload=True)
