@@ -1,12 +1,9 @@
 import uvicorn
-
-open=open('port.txt', 'r')
-port=(next(open))
-ip=(next(open))
+from __init__ import all
 
 if __name__=='__main__':
     uvicorn.run(
         'app:app',
-        host=ip,
-        port=int(port),
+        host=all.ip,
+        port=all.port,
         reload=True)
