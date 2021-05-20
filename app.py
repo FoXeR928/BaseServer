@@ -20,19 +20,19 @@ def html():
     </head>
     <body>
         <header>
-            <a href="#">dfgdfgd</a>
-            <a href="#">fwerwer</a>
-            <a href="#">werwer</a>
-            <a href="#">ewrwerwer</a>
+            <a href="http://localhost/info">dfgdfgd</a>
+            <a href="http://localhost/info">fwerwer</a>
+            <a href="http://localhost/info">werwer</a>
+            <a href="http://localhost/info">ewrwerwer</a>
         </header>
         <main>
             <p>fdgjdfgjdflgjdfgldjfgoeritueoritueroitejgdkfgdfm,bndorituergl,fgjerotue</p>
         </main>
         <footer>
-            <a href="#">werwerw</a>
-            <a href="#">werwerw</a>
-            <a href="#">werwer</a>
-            <a href="#">werwerwr</a>
+            <a href="http://localhost/info">werwerw</a>
+            <a href="http://localhost/info">werwerw</a>
+            <a href="http://localhost/info">werwer</a>
+            <a href="http://localhost/info">werwerwr</a>
         </footer>
     </body>
     </html>
