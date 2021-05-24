@@ -3,14 +3,14 @@ from loguru import logger
 
 # Путь записи логов
 logger.add("logs/info.log", format="{time} {level} {message}")
-try:
-    # Инициализация configparser
-    config = configparser.ConfigParser()
-    # Получение данных из config.init
-    config.read("config.ini")
-    logger.info(f'Host: {config["host"]["ip"]} and Port {config["host"]["port"]}')
-except:
-    logger.error("Host and Port not take")
+def load_config():
+    try:
+        config = configparser.ConfigParser()
+        config.read("config.ini")
+        logger.info(f'Host: {config["host"]["ip"]} and Port: {config["host"]["port"]}')
+    except:
+        logger.error("Host and Port not take")
+    return Base(config["host"]["ip"], int(config["host"]["port"]))
 
 # Класс получения тегов
 class Base:
@@ -18,6 +18,3 @@ class Base:
         self.ip = ip
         self.port = port
 
-
-# Введение переменных в класс
-all = Base(config["host"]["ip"], int(config["host"]["port"]))
