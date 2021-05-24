@@ -8,7 +8,7 @@ from config import load_config
 logs.init_log()
 # Инициализация fastapi
 app = fastapi.FastAPI()
-user=load_config()
+user = load_config()
 
 # Запуск страницы info
 @app.get("/info")
@@ -21,9 +21,11 @@ def root():
         # Сообщение о ошибке страницы
         logger.error(f"Server not work. ERROR: {err}")
 
+
 @app.get("/user_get")
 def get(name: str = fastapi.Query(None)):
-    return name    
+    return name
+
 
 @app.get(f"/{name}")
 def root():
@@ -34,4 +36,3 @@ def root():
     except Exception as err:
         # Сообщение о ошибке страницы
         logger.error(f"Server not work. ERROR: {err}")
-

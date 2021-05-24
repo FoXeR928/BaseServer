@@ -14,10 +14,16 @@ try:
 except Exception as err:
     # Сообщение о ошибке получения конфигов
     logger.error(f"Server not work. ERROR: {err}")
+
+
 def load_config():
-    return Base(config["host"]["ip"], int(config["host"]["port"]), config["users"]["user1"])
+    return Base(
+        config["host"]["ip"], int(config["host"]["port"]), config["users"]["user1"]
+    )
+
+
 class Base:
     def __init__(self, ip, port, name):
         self.ip = ip
         self.port = port
-        self.name=name
+        self.name = name
