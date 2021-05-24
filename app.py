@@ -28,7 +28,7 @@ def get(name: str = fastapi.Query(None)):
 
 
 @app.get(f"/{name}")
-def root():
+def name():
     try:
         return {"message": f"Привет {name}"}
         # Сообщение о работе страницы
