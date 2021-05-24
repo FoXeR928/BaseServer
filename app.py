@@ -1,17 +1,19 @@
 import fastapi
+import logs
 from loguru import logger
 
-# Путь записи логов
-logger.add("logs/info.log", format="{time} {level} {message}")
-# Инициализация fastapi
+logs.init_log()
 app = fastapi.FastAPI()
 
 try:
-    # Создание страницы
+
     @app.get("/info")
     def root():
+        logger.debug("Page info work")
         return {"message": "Привет"}
 
     logger.info("Page info work")
 except:
     logger.info("Page info not work")
+
+
