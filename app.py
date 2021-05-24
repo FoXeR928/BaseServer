@@ -31,5 +31,5 @@ def root():
         logger.error(f"Server not work. ERROR: {err}")
 
 @app.get("/1")
-def get(q: str = fastapi.Query(None)):
-    return q
+def get(name: str = fastapi.Query(None), two: int= fastapi.Query(None)):
+    return name, two
