@@ -7,13 +7,13 @@ logs.init_log()
 
 def load_config():
     try:
-        #Получение парараметров из config.ini
+        # Получение парараметров из config.ini
         config = configparser.ConfigParser()
         config.read("config.ini")
-        #Сообщение о получение конфигов
+        # Сообщение о получение конфигов
         logger.info(f'Host: {config["host"]["ip"]} and Port: {config["host"]["port"]}')
     except Exception as err:
-        #Сообщение о ошибке получения конфигов
+        # Сообщение о ошибке получения конфигов
         logger.error(f"Server not work. ERROR: {err}")
     return Base(config["host"]["ip"], int(config["host"]["port"]))
 
