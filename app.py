@@ -8,7 +8,8 @@ logs.init_log()
 # Инициализация fastapi
 app = fastapi.FastAPI()
 user=load_config()
-    # Запуск страницы info
+
+# Запуск страницы info
 @app.get("/info")
 def root():
     try:
@@ -28,3 +29,7 @@ def root():
     except Exception as err:
         # Сообщение о ошибке страницы
         logger.error(f"Server not work. ERROR: {err}")
+
+@app.get("/1")
+def get(q: str = fastapi.Query(None)):
+    return q
