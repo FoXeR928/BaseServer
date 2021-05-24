@@ -1,3 +1,4 @@
+from os import name
 import fastapi
 import logs
 from loguru import logger
@@ -19,17 +20,18 @@ def root():
     except Exception as err:
         # Сообщение о ошибке страницы
         logger.error(f"Server not work. ERROR: {err}")
-    
-@app.get(f"/{user.name}")
+
+@app.get("/user_get")
+def get(name: str = fastapi.Query(None)):
+    return name    
+
+@app.get(f"/{name}")
 def root():
     try:
-        return {"message": f"Привет {user.name}"}
+        return {"message": f"Привет {name}"}
         # Сообщение о работе страницы
         logger.info("Page info work")
     except Exception as err:
         # Сообщение о ошибке страницы
         logger.error(f"Server not work. ERROR: {err}")
 
-@app.get("/1")
-def get(name: str = fastapi.Query(None), two: int= fastapi.Query(None)):
-    return name, two
