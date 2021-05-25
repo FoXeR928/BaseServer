@@ -23,19 +23,15 @@ def root():
         logger.error(f"Server not work. ERROR: {err}")
 
 
-@app.get("/user_get")
+@app.get("/user_get/")
 def get(name: str = fastapi.Query(None)):
     return name
 
 
 @app.get("/user/{name}", status_code=200)
-def name(name: str, response=fastapi.Response):
-    try:
-        if name not in name:
-            return {"Страницы нет"}
-            response.status_cod=fastapi.status.HTTP_404_NOT_FOUND
-        else:    
-            return {"message": f"Привет {name}"}
+def name(name: str):
+    try:   
+        return {"message": f"Привет {name}"}
         # Сообщение о работе страницы
         logger.info("Page info work")
     except Exception as err:
