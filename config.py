@@ -18,12 +18,11 @@ except Exception as err:
 
 def load_config():
     return Base(
-        config["host"]["ip"], int(config["host"]["port"]), config["users"]["user1"]
+        config["host"]["ip"], int(config["host"]["port"])
     )
 
 
 class Base:
-    def __init__(self, ip, port, name):
+    def __init__(self, ip, port):
         self.ip = ip
         self.port = port
-        self.name = name
