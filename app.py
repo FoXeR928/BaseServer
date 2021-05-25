@@ -25,7 +25,8 @@ def root():
         # Сообщение о ошибке страницы
         logger.error(f"Server not work. ERROR: {err}")
         message=str(err)
-        return fastapi.Response(content=message)
+        return fastapi.Response(content=message, status_code=500)
+
 
 @app.get("/user_get/")
 def get(name: str = fastapi.Query(None)):
@@ -43,7 +44,7 @@ def name(name: str):
         # Сообщение о ошибке страницы
         logger.error(f"Server not work. ERROR: {err}")
         message=str(err)
-        return fastapi.Response(content=message)
+        return fastapi.Response(content=message, status_code=500)
 
 @app.on_event("shutdown")
 def shutdown():
