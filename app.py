@@ -1,5 +1,6 @@
 from os import name
 import fastapi
+from fastapi import responses
 import logs
 from loguru import logger
 from config import load_config
@@ -28,9 +29,13 @@ def get(name: str = fastapi.Query(None)):
 
 
 @app.get("/user/{name}", status_code=200)
-def name(name: str):
+def name(name: str, response=fastapi.Response):
     try:
-        return {"message": f"Привет {name}"}
+        if name not in name:
+            return {"Страницы нет"}
+            response.status_cod=fastapi.status.HTTP_404_NOT_FOUND
+        else:    
+            return {"message": f"Привет {name}"}
         # Сообщение о работе страницы
         logger.info("Page info work")
     except Exception as err:
