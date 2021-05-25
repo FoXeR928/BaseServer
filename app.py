@@ -37,7 +37,7 @@ def name(name: str):
     try:
         # Сообщение о работе страницы
         logger.info(f"Page user/{name} work")   
-        message={"message": f"Привет {10/0}"}
+        message={"message": f"Привет {name}"}
         return message
     except Exception as err:
         # Сообщение о ошибке страницы
