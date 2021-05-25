@@ -14,7 +14,6 @@ try:
             port=cfg.port,
         )
     # Сообщение о работе сервера
-    logger.info("Server work")
 except Exception as err:
     # Сообщение о ошибке сервера
     logger.error(f"Server not work. ERROR: {err}")

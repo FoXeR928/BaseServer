@@ -11,6 +11,10 @@ logs.init_log()
 app = fastapi.FastAPI()
 user = load_config()
 
+@app.on_event("startup")
+def start():
+    logger.info("Server work")
+
 # Запуск страницы info
 @app.get("/info")
 def root():
@@ -37,3 +41,7 @@ def name(name: str):
     except Exception as err:
         # Сообщение о ошибке страницы
         logger.error(f"Server not work. ERROR: {err}")
+
+@app.on_event("shutdown")
+def shutdown():
+    logger.info("Server stop work")
