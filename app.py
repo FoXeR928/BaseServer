@@ -11,7 +11,7 @@ app = fastapi.FastAPI()
 user = load_config()
 
 def value(surename):
-    print (surename)
+    return surename
 
 @app.on_event("startup")
 def start():

@@ -6,7 +6,6 @@ import app
 
 logs.init_log()
 
-
 try:
     connect_sql= sqlite3.connect('bd.db')
     curs=connect_sql.cursor()
