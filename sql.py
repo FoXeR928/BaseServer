@@ -13,18 +13,10 @@ try:
 except:
     logger.error('Base not connect')
 
-def base_id_check():
-    curs.execute("""SELECT id_name from testBD""")
-    return(curs.fetchall())
-
-def base_name_check():
-    curs.execute("""SELECT name from testBD""")
-    return(curs.fetchall())
-
-def base_id():    
-    for x in base_id_check():
-        return x
-
-def base_name():    
-    for x in base_name_check():
-        return x
+try:
+    def base_check():
+        curs.execute("""SELECT id_name, name from testBD""")
+        return(curs.fetchall())
+    logger.info("Base date take")
+except sqlite3.Error and Exception as err:
+    logger.error(f"Base not work. ERROR: {err}")
