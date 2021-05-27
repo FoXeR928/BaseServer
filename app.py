@@ -10,49 +10,59 @@ logs.init_log()
 app = fastapi.FastAPI()
 user = load_config()
 
+
 class New:
     def new_init(self, name, surename, patronymic):
-        self.name=name
-        self.surename=surename
-        self.patronymic=patronymic
+        self.name = name
+        self.surename = surename
+        self.patronymic = patronymic
+
 
 @app.on_event("startup")
 def start():
     logger.info("Server work")
 
+
 # Запуск страницы info
 @app.get("/info")
 def root():
-    try:
-        # Сообщение о работе страницы
-        logger.info("Page info work")
-        message={"message": "Привет"}
-        return message
-    except Exception as err:
-        # Сообщение о ошибке страницы
-        logger.error(f"Server not work. ERROR: {err}")
-        message=str(err)
-        return fastapi.Response(content=message, status_code=500)
+    # Сообщение о работе страницы
+    logger.info("Page info work")
+    message = {"message": "Привет"}
+    return message
 
 
-@app.get("/user_get/")
+@app.post("/user_post/")
 def get_user(name: str, surename: str, patronymic: str):
-    return sql.base_recording(name, surename, patronymic)
+    try:
+        result = sql.base_recording(name, surename, patronymic)
+    except Exception as err:
+        message = str(err)
+        logger.error(f"Server not work. ERROR: {err}")
+        result = fastapi.Response(content=message, status_code=500)
+    return result
+
 
 @app.get("/user/{surename}")
 def name(surename: str):
-    name=sql.base_check(surename)
-    for x in name:
-        try:
-            # Сообщение о работе страницы
-            logger.info(f"Page user/{surename} work")  
-            message={"message": f"Привет {x[0]} {x[1]} {x[2]}"}
-            return message
-        except Exception as err:
-            # Сообщение о ошибке страницы
-            logger.error(f"Server not work. ERROR: {err}")
-            message=str(err)
-            return fastapi.Response(content=message, status_code=500)
+    try:
+        name = sql.base_check(surename)
+    except Exception as err:
+        message = str(err)
+        logger.error(f"Server not work. ERROR: {err}")
+        result = fastapi.Response(content=message, status_code=404)
+    try:
+        # Сообщение о работе страницы
+        logger.info(f"Page user/{surename} work")
+        for name in name:
+            result = {"message": f"Привет {name[0]} {name[1]} {name[2]}"}
+    except Exception as err:
+        # Сообщение о ошибке страницы
+        logger.error(f"Server not work. ERROR: {err}")
+        message = str(err)
+        result = fastapi.Response(content=message, status_code=500)
+    return result
+
 
 @app.on_event("shutdown")
 def shutdown():
