@@ -13,7 +13,19 @@ def base_recording(name, surename, patronymic):
             f"INSERT INTO {cfg.base}(name, surename, patronymic) VALUES ('{name}', '{surename}', '{patronymic}');"
         )
         logger.debug(f"Base recording. {name, surename, patronymic}")
-    except sqlite3.Error and Exception as err:
+    except Exception as err:
+        logger.error(f"Base recording. ERROR: {err}")
+    connect_sql.commit()
+
+def base_recording_file(name, content):
+    try:
+        connect_sql = sqlite3.connect("bd.db", timeout=5)
+        curs = connect_sql.cursor()
+        curs.execute(
+            f"INSERT INTO tabl2(name, content) VALUES ('{name}', '{content}');"
+        )
+        logger.debug(f"Base recording. {name}")
+    except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
     connect_sql.commit()
 
@@ -26,6 +38,6 @@ def base_check(surename):
             f"SELECT name, surename, patronymic from {cfg.base} WHERE surename='{surename}'"
         )
         logger.info("Base date take")
-    except sqlite3.Error and Exception as err:
+    except Exception as err:
         logger.error(f"Base not take. ERROR: {err}")
     return curs.fetchall()
