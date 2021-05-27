@@ -7,7 +7,7 @@ cfg = load_config()
 
 def base_recording(name, surename, patronymic):
     try:
-        connect_sql = sqlite3.connect("bd.db")
+        connect_sql = sqlite3.connect("bd.db", timeout=5)
         curs = connect_sql.cursor()
         curs.execute(
             f"INSERT INTO {cfg.base}(name, surename, patronymic) VALUES ('{name}', '{surename}', '{patronymic}');"

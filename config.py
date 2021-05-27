@@ -1,5 +1,4 @@
 import configparser
-from os import name
 import logs
 from loguru import logger
 
@@ -17,9 +16,13 @@ except Exception as err:
 
 
 def load_config():
-    return Base(
-        config["host"]["ip"], int(config["host"]["port"]), config["base"]["base"]
-    )
+    try:
+        result = Base(
+            config["host"]["ip"], int(config["host"]["port"]), config["base"]["base"]
+        )
+    except Exception as err:
+        logger.error(f"Server not work. ERROR: {err}")
+    return result
 
 
 class Base:
