@@ -20,7 +20,7 @@ def start():
 @app.get("/info")
 def root():
     # Сообщение о работе страницы
-    logger.info("Page info work")
+    logger.debug("Page info work")
     message = {"message": "Привет"}
     return message
 
@@ -43,7 +43,7 @@ def name(surename: str, code: fastapi.Response):
         name = sql.base_check(surename)
         for name in name:
             message = {"message": f"Привет {name[0]} {name[1]} {name[2]}"}
-        logger.info(f"Page user/{surename} work")
+        logger.debug(f"Page user/{surename} work")
     except Exception as err:
         logger.error(f"Server not work. ERROR: {err}")
         code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -54,12 +54,14 @@ def name(surename: str, code: fastapi.Response):
 @app.post("/upload_file", status_code=fastapi.status.HTTP_201_CREATED)
 def upload_file(code: fastapi.Response, file: fastapi.UploadFile = fastapi.File(...)):
     try:
-        file_read=open(file.filename, 'r').read()
+        file_read=file.file.read()
         sql.base_recording_file(file.filename, file_read)
         message = {"Файл добавлен в базу"}
+        logger.debug(f"Page user/upload_file work, file{file.filename} add")
     except Exception as err:
         message = {f"Ошибка: {err}"}
         code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+        logger.error(f"Server not work. ERROR: {err}")
     return message
 
 
