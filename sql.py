@@ -102,7 +102,7 @@ def base_date_flask(device_id):
         connect_sql = sqlite3.connect("bd.db", timeout=5)
         curs = connect_sql.cursor()
         curs.execute(
-            f"SELECT * FROM {cfg.tabl_file} WHERE device_id='{device_id}'"
+            f"SELECT device_path, device_reg FROM {cfg.tabl_file} WHERE device_id='{device_id}'"
         )
         return curs.fetchall()
     except Exception as err:
