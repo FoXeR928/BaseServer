@@ -43,7 +43,7 @@ def name(surename: str, code: fastapi.Response):
     """
     Вывод из базы приветствия на основе фамилии
     """
-    message={'Ошибка':'Ничего не найдено'}
+    message = {"Ошибка": "Ничего не найдено"}
     try:
         name = sql.base_check(surename)
         for name in name:
@@ -62,7 +62,7 @@ def upload_file(code: fastapi.Response, file: fastapi.UploadFile = fastapi.File(
     Чтение файлов и добавление в базу имени и содержимого
     """
     try:
-        file_read=file.file.read().decode()
+        file_read = file.file.read().decode()
         sql.base_recording_file(file.filename, file_read)
         message = {"Файл добавлен в базу"}
         logger.debug(f"Page user/upload_file work, file{file.filename} add")

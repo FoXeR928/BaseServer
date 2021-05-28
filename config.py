@@ -4,7 +4,7 @@ from loguru import logger
 
 logs.init_log()
 
-#Чтение конфигов
+# Чтение конфигов
 try:
     config = configparser.ConfigParser()
     config.read("config.ini")
@@ -13,7 +13,7 @@ except Exception as err:
     logger.error(f"Server not work. ERROR: {err}")
 
 
-#Функция поиска параметров в конфигах
+# Функция поиска параметров в конфигах
 def load_config():
     try:
         result = Base(
@@ -28,7 +28,7 @@ def load_config():
     return result
 
 
-#Класс вывода конфигов
+# Класс вывода конфигов
 class Base:
     def __init__(self, ip, port, base, tabl_tb, tabl_file):
         self.ip = ip
