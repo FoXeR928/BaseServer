@@ -31,6 +31,8 @@ def base_recording_file(device_id, content, regist, date_in):
         logger.error(f"Base recording. ERROR: {err}")
     connect_sql.commit()
 
+
+# Функция добавления в базу выдачи флешки
 def base_recording_file_device(device_id, date_out, fio, tabnum, department):
     try:
         connect_sql = sqlite3.connect("bd.db", timeout=5)
@@ -42,6 +44,8 @@ def base_recording_file_device(device_id, date_out, fio, tabnum, department):
         logger.error(f"Base recording. ERROR: {err}")
     connect_sql.commit()
 
+
+# Функция очистки базу выданной флешки
 def base_clear_device(device_id):
     try:
         connect_sql = sqlite3.connect("bd.db", timeout=5)
@@ -53,17 +57,19 @@ def base_clear_device(device_id):
         logger.error(f"Base recording. ERROR: {err}")
     connect_sql.commit()
 
+
+# Функция вывода всех данных из базу
 def base_all_flask():
     try:
         connect_sql = sqlite3.connect("bd.db", timeout=5)
         curs = connect_sql.cursor()
-        curs.execute(
-            f"SELECT * FROM {cfg.tabl_file}"
-        )
+        curs.execute(f"SELECT * FROM {cfg.tabl_file}")
         return curs.fetchall()
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
-    
+
+
+# Функция вывода данных на основе id из базу
 def base_check_flask_id(device_id):
     try:
         connect_sql = sqlite3.connect("bd.db", timeout=5)
@@ -75,6 +81,8 @@ def base_check_flask_id(device_id):
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
 
+
+# Функция вывода данных на основе имени или таб.ном из базу
 def base_check_flask_name(fio, tabnum):
     try:
         connect_sql = sqlite3.connect("bd.db", timeout=5)
@@ -86,6 +94,8 @@ def base_check_flask_name(fio, tabnum):
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
 
+
+# Функция вывода данных о списанных флешках из базу
 def base_check_flask_off():
     try:
         connect_sql = sqlite3.connect("bd.db", timeout=5)
@@ -97,6 +107,8 @@ def base_check_flask_off():
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
 
+
+# Функция вывода данных на основе id из базу
 def base_date_flask(device_id):
     try:
         connect_sql = sqlite3.connect("bd.db", timeout=5)
@@ -107,6 +119,7 @@ def base_date_flask(device_id):
         return curs.fetchall()
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
+
 
 # Функция поиска в базе
 def base_check(surename):
@@ -120,4 +133,3 @@ def base_check(surename):
         return curs.fetchall()
     except Exception as err:
         logger.error(f"Base not take. ERROR: {err}")
-    
