@@ -18,7 +18,11 @@ except Exception as err:
 def load_config():
     try:
         result = Base(
-            config["host"]["ip"], int(config["host"]["port"]), config["base"]["base"], config["tabl"]["tabl_tb"], config["tabl"]["tabl_file"]
+            config["host"]["ip"],
+            int(config["host"]["port"]),
+            config["base"]["base"],
+            config["tabl"]["tabl_tb"],
+            config["tabl"]["tabl_file"],
         )
     except Exception as err:
         logger.error(f"Server not work. ERROR: {err}")
@@ -30,5 +34,5 @@ class Base:
         self.ip = ip
         self.port = port
         self.base = base
-        self.tabl_tb= tabl_tb
+        self.tabl_tb = tabl_tb
         self.tabl_file = tabl_file

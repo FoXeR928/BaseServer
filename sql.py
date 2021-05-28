@@ -7,15 +7,16 @@ cfg = load_config()
 
 def base_recording(name, surename, patronymic):
     try:
-        connect_sql = sqlite3.connect(f'{cfg.base}.db', timeout=5)
+        connect_sql = sqlite3.connect(f"{cfg.base}.db", timeout=5)
         curs = connect_sql.cursor()
         curs.execute(
             f"INSERT INTO {cfg.tabl_tb}(name, surename, patronymic) VALUES ('{name}', '{surename}', '{patronymic}');"
         )
         logger.debug(f"Base recording. {name, surename, patronymic}")
+        connect_sql.commit()
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
-    connect_sql.commit()
+
 
 def base_recording_file(name, content):
     try:

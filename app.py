@@ -38,6 +38,7 @@ def post_user(name: str, surename: str, patronymic: str, code: fastapi.Response)
 
 @app.get("/user/{surename}", status_code=fastapi.status.HTTP_200_OK)
 def name(surename: str, code: fastapi.Response):
+    message={'Ошибка':'Ничего не найдено'}
     try:
         name = sql.base_check(surename)
         for name in name:
@@ -49,17 +50,18 @@ def name(surename: str, code: fastapi.Response):
         message = {"Error": f"{str(err)}"}
     return message
 
-@app.post("/upload_file", status_code=fastapi.status.HTTP_201_CREATED)
-def upload_file(code: fastapi.Response, file: fastapi.UploadFile=fastapi.File(...)):
-    try:
-        sql.base_recording_file(file.filename, file.read)
-        message={"Файл добавлен в базу"}
-    except Exception as err:
-        message={f"Ошибка: {err}"}
-        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
-    return file
 
-        
+@app.post("/upload_file", status_code=fastapi.status.HTTP_201_CREATED)
+def upload_file(code: fastapi.Response, file: fastapi.UploadFile = fastapi.File(...)):
+    try:
+        file_read=open(file.filename, 'r').read()
+        sql.base_recording_file(file.filename, file_read)
+        message = {"Файл добавлен в базу"}
+    except Exception as err:
+        message = {f"Ошибка: {err}"}
+        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+    return message
+
 
 @app.on_event("shutdown")
 def shutdown():
