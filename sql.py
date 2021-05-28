@@ -4,7 +4,7 @@ from config import load_config
 
 cfg = load_config()
 
-
+#Функция добавления в базу ФИО
 def base_recording(name, surename, patronymic):
     try:
         connect_sql = sqlite3.connect(f"{cfg.base}.db", timeout=5)
@@ -17,7 +17,7 @@ def base_recording(name, surename, patronymic):
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
 
-
+#Функция добавления в базу Файла
 def base_recording_file(name, content):
     try:
         connect_sql = sqlite3.connect("bd.db", timeout=5)
@@ -30,7 +30,7 @@ def base_recording_file(name, content):
         logger.error(f"Base recording. ERROR: {err}")
     connect_sql.commit()
 
-
+#Функция поиска в базе
 def base_check(surename):
     try:
         connect_sql = sqlite3.connect("bd.db", timeout=5)

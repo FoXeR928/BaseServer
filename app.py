@@ -4,9 +4,7 @@ from loguru import logger
 from config import load_config
 import sql
 
-# Добавлени параметров логов
 logs.init_log()
-# Инициализация fastapi
 app = fastapi.FastAPI()
 user = load_config()
 
@@ -16,10 +14,11 @@ def start():
     logger.info("Server work")
 
 
-# Запуск страницы info
 @app.get("/info")
 def root():
-    # Сообщение о работе страницы
+    """
+    Приветствующая страница
+    """
     logger.debug("Page info work")
     message = {"message": "Привет"}
     return message
@@ -27,6 +26,9 @@ def root():
 
 @app.post("/user_post/", status_code=fastapi.status.HTTP_201_CREATED)
 def post_user(name: str, surename: str, patronymic: str, code: fastapi.Response):
+    """
+    Добавление в базу ФИО
+    """
     try:
         message = sql.base_recording(name, surename, patronymic)
     except Exception as err:
@@ -38,6 +40,9 @@ def post_user(name: str, surename: str, patronymic: str, code: fastapi.Response)
 
 @app.get("/user/{surename}", status_code=fastapi.status.HTTP_200_OK)
 def name(surename: str, code: fastapi.Response):
+    """
+    Вывод из базы приветствия на основе фамилии
+    """
     message={'Ошибка':'Ничего не найдено'}
     try:
         name = sql.base_check(surename)
@@ -53,8 +58,11 @@ def name(surename: str, code: fastapi.Response):
 
 @app.post("/upload_file", status_code=fastapi.status.HTTP_201_CREATED)
 def upload_file(code: fastapi.Response, file: fastapi.UploadFile = fastapi.File(...)):
+    """
+    Чтение файлов и добавление в базу имени и содержимого
+    """
     try:
-        file_read=file.file.read()
+        file_read=file.file.read().decode()
         sql.base_recording_file(file.filename, file_read)
         message = {"Файл добавлен в базу"}
         logger.debug(f"Page user/upload_file work, file{file.filename} add")
