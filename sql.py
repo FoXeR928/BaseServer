@@ -4,32 +4,28 @@ from config import load_config
 
 cfg = load_config()
 
-# Функция добавления в базу ФИО
-def base_recording(name, surename, patronymic):
-    try:
-        connect_sql = sqlite3.connect(f"{cfg.base}.db", timeout=5)
-        curs = connect_sql.cursor()
-        curs.execute(
-            f"INSERT INTO {cfg.tabl_tb}(name, surename, patronymic) VALUES ('{name}', '{surename}', '{patronymic}');"
-        )
-        logger.debug(f"Base recording. {name, surename, patronymic}")
-        connect_sql.commit()
-    except Exception as err:
-        logger.error(f"Base recording. ERROR: {err}")
-
 
 # Функция добавления в базу Файла
 def base_recording_file(device_id, content, regist, date_in):
-    try:
-        connect_sql = sqlite3.connect("bd.db", timeout=5)
-        curs = connect_sql.cursor()
+    connect_sql = sqlite3.connect("bd.db", timeout=5)
+    curs = connect_sql.cursor()
+    if (
         curs.execute(
-            f"INSERT INTO {cfg.tabl_file}(device_id, device_path, device_reg, date_in) VALUES ('{device_id}', '{content}', '{regist}', '{date_in}');"
+            f"SELECT device_id FROM {cfg.tabl_file} WHERE device_id='{device_id}'"
         )
-        logger.debug(f"Base recording. {device_id}")
-    except Exception as err:
-        logger.error(f"Base recording. ERROR: {err}")
-    connect_sql.commit()
+        == None
+    ):
+        try:
+            curs.execute(
+                f"INSERT INTO {cfg.tabl_file}(device_id, device_path, device_reg, date_in) VALUES ('{device_id}', '{content}', '{regist}', '{date_in}');"
+            )
+            logger.debug(f"Base recording. {device_id}")
+            connect_sql.commit()
+        except Exception as err:
+            logger.error(f"Base recording. ERROR: {err}")
+        return "Файл добавлен в базу"
+    else:
+        return "Уже есть в базе"
 
 
 # Функция добавления в базу выдачи флешки
@@ -133,3 +129,6 @@ def base_check(surename):
         return curs.fetchall()
     except Exception as err:
         logger.error(f"Base not take. ERROR: {err}")
+
+
+base_recording_file(1, 1, 1, 1)

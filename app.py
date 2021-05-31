@@ -1,9 +1,11 @@
 import fastapi
+from fastapi.datastructures import UploadFile
 import logs
 from loguru import logger
 from config import load_config
 import sql
 import datetime
+import typing
 
 logs.init_log()
 app = fastapi.FastAPI()
@@ -22,20 +24,6 @@ def root():
     """
     logger.debug("Page info work")
     message = {"message": "Привет"}
-    return message
-
-
-@app.post("/user_post/", status_code=fastapi.status.HTTP_201_CREATED)
-def post_user(name: str, surename: str, patronymic: str, code: fastapi.Response):
-    """
-    Добавление в базу ФИО
-    """
-    try:
-        message = sql.base_recording(name, surename, patronymic)
-    except Exception as err:
-        message = str(err)
-        logger.error(f"Server not work. ERROR: {err}")
-        code.status_code = fastapi.status.HTTP_501_NOT_IMPLEMENTED
     return message
 
 
@@ -60,37 +48,37 @@ def name(surename: str, code: fastapi.Response):
 @app.post("/upload_file", status_code=fastapi.status.HTTP_201_CREATED)
 def upload_file(
     code: fastapi.Response,
-    file: fastapi.UploadFile = fastapi.File(...),
-    file_regist: fastapi.UploadFile = fastapi.File(...),
+    files: typing.List[fastapi.UploadFile] = fastapi.File(...),
 ):
     """
     Чтение содержимого файлов и добавление в базу имени и содержимого
     """
-    try:
-        device_id = file.filename.replace("usb_deviceID_", "").replace(
-            ".txt", ""
-        ).replace(".reg", "") or file_regist.filename.replace(
-            "usb_deviceID_", ""
-        ).replace(
-            ".txt", ""
-        ).replace(
-            ".reg", ""
-        )
-        file_read = file.file.read().decode("utf-16")
-        regist_read = file_regist.file.read().decode("utf-16")
-        date = datetime.datetime.now()
-        sql.base_recording_file(device_id, file_read, regist_read, date)
-        message = {"Файл добавлен в базу"}
-        logger.debug(f"Page /upload_file work, file{file.filename} add")
-    except Exception as err:
-        message = {f"Ошибка: {err}"}
-        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
-        logger.error(f"Server not work. ERROR: {err}")
+    for file in files:
+        if "usb_deviceID_" in file.filename:
+            if ".txt" in file.filename:
+                file_read = file.file.read().decode("utf-16")
+            elif ".reg" in file.filename:
+                regist_read = file.file.read().decode("utf-16")
+            else:
+                message={'Не поддерживаемый формат файла'}
+            try:
+                device_id = file.filename.replace("usb_deviceID_", "").replace(
+                    ".txt", "" and ".reg", ""
+                )
+                date = datetime.datetime.now()
+                message = sql.base_recording_file(device_id, file_read, regist_read, date)
+                logger.debug(f"Page /upload_file work, file{file.filename} add")
+            except Exception as err:
+                message = {f"Ошибка: {err}"}
+                code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+                logger.error(f"Server not work. ERROR: {err}")
+        else:
+            message={'Не верное название файла'}
     return message
 
 
 @app.post("/give_flask", status_code=fastapi.status.HTTP_201_CREATED)
-def upload_file(
+def give_file(
     code: fastapi.Response, device_id: str, fio: str, tabnum: int, department: str
 ):
     """
@@ -109,7 +97,7 @@ def upload_file(
 
 
 @app.post("/get_flask", status_code=fastapi.status.HTTP_201_CREATED)
-def upload_file(code: fastapi.Response, device_id: str):
+def get_flask(code: fastapi.Response, device_id: str):
     """
     Возврат флешки
     """
@@ -125,7 +113,7 @@ def upload_file(code: fastapi.Response, device_id: str):
 
 
 @app.get("/all_flask", status_code=fastapi.status.HTTP_201_CREATED)
-def upload_file(code: fastapi.Response):
+def all_flask(code: fastapi.Response):
     """
     Вывод флешек
     """
@@ -140,7 +128,7 @@ def upload_file(code: fastapi.Response):
 
 
 @app.get("/id_flask", status_code=fastapi.status.HTTP_200_OK)
-def upload_file(code: fastapi.Response, device_id: str):
+def id_flask(code: fastapi.Response, device_id: str):
     """
     Поиск флешеки по id
     """
@@ -155,7 +143,7 @@ def upload_file(code: fastapi.Response, device_id: str):
 
 
 @app.get("/name_flask", status_code=fastapi.status.HTTP_200_OK)
-def upload_file(code: fastapi.Response, fiotab: str):
+def name_flask(code: fastapi.Response, fiotab: str):
     """
     Поиск флешеки по ФИО или таб
     """
@@ -171,7 +159,7 @@ def upload_file(code: fastapi.Response, fiotab: str):
 
 
 @app.get("/off_flask", status_code=fastapi.status.HTTP_200_OK)
-def upload_file(code: fastapi.Response):
+def off_flask(code: fastapi.Response):
     """
     Вывод списанных флешек
     """
@@ -187,7 +175,7 @@ def upload_file(code: fastapi.Response):
 
 
 @app.get("/date_flask", status_code=fastapi.status.HTTP_200_OK)
-def upload_file(code: fastapi.Response, device_id: str):
+def date_flask(code: fastapi.Response, device_id: str):
     """
     Данные флешек
     """
@@ -200,7 +188,6 @@ def upload_file(code: fastapi.Response, device_id: str):
         code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
         logger.error(f"Server not work. ERROR: {err}")
     return message
-
 
 @app.on_event("shutdown")
 def shutdown():
