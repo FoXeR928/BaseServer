@@ -70,12 +70,13 @@ def upload_file(
                 message = {"Не поддерживаемый формат файла"}
             device_id = device_id.replace(".txt", "").replace(".reg", "")
             if len(txt) > 0 and len(reg) > 0:
-
                 for i in txt:
                     i = i
                 for x in reg:
                     x = x
-                if i==x:
+                if i == x:
+                    txt.remove(i)
+                    reg.remove(x)
                     try:
                         date = datetime.datetime.now()
                         message = sql.base_recording_file(
