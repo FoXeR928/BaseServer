@@ -83,12 +83,12 @@ def base_check_flask_id(device_id):
 
 
 # Функция вывода данных на основе имени или таб.ном из базу
-def base_check_flask_name(fio, tabnum):
+def base_check_flask_name(fiotab):
     try:
         connect_sql = sqlite3.connect("bd.db", timeout=5)
         curs = connect_sql.cursor()
         curs.execute(
-            f"SELECT * FROM {cfg.tabl_file} WHERE fio like '%{fio}%' OR tabnum like '%{tabnum}%'"
+            f"SELECT * FROM {cfg.tabl_file} WHERE fio like '%{fiotab}%' OR tabnum like '%{fiotab}%'"
         )
         return curs.fetchall()
     except Exception as err:

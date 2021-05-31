@@ -64,7 +64,7 @@ def upload_file(
     file_regist: fastapi.UploadFile = fastapi.File(...),
 ):
     """
-    Чтение файлов и добавление в базу имени и содержимого
+    Чтение содержимого файлов и добавление в базу имени и содержимого
     """
     try:
         device_id = file.filename.replace("usb_deviceID_", "").replace(
@@ -155,11 +155,11 @@ def upload_file(code: fastapi.Response, device_id: str):
 
 
 @app.get("/name_flask", status_code=fastapi.status.HTTP_200_OK)
-def upload_file(code: fastapi.Response, fio: str, tabnum: int):
+def upload_file(code: fastapi.Response, fiotab: str):
     """
     Поиск флешеки по ФИО или таб
     """
-    check = sql.base_check_flask_name(fio, tabnum)
+    check = sql.base_check_flask_name(fiotab)
     try:
         message = {f"Флешка": check}
         logger.debug(f"Page /name_flask work")
