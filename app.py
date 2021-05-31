@@ -1,11 +1,11 @@
 import fastapi
-from fastapi.datastructures import UploadFile
 import logs
 from loguru import logger
 from config import load_config
 import sql
 import datetime
 import typing
+import collections
 
 logs.init_log()
 app = fastapi.FastAPI()
@@ -53,27 +53,43 @@ def upload_file(
     """
     Чтение содержимого файлов и добавление в базу имени и содержимого
     """
+    txt = []
+    reg = []
     for file in files:
         if "usb_deviceID_" in file.filename:
+            device_id = file.filename.replace("usb_deviceID_", "")
             if ".txt" in file.filename:
                 file_read = file.file.read().decode("utf-16")
+                file = file.filename.replace(".txt", "")
+                txt.append(file)
             elif ".reg" in file.filename:
                 regist_read = file.file.read().decode("utf-16")
+                file = file.filename.replace(".reg", "")
+                reg.append(file)
             else:
-                message={'Не поддерживаемый формат файла'}
-            try:
-                device_id = file.filename.replace("usb_deviceID_", "").replace(
-                    ".txt", "" and ".reg", ""
-                )
-                date = datetime.datetime.now()
-                message = sql.base_recording_file(device_id, file_read, regist_read, date)
-                logger.debug(f"Page /upload_file work, file{file.filename} add")
-            except Exception as err:
-                message = {f"Ошибка: {err}"}
-                code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
-                logger.error(f"Server not work. ERROR: {err}")
+                message = {"Не поддерживаемый формат файла"}
+            device_id = device_id.replace(".txt", "").replace(".reg", "")
+            if len(txt) > 0 and len(reg) > 0:
+
+                for i in txt:
+                    i = i
+                for x in reg:
+                    x = x
+                if i==x:
+                    try:
+                        date = datetime.datetime.now()
+                        message = sql.base_recording_file(
+                            device_id, file_read, regist_read, date
+                        )
+                        logger.debug(f"Page /upload_file work, file {file} add")
+                    except Exception as err:
+                        message = {f"Ошибка: {err}"}
+                        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+                        logger.error(f"Server not work. ERROR: {err}")
+            else:
+                message = {"Файла не хватает"}
         else:
-            message={'Не верное название файла'}
+            message = {"Не верное название файла"}
     return message
 
 
@@ -188,6 +204,7 @@ def date_flask(code: fastapi.Response, device_id: str):
         code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
         logger.error(f"Server not work. ERROR: {err}")
     return message
+
 
 @app.on_event("shutdown")
 def shutdown():

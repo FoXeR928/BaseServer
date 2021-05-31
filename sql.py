@@ -9,12 +9,8 @@ cfg = load_config()
 def base_recording_file(device_id, content, regist, date_in):
     connect_sql = sqlite3.connect("bd.db", timeout=5)
     curs = connect_sql.cursor()
-    if (
-        curs.execute(
-            f"SELECT device_id FROM {cfg.tabl_file} WHERE device_id='{device_id}'"
-        )
-        == None
-    ):
+    curs.execute(f"SELECT device_id FROM {cfg.tabl_file} WHERE device_id='{device_id}'")
+    if len(curs.fetchall()) == 0:
         try:
             curs.execute(
                 f"INSERT INTO {cfg.tabl_file}(device_id, device_path, device_reg, date_in) VALUES ('{device_id}', '{content}', '{regist}', '{date_in}');"
@@ -129,6 +125,3 @@ def base_check(surename):
         return curs.fetchall()
     except Exception as err:
         logger.error(f"Base not take. ERROR: {err}")
-
-
-base_recording_file(1, 1, 1, 1)
