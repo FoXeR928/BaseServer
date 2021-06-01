@@ -2,20 +2,20 @@ import configparser
 import os
 from loguru import logger
 
-if 'config.txt' not in os.listdir():
-    conf=open('config.txt', 'w+')
-    if os.stat('config.txt').st_size==0:
+if "config.txt" not in os.listdir():
+    conf = open("config.txt", "w+")
+    if os.stat("config.txt").st_size == 0:
         while True:
-            file=input('Введите имя файла с конфигурациями: ')
+            file = input("Введите имя файла с конфигурациями: ")
             if file in os.listdir():
                 conf.write(file)
                 conf.close()
                 break
             else:
-                print('Введён не верный файл')
+                print("Введён не верный файл")
 else:
     pass
-config_file=open('config.txt', 'r').read()
+config_file = open("config.txt", "r").read()
 config = configparser.ConfigParser()
 config.read(f"{config_file}")
 # Чтение конфигов
@@ -47,4 +47,3 @@ class Base:
         self.port = port
         self.base = base
         self.tabl_file = tabl_file
-    

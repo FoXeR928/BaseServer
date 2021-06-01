@@ -73,7 +73,9 @@ def give_file(
     date_out = datetime.datetime.now()
     try:
         sql.base_recording_file_device(device_id, date_out, fio, tabnum, department)
-        message = sql.base_recording_file_device(device_id, date_out, fio, tabnum, department)
+        message = sql.base_recording_file_device(
+            device_id, date_out, fio, tabnum, department
+        )
         logger.debug(f"Page /give_flask work, base '{device_id}' update")
     except Exception as err:
         message = {f"Ошибка: {err}"}
