@@ -1,12 +1,10 @@
 import fastapi
-import logs
 from loguru import logger
 from config import load_config
 import sql
 import datetime
 import typing
 
-logs.init_log()
 app = fastapi.FastAPI()
 user = load_config()
 
@@ -103,7 +101,7 @@ def give_file(
     date_out = datetime.datetime.now()
     try:
         sql.base_recording_file_device(device_id, date_out, fio, tabnum, department)
-        message = {"Файл добавлен в базу"}
+        message = sql.base_recording_file_device(device_id, date_out, fio, tabnum, department)
         logger.debug(f"Page /give_flask work, base '{device_id}' update")
     except Exception as err:
         message = {f"Ошибка: {err}"}
@@ -119,7 +117,7 @@ def get_flask(code: fastapi.Response, device_id: str):
     """
     try:
         sql.base_clear_device(device_id)
-        message = {f"База {device_id}"}
+        message = {"Очистка данных:" f"{device_id}"}
         logger.debug(f"Page /get_flask work, base '{device_id}' update")
     except Exception as err:
         message = {f"Ошибка: {err}"}

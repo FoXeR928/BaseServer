@@ -4,7 +4,6 @@ from config import load_config
 
 cfg = load_config()
 
-
 # Функция добавления в базу Файла
 def base_recording_file(device_id, content, regist, date_in):
     connect_sql = sqlite3.connect("bd.db", timeout=5)
@@ -80,7 +79,7 @@ def base_check_flask_id(device_id):
             f"SELECT * FROM {cfg.tabl_file} WHERE device_id like '%{device_id}%'"
         )
         if len(curs.fetchall()) == 0:
-            return "Такого в базе нету"
+            return "Такой в базе нету"
         else:
             return curs.fetchall()
     except Exception as err:

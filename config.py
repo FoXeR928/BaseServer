@@ -1,21 +1,21 @@
 import configparser
-import logs
 from loguru import logger
 
-logs.init_log()
-
 # Чтение конфигов
-try:
-    config = configparser.ConfigParser()
-    config.read("config.ini")
-    logger.info(f'Host: {config["host"]["ip"]} and Port: {config["host"]["port"]}')
-except Exception as err:
-    logger.error(f"Server not work. ERROR: {err}")
+def take_host():
+    try:
+        config = configparser.ConfigParser()
+        config.read("config.ini")
+        logger.info(f'Host: {config["host"]["ip"]} and Port: {config["host"]["port"]}')
+    except Exception as err:
+        logger.error(f"Server not work. ERROR: {err}")
 
 
 # Функция поиска параметров в конфигах
 def load_config():
     try:
+        config = configparser.ConfigParser()
+        config.read("config.ini")
         result = Base(
             config["host"]["ip"],
             int(config["host"]["port"]),

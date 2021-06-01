@@ -1,9 +1,11 @@
 import uvicorn
-from config import load_config
+from config import load_config, take_host
 from loguru import logger
+import logs
 from app import app
 
-
+logs.init_log()
+take_host()
 cfg = load_config()
 
 
