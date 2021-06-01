@@ -3,6 +3,7 @@ from config import load_config
 from loguru import logger
 from app import app
 
+
 cfg = load_config()
 
 

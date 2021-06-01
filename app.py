@@ -5,7 +5,6 @@ from config import load_config
 import sql
 import datetime
 import typing
-import collections
 
 logs.init_log()
 app = fastapi.FastAPI()

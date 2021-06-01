@@ -26,28 +26,38 @@ def base_recording_file(device_id, content, regist, date_in):
 
 # Функция добавления в базу выдачи флешки
 def base_recording_file_device(device_id, date_out, fio, tabnum, department):
-    try:
-        connect_sql = sqlite3.connect("bd.db", timeout=5)
-        curs = connect_sql.cursor()
-        curs.execute(
-            f"UPDATE {cfg.tabl_file} SET date_out='{date_out}', fio= '{fio}', tabnum='{tabnum}', department='{department}' WHERE device_id='{device_id}'"
-        )
-    except Exception as err:
-        logger.error(f"Base recording. ERROR: {err}")
-    connect_sql.commit()
+    connect_sql = sqlite3.connect("bd.db", timeout=5)
+    curs = connect_sql.cursor()
+    curs.execute(f"SELECT device_id FROM {cfg.tabl_file} WHERE device_id='{device_id}'")
+    if len(curs.fetchall()) != 0:
+        try:
+            curs.execute(
+                f"UPDATE {cfg.tabl_file} SET date_out='{date_out}', fio= '{fio}', tabnum='{tabnum}', department='{department}' WHERE device_id='{device_id}'"
+            )
+            connect_sql.commit()
+        except Exception as err:
+            logger.error(f"Base recording. ERROR: {err}")
+    else:
+        return "Такого нет в базе"
 
 
 # Функция очистки базу выданной флешки
 def base_clear_device(device_id):
-    try:
-        connect_sql = sqlite3.connect("bd.db", timeout=5)
-        curs = connect_sql.cursor()
-        curs.execute(
-            f"UPDATE {cfg.tabl_file} SET date_out=NULL, fio= NULL, tabnum=NULL, department=NULL WHERE device_id='{device_id}'"
-        )
-    except Exception as err:
-        logger.error(f"Base recording. ERROR: {err}")
-    connect_sql.commit()
+    connect_sql = sqlite3.connect("bd.db", timeout=5)
+    curs = connect_sql.cursor()
+    curs.execute(
+        f"SELECT date_out, fio, tabnum, department FROM {cfg.tabl_file} WHERE device_id='{device_id}'"
+    )
+    if len(curs.fetchall()) != 0:
+        try:
+            curs.execute(
+                f"UPDATE {cfg.tabl_file} SET date_out=NULL, fio= NULL, tabnum=NULL, department=NULL WHERE device_id='{device_id}'"
+            )
+            connect_sql.commit()
+        except Exception as err:
+            logger.error(f"Base recording. ERROR: {err}")
+    else:
+        return "Данных и так нет"
 
 
 # Функция вывода всех данных из базу
@@ -69,7 +79,10 @@ def base_check_flask_id(device_id):
         curs.execute(
             f"SELECT * FROM {cfg.tabl_file} WHERE device_id like '%{device_id}%'"
         )
-        return curs.fetchall()
+        if len(curs.fetchall()) == 0:
+            return "Такого в базе нету"
+        else:
+            return curs.fetchall()
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
 
@@ -82,7 +95,10 @@ def base_check_flask_name(fiotab):
         curs.execute(
             f"SELECT * FROM {cfg.tabl_file} WHERE fio like '%{fiotab}%' OR tabnum like '%{fiotab}%'"
         )
-        return curs.fetchall()
+        if len(curs.fetchall()) == 0:
+            return "Такого в базе нету"
+        else:
+            return curs.fetchall()
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
 
@@ -108,20 +124,9 @@ def base_date_flask(device_id):
         curs.execute(
             f"SELECT device_path, device_reg FROM {cfg.tabl_file} WHERE device_id='{device_id}'"
         )
-        return curs.fetchall()
+        if len(curs.fetchall()) == 0:
+            return "Такого в базе нету"
+        else:
+            return curs.fetchall()
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
-
-
-# Функция поиска в базе
-def base_check(surename):
-    try:
-        connect_sql = sqlite3.connect("bd.db", timeout=5)
-        curs = connect_sql.cursor()
-        curs.execute(
-            f"SELECT name, surename, patronymic from {cfg.tabl_tb} WHERE surename='{surename}'"
-        )
-        logger.info("Base date take")
-        return curs.fetchall()
-    except Exception as err:
-        logger.error(f"Base not take. ERROR: {err}")

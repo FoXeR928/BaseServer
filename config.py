@@ -20,7 +20,6 @@ def load_config():
             config["host"]["ip"],
             int(config["host"]["port"]),
             config["base"]["base"],
-            config["tabl"]["tabl_tb"],
             config["tabl"]["tabl_file"],
         )
     except Exception as err:
@@ -30,9 +29,8 @@ def load_config():
 
 # Класс вывода конфигов
 class Base:
-    def __init__(self, ip, port, base, tabl_tb, tabl_file):
+    def __init__(self, ip, port, base, tabl_file):
         self.ip = ip
         self.port = port
         self.base = base
-        self.tabl_tb = tabl_tb
         self.tabl_file = tabl_file
