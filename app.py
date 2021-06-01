@@ -14,34 +14,6 @@ def start():
     logger.info("Server work")
 
 
-@app.get("/info")
-def root():
-    """
-    Приветствующая страница
-    """
-    logger.debug("Page info work")
-    message = {"message": "Привет"}
-    return message
-
-
-@app.get("/user/{surename}", status_code=fastapi.status.HTTP_200_OK)
-def name(surename: str, code: fastapi.Response):
-    """
-    Вывод из базы приветствия на основе фамилии
-    """
-    message = {"Ошибка": "Ничего не найдено"}
-    try:
-        name = sql.base_check(surename)
-        for name in name:
-            message = {"message": f"Привет {name[0]} {name[1]} {name[2]}"}
-        logger.debug(f"Page user/{surename} work")
-    except Exception as err:
-        logger.error(f"Server not work. ERROR: {err}")
-        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
-        message = {"Error": f"{str(err)}"}
-    return message
-
-
 @app.post("/upload_file", status_code=fastapi.status.HTTP_201_CREATED)
 def upload_file(
     code: fastapi.Response,
