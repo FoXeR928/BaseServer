@@ -4,7 +4,7 @@ from loguru import logger
 import logs
 from app import app
 
-logs.init_log
+logs.init_log()
 take_host()
 cfg = load_config()
 
