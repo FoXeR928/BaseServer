@@ -4,15 +4,15 @@ import sql
 en = mimesis.Person("en")
 ru = mimesis.Person("ru")
 gen = mimesis.Generic("en")
-text=mimesis.Text("en")
-date= mimesis.Datetime('en')
+text = mimesis.Text("en")
+date = mimesis.Datetime("en")
 
 
 def test_base_recording_file():
     device_id = en.password
     content = text.text()
     regist = text.text()
-    date_in =date.datetime()
+    date_in = date.datetime()
     assert sql.base_recording_file(device_id, content, regist, date_in)
 
 
