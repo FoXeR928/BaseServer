@@ -6,11 +6,11 @@ from loguru import logger
 while True:
     file=input('Введите имя файла с конфигурациями: ')
     if file in os.listdir():
+        config = configparser.ConfigParser()
+        config.read(f"{file}")
         # Чтение конфигов
         def take_host():
             try:
-                config = configparser.ConfigParser()
-                config.read(f"{file}")
                 logger.info(f'Host: {config["host"]["ip"]} and Port: {config["host"]["port"]}')
             except Exception as err:
                 logger.error(f"Server not work. ERROR: {err}")
@@ -19,8 +19,6 @@ while True:
         # Функция поиска параметров в конфигах
         def load_config():
             try:
-                config = configparser.ConfigParser()
-                config.read("config.ini")
                 result = Base(
                     config["host"]["ip"],
                     int(config["host"]["port"]),

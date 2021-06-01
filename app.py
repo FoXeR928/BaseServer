@@ -57,7 +57,7 @@ def upload_file(
                         code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
                         logger.error(f"Server not work. ERROR: {err}")
             else:
-                message = {"Файла не хватает"}
+                message = {f"Файла .reg {txt} и .txt {reg} не хватает"}
         else:
             message = {"Не верное название файла"}
     return message
