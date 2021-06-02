@@ -1,14 +1,7 @@
 import configparser
-import os
-import sys
 from loguru import logger
 
 
-if "config.txt" not in os.listdir() or os.stat("config.txt").st_size == 0:
-    file, file_name = sys.argv
-    conf = open("config.txt", "w+")
-    conf.write(file_name)
-    conf.close()
 config_file = open("config.txt", "r").read()
 config = configparser.ConfigParser()
 config.read(f"{config_file}")

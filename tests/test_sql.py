@@ -1,8 +1,14 @@
 import mimesis
 import sqlite3
+import sys
+sys.path.append('./')
 import sql
 from config import load_config
 
+file, file_name = sys.argv
+conf = open("config.txt", "w+")
+conf.write(file_name)
+conf.close()
 
 cfg = load_config()
 
