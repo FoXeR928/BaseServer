@@ -84,7 +84,7 @@ def base_check_flask_id(device_id):
         curs.execute(
             f"SELECT * FROM {cfg.tabl_file} WHERE device_id like '%{device_id}%'"
         )
-        result=curs.fetchall()
+        result = curs.fetchall()
         if len(result) == 0:
             logger.debug(f"Такого нету. {device_id}")
             return "Такой в базе нету"
@@ -103,7 +103,7 @@ def base_check_flask_name(fiotab):
         curs.execute(
             f"SELECT * FROM {cfg.tabl_file} WHERE fio like '%{fiotab}%' OR tabnum like '%{fiotab}%'"
         )
-        result=curs.fetchall()
+        result = curs.fetchall()
         if len(result) == 0:
             logger.debug(f"Такого нету. {fiotab}")
             return "Такого в базе нету"
@@ -122,7 +122,7 @@ def base_check_flask_off():
         curs.execute(
             f"SELECT * FROM {cfg.tabl_file} WHERE date_out IS NOT NULL AND (fio IS NULL OR tabnum IS NULL)"
         )
-        result=curs.fetchall()
+        result = curs.fetchall()
         if len(result) == 0:
             logger.debug(f"Списанных нет")
             return "Списанных нету"
@@ -141,7 +141,7 @@ def base_date_flask(device_id):
         curs.execute(
             f"SELECT device_path, device_reg FROM {cfg.tabl_file} WHERE device_id='{device_id}'"
         )
-        result=curs.fetchall()
+        result = curs.fetchall()
         if len(result) == 0:
             logger.debug(f"Такого нету. {device_id}")
             return "Такого в базе нету"
