@@ -1,20 +1,15 @@
 import configparser
 import os
+import sys
 from loguru import logger
 
-if "config.txt" not in os.listdir():
+
+
+if "config.txt" not in os.listdir() or os.stat("config.txt").st_size==0:
+    file, file_name = sys.argv
     conf = open("config.txt", "w+")
-    if os.stat("config.txt").st_size == 0:
-        while True:
-            file = input("Введите имя файла с конфигурациями: ")
-            if file in os.listdir():
-                conf.write(file)
-                conf.close()
-                break
-            else:
-                print("Введён не верный файл")
-else:
-    pass
+    conf.write(file_name)
+    conf.close()
 config_file = open("config.txt", "r").read()
 config = configparser.ConfigParser()
 config.read(f"{config_file}")

@@ -35,6 +35,7 @@ def base_recording_file_device(device_id, date_out, fio, tabnum, department):
             )
             logger.debug(f"Base recording. {device_id}")
             connect_sql.commit()
+            return "Флешка выдана"
         except Exception as err:
             logger.error(f"Base recording. ERROR: {err}")
     else:
@@ -54,12 +55,13 @@ def base_clear_device(device_id):
             curs.execute(
                 f"UPDATE {cfg.tabl_file} SET date_out=NULL, fio= NULL, tabnum=NULL, department=NULL WHERE device_id='{device_id}'"
             )
-            logger.debug(f"Base recording. {device_id}")
+            logger.debug(f"Base clear. {device_id}")
             connect_sql.commit()
+            return "Флешка очищена"
         except Exception as err:
             logger.error(f"Base recording. ERROR: {err}")
     else:
-        logger.debug(f"И так чист или нету. {device_id}")
+        logger.debug(f"Clear or not in base. {device_id}")
         return "Данных и так нет"
 
 
@@ -82,12 +84,13 @@ def base_check_flask_id(device_id):
         curs.execute(
             f"SELECT * FROM {cfg.tabl_file} WHERE device_id like '%{device_id}%'"
         )
-        if len(curs.fetchall()) == 0:
+        result=curs.fetchall()
+        if len(result) == 0:
             logger.debug(f"Такого нету. {device_id}")
             return "Такой в базе нету"
         else:
-            logger.debug(f"Найден. {curs.fetchall()}")
-            return curs.fetchall()
+            logger.debug(f"Найден. {result}")
+            return result
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
 
@@ -100,12 +103,13 @@ def base_check_flask_name(fiotab):
         curs.execute(
             f"SELECT * FROM {cfg.tabl_file} WHERE fio like '%{fiotab}%' OR tabnum like '%{fiotab}%'"
         )
-        if len(curs.fetchall()) == 0:
+        result=curs.fetchall()
+        if len(result) == 0:
             logger.debug(f"Такого нету. {fiotab}")
             return "Такого в базе нету"
         else:
-            logger.debug(f"Найден. {curs.fetchall()}")
-            return curs.fetchall()
+            logger.debug(f"Найден. {result}")
+            return result
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
 
@@ -116,14 +120,15 @@ def base_check_flask_off():
         connect_sql = sqlite3.connect(f"{cfg.base}.db", timeout=5)
         curs = connect_sql.cursor()
         curs.execute(
-            f"SELECT * FROM {cfg.tabl_file} WHERE date_out IS NOT NULL AND (fio OR tabnum IS NULL)"
+            f"SELECT * FROM {cfg.tabl_file} WHERE date_out IS NOT NULL AND (fio IS NULL OR tabnum IS NULL)"
         )
-        if len(curs.fetchall()) == 0:
+        result=curs.fetchall()
+        if len(result) == 0:
             logger.debug(f"Списанных нет")
             return "Списанных нету"
         else:
-            logger.debug(f"Найден. {curs.fetchall()}")
-            return curs.fetchall()
+            logger.debug(f"Найден. {result}")
+            return result
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
 
@@ -136,11 +141,12 @@ def base_date_flask(device_id):
         curs.execute(
             f"SELECT device_path, device_reg FROM {cfg.tabl_file} WHERE device_id='{device_id}'"
         )
-        if len(curs.fetchall()) == 0:
+        result=curs.fetchall()
+        if len(result) == 0:
             logger.debug(f"Такого нету. {device_id}")
             return "Такого в базе нету"
         else:
-            logger.debug(f"Найден. {curs.fetchall()}")
-            return curs.fetchall()
+            logger.debug(f"Найден. {result}")
+            return result
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
