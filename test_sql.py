@@ -17,7 +17,8 @@ def base_create():
                     ('name2','2','2','2','2','2','2','2'),
                     ('3','3','3','3','3',NULL,NULL,NULL),
                     ('4',4,4,4,'four','four',4,'four'),
-                    ('5',5,5,5,'five',5,'five','five');"""
+                    ('5',5,5,5,'five',5,'five','five'),
+                    ('six',6,6,6,6,6,6,6);"""
     )
     connect_sql.commit()
 
@@ -77,7 +78,11 @@ def test_true_base_recording_file_device():
 
 
 def test_true_base_clear_device():
-    assert sql.base_clear_device("name2")
+    assert sql.base_check_flask_id("six")==[('six', 6, 6, 6, 6, 6, 6, 6)]
+
+def test_true_true_base_check_flask_off():
+    answer = sql.base_check_flask_off()
+    assert answer == [("3", 3, 3, 3, 3, None, None, None)]
 
 
 def test_true_true_base_check_flask_off():
