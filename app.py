@@ -74,9 +74,9 @@ def give_file(
     date_out = datetime.datetime.now()
     try:
         sql.base_recording_file_device(device_id, date_out, fio, tabnum, department)
-        message = sql.base_recording_file_device(
-            device_id, date_out, fio, tabnum, department
-        )
+        message = {
+            sql.base_recording_file_device(device_id, date_out, fio, tabnum, department)
+        }
         logger.debug(f"Page /give_flask work, base '{device_id}' update")
     except Exception as err:
         message = {f"Ошибка: {err}"}
@@ -91,8 +91,7 @@ def get_flask(code: fastapi.Response, device_id: str):
     Возврат флешки
     """
     try:
-        sql.base_clear_device(device_id)
-        message = {"Очистка данных:" f"{device_id}"}
+        message = {sql.base_clear_device(device_id)}
         logger.debug(f"Page /get_flask work, base '{device_id}' update")
     except Exception as err:
         message = {f"Ошибка: {err}"}
@@ -101,7 +100,7 @@ def get_flask(code: fastapi.Response, device_id: str):
     return message
 
 
-@app.get("/all_flask", status_code=fastapi.status.HTTP_201_CREATED)
+@app.get("/all_flask", status_code=fastapi.status.HTTP_200_OK)
 def all_flask(code: fastapi.Response):
     """
     Вывод флешек

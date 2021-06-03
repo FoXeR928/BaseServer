@@ -38,21 +38,15 @@ file = mimesis.File("en")
 
 
 def test_device_id_date():
-    responses = test_client.get("/date_flask", headers={"device_id": "1"})
-    assert responses.status_code == 422
+    responses = test_client.get("/date_flask/?device_id=1")
+    assert responses.status_code == 200
     assert responses.json() == {"Флешка": "Такого в базе нету"}
 
 
-def test_device_id_get():
-    cod = cod_status.http_status_code()
-    device_id = en.password()
-    assert app.get_flask(cod, device_id)
-
-
-def test_device_id():
-    cod = cod_status.http_status_code()
-    device_id = en.password()
-    assert app.id_flask(cod, device_id)
+def test_true_device_id_date():
+    responses = test_client.get("/date_flask/?device_id=name_one")
+    assert responses.status_code == 200
+    assert responses.json() == {"Флешка": [["1", "1"]]}
 
 
 def test_give_file():
@@ -61,23 +55,75 @@ def test_give_file():
     fio = ru.full_name()
     tabnum = gen.code.imei()
     department = ru.occupation()
-    assert app.give_file(cod, device_id, fio, tabnum, department)
+    assert app.give_file(cod, device_id, fio, tabnum, department) == {
+        "Такого нет в базе"
+    }
+
+
+def test_true_give_file():
+    responses = test_client.post(
+        "/give_flask?device_id=name_one&fio=1&tabnum=1&department=1"
+    )
+    assert responses.status_code == 201
+    assert responses.json() == ["Флешка выдана"]
+
+
+def test_device_id_get():
+    responses = test_client.post("/get_flask?device_id=1")
+    assert responses.status_code == 201
+    assert responses.json() == ["Данных и так нет"]
+
+
+def test_device_id_get():
+    responses = test_client.post("/get_flask?device_id=name_one")
+    assert responses.status_code == 201
+    assert responses.json() == ["Флешка очищена"]
+
+
+def test_device_id():
+    responses = test_client.get("/id_flask/?device_id=1")
+    assert responses.status_code == 200
+    assert responses.json() == {"Флешка": "Такой в базе нету"}
 
 
 def test_code_flask_off():
-    cod = cod_status.http_status_code()
-    assert app.off_flask(cod)
+    responses = test_client.get("/off_flask")
+    assert responses.status_code == 200
+    assert responses.json() == {"Флешка": [["3", "3", "3", 3, 3, None, None, None]]}
 
 
 def test_code_flask_all():
-    cod = cod_status.http_status_code()
-    assert app.all_flask(cod)
+    responses = test_client.get("/all_flask")
+    assert responses.status_code == 200
+    assert responses.json() == {
+        "База": [
+            ["name_one", "1", "1", 1, None, None, None, None],
+            ["name2", "2", "2", 2, 2, "2", 2, "2"],
+            ["3", "3", "3", 3, 3, None, None, None],
+            ["4", "4", "4", 4, "four", "four", 4, "four"],
+            ["5", "5", "5", 5, "five", "5", "five", "five"],
+            ["six", "6", "6", 6, 6, "6", 6, "6"],
+        ]
+    }
 
 
 def test_name_flask():
-    cod = cod_status.http_status_code()
-    fiotab = ru.full_name() or gen.code.imei()
-    assert app.name_flask(cod, fiotab)
+    responses = test_client.get("/name_flask?fiotab=1")
+    assert responses.status_code == 200
+    assert responses.json() == {"Флешка": "Такого в базе нету"}
 
 
-test_device_id_date()
+def test_true_name_flask():
+    responses = test_client.get("/name_flask?fiotab=four")
+    assert responses.status_code == 200
+    assert responses.json() == {
+        "Флешка": [["4", "4", "4", 4, "four", "four", 4, "four"]]
+    }
+
+
+def test_true_tabnum_flask():
+    responses = test_client.get("/name_flask?fiotab=five")
+    assert responses.status_code == 200
+    assert responses.json() == {
+        "Флешка": [["5", "5", "5", 5, "five", "5", "five", "five"]]
+    }
