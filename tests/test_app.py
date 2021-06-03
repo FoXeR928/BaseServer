@@ -35,23 +35,55 @@ ru = mimesis.Person("ru")
 cod_status = mimesis.Internet("en")
 gen = mimesis.Generic("en")
 
+
 def test_upload_file():
-    responses = test_client.post("/upload_file",files={"files":'1',"files": '1'})
+    responses = test_client.post("/upload_file", files={"files": "1", "files": "1"})
     assert responses.status_code == 201
-    assert responses.json() == ['Не верное название файла']
+    assert responses.json() == ["Не верное название файла"]
+
 
 def test_reg_upload_file():
-    responses = test_client.post("/upload_file",files={'files': open('tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg', 'rb')})
+    responses = test_client.post(
+        "/upload_file",
+        files={
+            "files": open(
+                "tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb"
+            )
+        },
+    )
     assert responses.status_code == 201
-    assert responses.json() == ["Файла .reg [] и .txt ['usb_deviceID_P1601450070867E90D1B6300'] не хватает"]
+    assert responses.json() == [
+        "Файла .reg [] и .txt ['usb_deviceID_P1601450070867E90D1B6300'] не хватает"
+    ]
+
 
 def test_txt_upload_file():
-    responses = test_client.post("/upload_file",files={'files': open('tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt', 'rb')})
+    responses = test_client.post(
+        "/upload_file",
+        files={
+            "files": open(
+                "tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb"
+            )
+        },
+    )
     assert responses.status_code == 201
-    assert responses.json() == ["Файла .reg ['usb_deviceID_P1601450070867E90D1B6300'] и .txt [] не хватает"]
+    assert responses.json() == [
+        "Файла .reg ['usb_deviceID_P1601450070867E90D1B6300'] и .txt [] не хватает"
+    ]
+
 
 def test_all_upload_file():
-    responses = test_client.post("/upload_file",files={'files': (open('tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg', 'rb') and open('tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt', 'rb'))})
+    responses = test_client.post(
+        "/upload_file",
+        files={
+            "files": (
+                open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb")
+                and open(
+                    "tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb"
+                )
+            )
+        },
+    )
     assert responses.status_code == 201
     assert responses.json() == ["Файл добавлен в базу"]
 
