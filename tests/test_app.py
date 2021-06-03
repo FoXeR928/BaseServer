@@ -1,19 +1,16 @@
 import mimesis
 import sqlite3
 import sys
-sys.path.append('./')
+
+sys.path.append("./")
 import app
 from fastapi.testclient import TestClient
 from config import load_config
 
-file, file_name = sys.argv
-conf = open("config.txt", "w+")
-conf.write(file_name)
-conf.close()
-
 cfg = load_config()
 
-test_client=TestClient(app.app)
+test_client = TestClient(app.app)
+
 
 def base_create():
     connect_sql = sqlite3.connect(f"{cfg.base}.db", timeout=5)
@@ -30,6 +27,7 @@ def base_create():
     )
     connect_sql.commit()
 
+
 base_create()
 
 en = mimesis.Person("en")
@@ -40,9 +38,9 @@ file = mimesis.File("en")
 
 
 def test_device_id_date():
-    responses= test_client.get("/date_flask", json={'device_id':'1'})
-    assert responses.status_code==422
-    assert responses.json()=={"Флешка":'"Такого в базе нету"'}
+    responses = test_client.get("/date_flask", headers={"device_id": "1"})
+    assert responses.status_code == 422
+    assert responses.json() == {"Флешка": "Такого в базе нету"}
 
 
 def test_device_id_get():
@@ -80,3 +78,6 @@ def test_name_flask():
     cod = cod_status.http_status_code()
     fiotab = ru.full_name() or gen.code.imei()
     assert app.name_flask(cod, fiotab)
+
+
+test_device_id_date()

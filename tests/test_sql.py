@@ -1,14 +1,10 @@
 import mimesis
 import sqlite3
 import sys
-sys.path.append('./')
+
+sys.path.append("./")
 import sql
 from config import load_config
-
-file, file_name = sys.argv
-conf = open("config.txt", "w+")
-conf.write(file_name)
-conf.close()
 
 cfg = load_config()
 
@@ -84,7 +80,8 @@ def test_true_base_recording_file_device():
 
 
 def test_true_base_clear_device():
-    assert sql.base_check_flask_id("six")==[('six', 6, 6, 6, 6, 6, 6, 6)]
+    assert sql.base_check_flask_id("six") == [("six", 6, 6, 6, 6, 6, 6, 6)]
+
 
 def test_true_true_base_check_flask_off():
     answer = sql.base_check_flask_off()

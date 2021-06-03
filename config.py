@@ -1,10 +1,10 @@
 import configparser
+import os
 from loguru import logger
 
 
-config_file = open("config.txt", "r").read()
 config = configparser.ConfigParser()
-config.read(f"{config_file}")
+config.read(os.environ["Config"])
 # Чтение конфигов
 def take_host():
     try:

@@ -2,8 +2,9 @@ import uvicorn
 from loguru import logger
 import logs
 import sys
+import os
 
-if "config.txt" not in os.listdir() or os.stat("config.txt").st_size==0:
+if "config.txt" not in os.listdir() or os.stat("config.txt").st_size == 0:
     file, file_name = sys.argv
     conf = open("config.txt", "w+")
     conf.write(file_name)
