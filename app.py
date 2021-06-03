@@ -49,9 +49,9 @@ def upload_file(
                     reg.remove(x)
                     try:
                         date = datetime.datetime.now()
-                        message = sql.base_recording_file(
+                        message = {sql.base_recording_file(
                             device_id, file_read, regist_read, date
-                        )
+                        )}
                         logger.debug(f"Page /upload_file work, file {file} add")
                     except Exception as err:
                         message = {f"Ошибка: {err}"}

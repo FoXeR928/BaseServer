@@ -39,7 +39,10 @@ def test_base_recording_file():
     content = text.text()
     regist = text.text()
     date_in = date.datetime()
-    assert sql.base_recording_file(device_id, content, regist, date_in)
+    assert (
+        sql.base_recording_file(device_id, content, regist, date_in)
+        == "Файл добавлен в базу"
+    )
 
 
 def test_base_recording_file_device():
@@ -48,27 +51,30 @@ def test_base_recording_file_device():
     fio = ru.full_name()
     tabnum = gen.code.imei()
     department = ru.occupation()
-    assert sql.base_recording_file_device(device_id, date_out, fio, tabnum, department)
+    assert (
+        sql.base_recording_file_device(device_id, date_out, fio, tabnum, department)
+        == "Такого нет в базе"
+    )
 
 
 def test_base_clear_device():
     device_id = en.username()
-    assert sql.base_clear_device(device_id)
+    assert sql.base_clear_device(device_id) == "Данных и так нет"
 
 
 def test_base_check_flask_id():
     device_id = en.username()
-    assert sql.base_check_flask_id(device_id)
+    assert sql.base_check_flask_id(device_id) == "Такой в базе нету"
 
 
 def base_check_flask_name():
     fiotab = ru.full_name() or gen.code.imei()
-    assert sql.base_check_flask_name(fiotab)
+    assert sql.base_check_flask_name(fiotab) == "Такого в базе нету"
 
 
 def test_base_date_flask():
     device_id = en.username()
-    assert sql.base_date_flask(device_id)
+    assert sql.base_date_flask(device_id) == "Такого в базе нету"
 
 
 def test_true_base_recording_file_device():
@@ -76,7 +82,10 @@ def test_true_base_recording_file_device():
     fio = ru.full_name()
     tabnum = gen.code.imei()
     department = ru.occupation()
-    assert sql.base_recording_file_device("name_one", date_out, fio, tabnum, department)
+    assert (
+        sql.base_recording_file_device("name_one", date_out, fio, tabnum, department)
+        == "Флешка выдана"
+    )
 
 
 def test_true_base_clear_device():
