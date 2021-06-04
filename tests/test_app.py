@@ -2,12 +2,14 @@ import mimesis
 import sqlite3
 import sys
 import pytest
+
 sys.path.append("./")
 import app
 from fastapi.testclient import TestClient
-from config import base,tabl
+from config import base, tabl
 
 test_client = TestClient(app.app)
+
 
 @pytest.yield_fixture(autouse=True)
 def base_create():
@@ -69,11 +71,13 @@ def test_txt_upload_file():
 
 
 def test_all_upload_file():
-    files=['files',open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb"),'files', open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb")]
-    responses = test_client.post(
-        "/upload_file",
-        files=files
-    )
+    files = [
+        "files",
+        open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb"),
+        "files",
+        open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb"),
+    ]
+    responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == 201
     assert responses.json() == ["Файл добавлен в базу"]
 

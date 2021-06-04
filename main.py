@@ -1,7 +1,7 @@
 import uvicorn
 from loguru import logger
 from app import app
-from config import ip,port
+from config import ip, port
 
 
 if __name__ == "__main__":

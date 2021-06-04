@@ -33,8 +33,9 @@ class Base:
         self.base = base
         self.tabl_file = tabl_file
 
+
 cfg = load_config()
-base=cfg.base
-tabl=cfg.tabl_file
-ip=cfg.ip
-port=cfg.port
+base = cfg.base
+tabl = cfg.tabl_file
+ip = cfg.ip
+port = cfg.port

@@ -2,9 +2,11 @@ import mimesis
 import sqlite3
 import sys
 import pytest
+
 sys.path.append("./")
 import sql
 from config import base, tabl
+
 
 @pytest.yield_fixture(autouse=True)
 def base_create():
@@ -48,7 +50,9 @@ def test_write_to_database_issuing_flash_drive():
     tabnum = gen.code.imei()
     department = ru.occupation()
     assert (
-        sql.write_to_database_issuing_flash_drive(device_id, date_out, fio, tabnum, department)
+        sql.write_to_database_issuing_flash_drive(
+            device_id, date_out, fio, tabnum, department
+        )
         == "Такого нет в базе"
     )
 
@@ -65,7 +69,9 @@ def test_search_flash_drive_based_on_id():
 
 def test_search_flash_drive_based_on_fio_or_tadnumder():
     fiotab = ru.full_name() or gen.code.imei()
-    assert sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab) == "Такого в базе нету"
+    assert (
+        sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab) == "Такого в базе нету"
+    )
 
 
 def test_file_search_based_on_id():
@@ -79,13 +85,17 @@ def test_true_write_to_database_issuing_flash_drive():
     tabnum = gen.code.imei()
     department = ru.occupation()
     assert (
-        sql.write_to_database_issuing_flash_drive("name_one", date_out, fio, tabnum, department)
+        sql.write_to_database_issuing_flash_drive(
+            "name_one", date_out, fio, tabnum, department
+        )
         == "Флешка выдана"
     )
 
 
 def test_true_search_flash_drive_based_on_id():
-    assert sql.search_flash_drive_based_on_id("six") == [("six", "6", "6", 6, 6, "6", 6, "6")]
+    assert sql.search_flash_drive_based_on_id("six") == [
+        ("six", "6", "6", 6, 6, "6", 6, "6")
+    ]
 
 
 def test_true_search_decommissioned_flash_drives():

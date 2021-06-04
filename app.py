@@ -11,54 +11,86 @@ app = fastapi.FastAPI()
 def start():
     logger.info("Server work")
 
-
 @app.post("/upload_file", status_code=fastapi.status.HTTP_201_CREATED)
 def upload_file(
     code: fastapi.Response,
-    files: typing.List[fastapi.UploadFile] = fastapi.File(...),
+    file_txt: fastapi.UploadFile = fastapi.File(...),
+    file_reg: fastapi.UploadFile = fastapi.File(...)
 ):
     """
     Чтение содержимого файлов и добавление в базу имени и содержимого
     """
-    txt = []
-    reg = []
-    for file in files:
-        if "usb_deviceID_" in file.filename:
-            device_id = file.filename.replace("usb_deviceID_", "")
-            if ".txt" in file.filename:
-                file_read = file.file.read().decode("utf-16")
-                file = file.filename.replace(".txt", "")
-                txt.append(file)
-            elif ".reg" in file.filename:
-                regist_read = file.file.read().decode("utf-16")
-                file = file.filename.replace(".reg", "")
-                reg.append(file)
+    if "usb_deviceID_" in file_txt.filename and file_reg.filename:
+        if ".reg" in file_txt.filename:
+            file_reg=file_txt
+        elif ".txt" in file_reg.filename:
+            file_txt=file_reg
+        device_id=file_txt.filename.replace("usb_deviceID_", "").replace(".txt", "").replace(".reg", "")
+        date = datetime.datetime.now()
+        if ".txt" in file_txt.filename and ".reg" in file_reg.filename:
+            file_read = file_txt.file.read().decode("utf-16")
+            regist_read = file_reg.file.read().decode("utf-16")
+            result=sql.write_to_database_flash_drive(device_id, file_read, regist_read, date)
+            if result==208:
+                message = {f'Уже есть в базе {device_id}'}
             else:
-                message = {"Не поддерживаемый формат файла"}
-            device_id = device_id.replace(".txt", "").replace(".reg", "")
-            if len(txt) > 0 and len(reg) > 0:
-                for i in txt:
-                    i = i
-                for x in reg:
-                    x = x
-                if i == x:
-                    try:
-                        date = datetime.datetime.now()
-                        message = {
-                            sql.write_to_database_flash_drive(
-                                device_id, file_read, regist_read, date
-                            )
-                        }
-                        logger.debug(f"Page /upload_file work, file {file} add")
-                    except Exception as err:
-                        message = {f"Ошибка: {err}"}
-                        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
-                        logger.error(f"Server not work. ERROR: {err}")
-            else:
-                message = {f"Файла .reg {txt} и .txt {reg} не хватает"}
+                message={'Добавлено в базу'}
         else:
-            message = {"Не верное название файла"}
+            message = {"Не поддерживаемый формат файла"}
+            code.status_code=fastapi.status.HTTP_400_BAD_REQUEST
+    else:
+        code.status_code=fastapi.status.HTTP_400_BAD_REQUEST
+        message='Не верное название файла'
     return message
+
+
+# @app.post("/upload_file", status_code=fastapi.status.HTTP_201_CREATED)
+# def upload_file(
+#     code: fastapi.Response,
+#     files: typing.List[fastapi.UploadFile] = fastapi.File(...),
+# ):
+#     """
+#     Чтение содержимого файлов и добавление в базу имени и содержимого
+#     """
+#     txt = []
+#     reg = []
+#     for file in files:
+#         if "usb_deviceID_" in file.filename:
+#             device_id = file.filename.replace("usb_deviceID_", "")
+#             if ".txt" in file.filename:
+#                 file_read = file.file.read().decode("utf-16")
+#                 file = file.filename.replace(".txt", "")
+#                 txt.append(file)
+#             elif ".reg" in file.filename:
+#                 regist_read = file.file.read().decode("utf-16")
+#                 file = file.filename.replace(".reg", "")
+#                 reg.append(file)
+#             else:
+#                 message = {"Не поддерживаемый формат файла"}
+#             device_id = device_id.replace(".txt", "").replace(".reg", "")
+#             if len(txt) > 0 and len(reg) > 0:
+#                 for i in txt:
+#                     i = i
+#                 for x in reg:
+#                     x = x
+#                 if i == x:
+#                     try:
+#                         date = datetime.datetime.now()
+#                         message = {
+#                             sql.write_to_database_flash_drive(
+#                                 device_id, file_read, regist_read, date
+#                             )
+#                         }
+#                         logger.debug(f"Page /upload_file work, file {file} add")
+#                     except Exception as err:
+#                         message = {f"Ошибка: {err}"}
+#                         code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+#                         logger.error(f"Server not work. ERROR: {err}")
+#             else:
+#                 message = {f"Файла .reg {txt} и .txt {reg} не хватает"}
+#         else:
+#             message = {"Не верное название файла"}
+#     return message
 
 
 @app.post("/give_flask", status_code=fastapi.status.HTTP_201_CREATED)
@@ -70,10 +102,14 @@ def give_file(
     """
     date_out = datetime.datetime.now()
     try:
-        sql.write_to_database_issuing_flash_drive(device_id, date_out, fio, tabnum, department)
-        message = {
-            sql.write_to_database_issuing_flash_drive(device_id, date_out, fio, tabnum, department)
-        }
+        result=sql.write_to_database_issuing_flash_drive(
+                device_id, date_out, fio, tabnum, department
+            )
+        if result==404:
+            message = {'Не найдено id'}
+            code.status_code=fastapi.status.HTTP_404_NOT_FOUND
+        else:
+            message={f'Данные о флешке {device_id} добавлены'}
         logger.debug(f"Page /give_flask work, base '{device_id}' update")
     except Exception as err:
         message = {f"Ошибка: {err}"}
