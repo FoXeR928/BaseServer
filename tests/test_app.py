@@ -73,16 +73,10 @@ def test_txt_upload_file():
 
 
 def test_all_upload_file():
+    files=['files',open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb"),'files', open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb")]
     responses = test_client.post(
         "/upload_file",
-        files={
-            "files": (
-                open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb")
-                and open(
-                    "tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb"
-                )
-            )
-        },
+        files=files
     )
     assert responses.status_code == 201
     assert responses.json() == ["Файл добавлен в базу"]
@@ -134,7 +128,7 @@ def test_device_id_get():
 def test_device_id():
     responses = test_client.get("/id_flask/?device_id=1")
     assert responses.status_code == 200
-    assert responses.json() == {"Флешка": "Такой в базе нету"}
+    assert responses.json() == {"Флешка": "Такого в базе нету"}
 
 
 def test_code_flask_off():

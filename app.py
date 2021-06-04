@@ -45,12 +45,10 @@ def upload_file(
                 for x in reg:
                     x = x
                 if i == x:
-                    txt.remove(i)
-                    reg.remove(x)
                     try:
                         date = datetime.datetime.now()
                         message = {
-                            sql.base_recording_file(
+                            sql.write_to_database_flash_drive(
                                 device_id, file_read, regist_read, date
                             )
                         }
@@ -75,9 +73,9 @@ def give_file(
     """
     date_out = datetime.datetime.now()
     try:
-        sql.base_recording_file_device(device_id, date_out, fio, tabnum, department)
+        sql.write_to_database_issuing_flash_drive(device_id, date_out, fio, tabnum, department)
         message = {
-            sql.base_recording_file_device(device_id, date_out, fio, tabnum, department)
+            sql.write_to_database_issuing_flash_drive(device_id, date_out, fio, tabnum, department)
         }
         logger.debug(f"Page /give_flask work, base '{device_id}' update")
     except Exception as err:
@@ -93,7 +91,7 @@ def get_flask(code: fastapi.Response, device_id: str):
     Возврат флешки
     """
     try:
-        message = {sql.base_clear_device(device_id)}
+        message = {sql.cleaning_resulting_flash_drive(device_id)}
         logger.debug(f"Page /get_flask work, base '{device_id}' update")
     except Exception as err:
         message = {f"Ошибка: {err}"}
@@ -108,7 +106,7 @@ def all_flask(code: fastapi.Response):
     Вывод флешек
     """
     try:
-        message = {f"База": sql.base_all_flask()}
+        message = {f"База": sql.all_flash_drives_of_base()}
         logger.debug(f"Page /all_flask work")
     except Exception as err:
         message = {f"Ошибка: {err}"}
@@ -123,7 +121,7 @@ def id_flask(code: fastapi.Response, device_id: str):
     Поиск флешеки по id
     """
     try:
-        message = {f"Флешка": sql.base_check_flask_id(device_id)}
+        message = {f"Флешка": sql.search_flash_drive_based_on_id(device_id)}
         logger.debug(f"Page /id_flask work")
     except Exception as err:
         message = {f"Ошибка: {err}"}
@@ -137,7 +135,7 @@ def name_flask(code: fastapi.Response, fiotab: str):
     """
     Поиск флешеки по ФИО или таб
     """
-    check = sql.base_check_flask_name(fiotab)
+    check = sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab)
     try:
         message = {f"Флешка": check}
         logger.debug(f"Page /name_flask work")
@@ -153,7 +151,7 @@ def off_flask(code: fastapi.Response):
     """
     Вывод списанных флешек
     """
-    check = sql.base_check_flask_off()
+    check = sql.search_decommissioned_flash_drives()
     try:
         message = {f"Флешка": check}
         logger.debug(f"Page /off_flask work")
@@ -169,7 +167,7 @@ def date_flask(code: fastapi.Response, device_id: str):
     """
     Данные флешек
     """
-    flask = sql.base_date_flask(device_id)
+    flask = sql.file_search_based_on_id(device_id)
     try:
         message = {f"Флешка": flask}
         logger.debug(f"Page /date_flask work")

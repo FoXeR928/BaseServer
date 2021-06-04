@@ -34,88 +34,83 @@ text = mimesis.Text("en")
 date = mimesis.Datetime("en")
 
 
-def test_base_recording_file():
+def test_write_to_database_flash_drive():
     device_id = en.username()
     content = text.text()
     regist = text.text()
     date_in = date.datetime()
     assert (
-        sql.base_recording_file(device_id, content, regist, date_in)
+        sql.write_to_database_flash_drive(device_id, content, regist, date_in)
         == "Файл добавлен в базу"
     )
 
 
-def test_base_recording_file_device():
+def test_write_to_database_issuing_flash_drive():
     device_id = en.username()
     date_out = date.datetime()
     fio = ru.full_name()
     tabnum = gen.code.imei()
     department = ru.occupation()
     assert (
-        sql.base_recording_file_device(device_id, date_out, fio, tabnum, department)
+        sql.write_to_database_issuing_flash_drive(device_id, date_out, fio, tabnum, department)
         == "Такого нет в базе"
     )
 
 
-def test_base_clear_device():
+def test_cleaning_resulting_flash_drive():
     device_id = en.username()
-    assert sql.base_clear_device(device_id) == "Данных и так нет"
+    assert sql.cleaning_resulting_flash_drive(device_id) == "Данных и так нет"
 
 
-def test_base_check_flask_id():
+def test_search_flash_drive_based_on_id():
     device_id = en.username()
-    assert sql.base_check_flask_id(device_id) == "Такой в базе нету"
+    assert sql.search_flash_drive_based_on_id(device_id) == "Такого в базе нету"
 
 
-def base_check_flask_name():
+def test_search_flash_drive_based_on_fio_or_tadnumder():
     fiotab = ru.full_name() or gen.code.imei()
-    assert sql.base_check_flask_name(fiotab) == "Такого в базе нету"
+    assert sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab) == "Такого в базе нету"
 
 
-def test_base_date_flask():
+def test_file_search_based_on_id():
     device_id = en.username()
-    assert sql.base_date_flask(device_id) == "Такого в базе нету"
+    assert sql.file_search_based_on_id(device_id) == "Такого в базе нету"
 
 
-def test_true_base_recording_file_device():
+def test_true_write_to_database_issuing_flash_drive():
     date_out = date.datetime()
     fio = ru.full_name()
     tabnum = gen.code.imei()
     department = ru.occupation()
     assert (
-        sql.base_recording_file_device("name_one", date_out, fio, tabnum, department)
+        sql.write_to_database_issuing_flash_drive("name_one", date_out, fio, tabnum, department)
         == "Флешка выдана"
     )
 
 
-def test_true_base_clear_device():
-    assert sql.base_check_flask_id("six") == [("six", "6", "6", 6, 6, "6", 6, "6")]
+def test_true_search_flash_drive_based_on_id():
+    assert sql.search_flash_drive_based_on_id("six") == [("six", "6", "6", 6, 6, "6", 6, "6")]
 
 
-def test_true_true_base_check_flask_off():
-    answer = sql.base_check_flask_off()
+def test_true_search_decommissioned_flash_drives():
+    answer = sql.search_decommissioned_flash_drives()
     assert answer == [("3", "3", "3", 3, 3, None, None, None)]
 
 
-def test_true_true_base_check_flask_off():
-    answer = sql.base_check_flask_off()
-    assert answer == [("3", "3", "3", 3, 3, None, None, None)]
-
-
-def test_base_date_flask():
+def test_true_file_search_based_on_id():
     device_id = "name_one"
-    assert sql.base_date_flask(device_id) == [("1", "1")]
+    assert sql.file_search_based_on_id(device_id) == [("1", "1")]
 
 
-def test_true_base_check_flask_name():
+def test_true_search_flash_drive_based_on_fio():
     fiotab = "four"
-    assert sql.base_check_flask_name(fiotab) == [
+    assert sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab) == [
         ("4", "4", "4", 4, "four", "four", 4, "four")
     ]
 
 
-def test_true_base_check_flask_tabnum():
+def test_true_search_flash_drive_based_on_tadnumder():
     fiotab = "five"
-    assert sql.base_check_flask_name(fiotab) == [
+    assert sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab) == [
         ("5", "5", "5", 5, "five", "5", "five", "five")
     ]
