@@ -1,20 +1,18 @@
 import configparser
 import os
+import logs
 from loguru import logger
 
-
-config = configparser.ConfigParser()
-config.read(os.environ["Config"])
-# Чтение конфигов
-def take_host():
-    try:
-        logger.info(f'Host: {config["host"]["ip"]} and Port: {config["host"]["port"]}')
-    except Exception as err:
-        logger.error(f"Server not work. ERROR: {err}")
-
+logs.init_log()
 
 # Функция поиска параметров в конфигах
 def load_config():
+    try:
+        config = configparser.ConfigParser()
+        config.read(os.environ["Config"])
+        logger.info(f'Host: {config["host"]["ip"]} and Port: {config["host"]["port"]}')
+    except Exception as err:
+        logger.error(f"Server not work. ERROR: {err}")
     try:
         result = Base(
             config["host"]["ip"],
@@ -34,3 +32,9 @@ class Base:
         self.port = port
         self.base = base
         self.tabl_file = tabl_file
+
+cfg = load_config()
+base=cfg.base
+tabl=cfg.tabl_file
+ip=cfg.ip
+port=cfg.port

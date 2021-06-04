@@ -1,23 +1,21 @@
 import mimesis
 import sqlite3
 import sys
-
+import pytest
 sys.path.append("./")
 import app
 from fastapi.testclient import TestClient
-from config import load_config
-
-cfg = load_config()
+from config import base,tabl
 
 test_client = TestClient(app.app)
 
-
+@pytest.yield_fixture(autouse=True)
 def base_create():
-    connect_sql = sqlite3.connect(f"{cfg.base}.db", timeout=5)
+    connect_sql = sqlite3.connect(f"{base}.db", timeout=5)
     curs = connect_sql.cursor()
-    curs.execute(f"DELETE FROM {cfg.tabl_file}")
+    curs.execute(f"DELETE FROM {tabl}")
     curs.execute(
-        f"""INSERT INTO {cfg.tabl_file}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
+        f"""INSERT INTO {tabl}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
                     VALUES ('name_one','1','1','1',NULL,NULL,NULL,NULL),
                     ('name2','2','2','2','2','2','2','2'),
                     ('3','3','3','3','3',NULL,NULL,NULL),
@@ -27,8 +25,6 @@ def base_create():
     )
     connect_sql.commit()
 
-
-base_create()
 
 en = mimesis.Person("en")
 ru = mimesis.Person("ru")

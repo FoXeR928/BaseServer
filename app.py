@@ -1,13 +1,10 @@
 import fastapi
-from fastapi.params import Header
 from loguru import logger
-from config import load_config
 import sql
 import datetime
 import typing
 
 app = fastapi.FastAPI()
-user = load_config()
 
 
 @app.on_event("startup")
