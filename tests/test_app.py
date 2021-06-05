@@ -34,58 +34,108 @@ cod_status = mimesis.Internet("en")
 gen = mimesis.Generic("en")
 
 
-def test_upload_file():
-    responses = test_client.post("/upload_file", files={"files": "1", "files": "1"})
-    assert responses.status_code == 201
-    assert responses.json() == ["Не верное название файла"]
-
-
-def test_reg_upload_file():
-    responses = test_client.post(
-        "/upload_file",
-        files={
-            "files": open(
-                "tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb"
-            )
-        },
-    )
-    assert responses.status_code == 201
-    assert responses.json() == [
-        "Файла .reg [] и .txt ['usb_deviceID_P1601450070867E90D1B6300'] не хватает"
-    ]
-
-
-def test_txt_upload_file():
-    responses = test_client.post(
-        "/upload_file",
-        files={
-            "files": open(
-                "tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb"
-            )
-        },
-    )
-    assert responses.status_code == 201
-    assert responses.json() == [
-        "Файла .reg ['usb_deviceID_P1601450070867E90D1B6300'] и .txt [] не хватает"
-    ]
-
-
-def test_all_upload_file():
+def test_true_upload_file():
     files = [
-        "files",
-        open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb"),
-        "files",
-        open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb"),
+        (
+            "file_txt",
+            (open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb")),
+        ),
+        (
+            "file_reg",
+            (open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb")),
+        ),
     ]
     responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == 201
-    assert responses.json() == ["Файл добавлен в базу"]
+    assert responses.json() == ["Добавлено в базу"]
+
+
+def test_true_2_upload_file():
+    files = [
+        (
+            "file_txt",
+            (open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb")),
+        ),
+        (
+            "file_reg",
+            (open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb")),
+        ),
+    ]
+    responses = test_client.post("/upload_file", files=files)
+    assert responses.status_code == 201
+    assert responses.json() == ["Добавлено в базу"]
+
+
+def test_false_upload_file():
+    files = [
+        ("file_txt", (open("tests/test_file/usb_deviceID_name_one.txt", "rb"))),
+        ("file_reg", (open("tests/test_file/usb_deviceID_name_one.reg", "rb"))),
+    ]
+    responses = test_client.post("/upload_file", files=files)
+    assert responses.status_code == 208
+    assert responses.json() == ["Уже есть в базе name_one"]
+
+
+def test_upload_file():
+    responses = test_client.post(
+        "/upload_file", files={"file_txt": "1", "file_reg": "1"}
+    )
+    assert responses.status_code == 400
+    assert responses.json() == ["Не верное название файла"]
+
+
+# def test_upload_file():
+#     responses = test_client.post("/upload_file", files={"files": "1", "files": "1"})
+#     assert responses.status_code == 201
+#     assert responses.json() == ["Не верное название файла"]
+
+
+# def test_reg_upload_file():
+#     responses = test_client.post(
+#         "/upload_file",
+#         files={
+#             "files": open(
+#                 "tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb"
+#             )
+#         },
+#     )
+#     assert responses.status_code == 201
+#     assert responses.json() == [
+#         "Файла .reg [] и .txt ['usb_deviceID_P1601450070867E90D1B6300'] не хватает"
+#     ]
+
+
+# def test_txt_upload_file():
+#     responses = test_client.post(
+#         "/upload_file",
+#         files={
+#             "files": open(
+#                 "tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb"
+#             )
+#         },
+#     )
+#     assert responses.status_code == 201
+#     assert responses.json() == [
+#         "Файла .reg ['usb_deviceID_P1601450070867E90D1B6300'] и .txt [] не хватает"w
+#     ]
+
+
+# def test_all_upload_file():
+#     files = [
+#         "files",
+#         open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb"),
+#         "files",
+#         open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb"),
+#     ]
+#     responses = test_client.post("/upload_file", files=files)
+#     assert responses.status_code == 201
+#     assert responses.json() == ["Файл добавлен в базу"]
 
 
 def test_device_id_date():
     responses = test_client.get("/date_flask/?device_id=1")
-    assert responses.status_code == 200
-    assert responses.json() == {"Флешка": "Такого в базе нету"}
+    assert responses.status_code == 404
+    assert responses.json() == ["Нету такой флешки"]
 
 
 def test_true_device_id_date():
@@ -95,14 +145,15 @@ def test_true_device_id_date():
 
 
 def test_give_file():
-    cod = cod_status.http_status_code()
     device_id = en.password()
     fio = ru.full_name()
     tabnum = gen.code.imei()
     department = ru.occupation()
-    assert app.give_file(cod, device_id, fio, tabnum, department) == {
-        "Такого нет в базе"
-    }
+    responses = test_client.post(
+        f"/give_flask?device_id={device_id}&fio={fio}&tabnum={tabnum}&department={department}"
+    )
+    assert responses.status_code == 404
+    assert responses.json() == ["Не найдено id"]
 
 
 def test_true_give_file():
@@ -110,25 +161,25 @@ def test_true_give_file():
         "/give_flask?device_id=name_one&fio=1&tabnum=1&department=1"
     )
     assert responses.status_code == 201
-    assert responses.json() == ["Флешка выдана"]
+    assert responses.json() == ["Данные о флешке name_one добавлены"]
 
 
 def test_device_id_get():
     responses = test_client.post("/get_flask?device_id=1")
-    assert responses.status_code == 201
+    assert responses.status_code == 404
     assert responses.json() == ["Данных и так нет"]
 
 
 def test_device_id_get():
     responses = test_client.post("/get_flask?device_id=name_one")
     assert responses.status_code == 201
-    assert responses.json() == ["Флешка очищена"]
+    assert responses.json() == ["База флешки name_one очищена"]
 
 
 def test_device_id():
     responses = test_client.get("/id_flask/?device_id=1")
-    assert responses.status_code == 200
-    assert responses.json() == {"Флешка": "Такого в базе нету"}
+    assert responses.status_code == 404
+    assert responses.json() == ["Нету такой флешки"]
 
 
 def test_code_flask_off():
@@ -154,8 +205,8 @@ def test_code_flask_all():
 
 def test_name_flask():
     responses = test_client.get("/name_flask?fiotab=1")
-    assert responses.status_code == 200
-    assert responses.json() == {"Флешка": "Такого в базе нету"}
+    assert responses.status_code == 404
+    assert responses.json() == ["Нету такой флешки"]
 
 
 def test_true_name_flask():
@@ -169,6 +220,4 @@ def test_true_name_flask():
 def test_true_tabnum_flask():
     responses = test_client.get("/name_flask?fiotab=five")
     assert responses.status_code == 200
-    assert responses.json() == {
-        "Флешка": [["5", "5", "5", 5, "five", "5", "five", "five"]]
-    }
+    assert responses.json() == {"Флешка": [["5", 5, 5, 5, "five", "5", "five", "five"]]}

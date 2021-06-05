@@ -6,14 +6,14 @@ from config import base, tabl
 def open_base():
     connect_sql = sqlite3.connect(f"{base}.db")
     curs = connect_sql.cursor()
-    open_base.connect=connect_sql
+    open_base.connect = connect_sql
     return curs
 
 
 def check_result(result):
     if len(result) == 0:
         logger.debug(f"Такого нету. {result}")
-        return "Такого в базе нету"
+        return 404
     else:
         logger.debug(f"Найден. {result}")
         return result
@@ -32,7 +32,7 @@ def write_to_database_flash_drive(device_id, content, regist, date_in):
             open_base.connect.commit()
         except Exception as err:
             logger.error(f"Base recording. ERROR: {err}")
-        return "Файл добавлен в базу"
+        return 201
     else:
         return 208
 

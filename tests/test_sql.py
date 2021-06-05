@@ -37,10 +37,7 @@ def test_write_to_database_flash_drive():
     content = text.text()
     regist = text.text()
     date_in = date.datetime()
-    assert (
-        sql.write_to_database_flash_drive(device_id, content, regist, date_in)
-        == "Файл добавлен в базу"
-    )
+    assert sql.write_to_database_flash_drive(device_id, content, regist, date_in) == 201
 
 
 def test_write_to_database_issuing_flash_drive():
@@ -53,30 +50,28 @@ def test_write_to_database_issuing_flash_drive():
         sql.write_to_database_issuing_flash_drive(
             device_id, date_out, fio, tabnum, department
         )
-        == "Такого нет в базе"
+        == 404
     )
 
 
 def test_cleaning_resulting_flash_drive():
     device_id = en.username()
-    assert sql.cleaning_resulting_flash_drive(device_id) == "Данных и так нет"
+    assert sql.cleaning_resulting_flash_drive(device_id) == 404
 
 
 def test_search_flash_drive_based_on_id():
     device_id = en.username()
-    assert sql.search_flash_drive_based_on_id(device_id) == "Такого в базе нету"
+    assert sql.search_flash_drive_based_on_id(device_id) == 404
 
 
 def test_search_flash_drive_based_on_fio_or_tadnumder():
     fiotab = ru.full_name() or gen.code.imei()
-    assert (
-        sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab) == "Такого в базе нету"
-    )
+    assert sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab) == 404
 
 
 def test_file_search_based_on_id():
     device_id = en.username()
-    assert sql.file_search_based_on_id(device_id) == "Такого в базе нету"
+    assert sql.file_search_based_on_id(device_id) == 404
 
 
 def test_true_write_to_database_issuing_flash_drive():
