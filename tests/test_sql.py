@@ -24,10 +24,12 @@ def base_create():
     )
     connect_sql.commit()
 
+
 def open_base():
     connect_sql = sqlite3.connect(f"{base}.db")
     curs = connect_sql.cursor()
     return curs
+
 
 en = mimesis.Person("en")
 ru = mimesis.Person("ru")
@@ -44,8 +46,19 @@ def test_write_to_database_flash_drive():
     curs = open_base()
     assert sql.write_to_database_flash_drive(device_id, content, regist, date_in) == 201
     curs.execute(f"SELECT * FROM {tabl} WHERE device_id='{device_id}'")
-    result=curs.fetchall()
-    assert result==[(f'{device_id}', f'{content}', f'{regist}', f'{date_in}', None, None, None, None)]
+    result = curs.fetchall()
+    assert result == [
+        (
+            f"{device_id}",
+            f"{content}",
+            f"{regist}",
+            f"{date_in}",
+            None,
+            None,
+            None,
+            None,
+        )
+    ]
 
 
 def test_write_to_database_issuing_flash_drive():
@@ -95,36 +108,35 @@ def test_true_write_to_database_issuing_flash_drive():
         == "Флешка выдана"
     )
     curs.execute(f"SELECT * FROM {tabl} WHERE device_id='name_one'")
-    result=curs.fetchall()
-    assert result==[(f'name_one', 1, 1, 1, f'{date_out}', f'{fio}', tabnum, f'{department}')]
-    
+    result = curs.fetchall()
+    assert result == [
+        (f"name_one", 1, 1, 1, f"{date_out}", f"{fio}", tabnum, f"{department}")
+    ]
 
 
 def test_true_search_flash_drive_based_on_id():
-    assert sql.search_flash_drive_based_on_id("six") == [
-        ("six", "6", "6", 6, 6, "6", 6, "6")
-    ]
+    assert sql.search_flash_drive_based_on_id("six") == [("six", 6, 6, 6, 6, 6, 6, 6)]
 
 
 def test_true_search_decommissioned_flash_drives():
     answer = sql.search_decommissioned_flash_drives()
-    assert answer == [("3", "3", "3", 3, 3, None, None, None)]
+    assert answer == [("3", 3, 3, 3, 3, None, None, None)]
 
 
 def test_true_file_search_based_on_id():
     device_id = "name_one"
-    assert sql.file_search_based_on_id(device_id) == [("1", "1")]
+    assert sql.file_search_based_on_id(device_id) == [(1, 1)]
 
 
 def test_true_search_flash_drive_based_on_fio():
     fiotab = "four"
     assert sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab) == [
-        ("4", "4", "4", 4, "four", "four", 4, "four")
+        ("4", 4, 4, 4, "four", "four", 4, "four")
     ]
 
 
 def test_true_search_flash_drive_based_on_tadnumder():
     fiotab = "five"
     assert sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab) == [
-        ("5", "5", "5", 5, "five", "5", "five", "five")
+        ("5", 5, 5, 5, "five", 5, "five", "five")
     ]
