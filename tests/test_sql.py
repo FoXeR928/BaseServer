@@ -24,6 +24,10 @@ def base_create():
     )
     connect_sql.commit()
 
+def open_base():
+    connect_sql = sqlite3.connect(f"{base}.db")
+    curs = connect_sql.cursor()
+    return curs
 
 en = mimesis.Person("en")
 ru = mimesis.Person("ru")
@@ -37,7 +41,11 @@ def test_write_to_database_flash_drive():
     content = text.text()
     regist = text.text()
     date_in = date.datetime()
+    curs = open_base()
     assert sql.write_to_database_flash_drive(device_id, content, regist, date_in) == 201
+    curs.execute(f"SELECT * FROM {tabl} WHERE device_id='{device_id}'")
+    result=curs.fetchall()
+    assert result==[(f'{device_id}', f'{content}', f'{regist}', f'{date_in}', None, None, None, None)]
 
 
 def test_write_to_database_issuing_flash_drive():
@@ -79,12 +87,17 @@ def test_true_write_to_database_issuing_flash_drive():
     fio = ru.full_name()
     tabnum = gen.code.imei()
     department = ru.occupation()
+    curs = open_base()
     assert (
         sql.write_to_database_issuing_flash_drive(
             "name_one", date_out, fio, tabnum, department
         )
         == "Флешка выдана"
     )
+    curs.execute(f"SELECT * FROM {tabl} WHERE device_id='name_one'")
+    result=curs.fetchall()
+    assert result==[(f'name_one', 1, 1, 1, f'{date_out}', f'{fio}', tabnum, f'{department}')]
+    
 
 
 def test_true_search_flash_drive_based_on_id():

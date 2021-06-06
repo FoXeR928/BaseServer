@@ -75,6 +75,20 @@ def test_false_upload_file():
     assert responses.status_code == 208
     assert responses.json() == ["Уже есть в базе name_one"]
 
+def test_false_2_upload_file():
+    files = [
+        (
+            "file_txt",
+            (open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb")),
+        ),
+        (
+            "file_reg",
+            (open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb")),
+        ),
+    ]
+    responses = test_client.post("/upload_file", files=files)
+    assert responses.status_code == 206
+    assert responses.json() == ['Вы добавили 2 файла с одинаковыми расширениями']
 
 def test_upload_file():
     responses = test_client.post(
