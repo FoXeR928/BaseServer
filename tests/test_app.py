@@ -3,9 +3,10 @@ import sqlite3
 import sys
 import pytest
 
+from fastapi.testclient import TestClient
+
 sys.path.append("./")
 import app
-from fastapi.testclient import TestClient
 from config import base, tabl
 
 test_client = TestClient(app.app)
@@ -157,7 +158,7 @@ def test_device_id_date():
 def test_true_device_id_date():
     responses = test_client.get("/date_flask/?device_id=name_one")
     assert responses.status_code == 200
-    assert responses.json() == {"Флешка": [[1, 1]]}
+    assert responses.json() == {"Флешка": [["1", "1"]]}
 
 
 def test_give_file():
@@ -201,7 +202,7 @@ def test_device_id():
 def test_code_flask_off():
     responses = test_client.get("/off_flask")
     assert responses.status_code == 200
-    assert responses.json() == {"Флешка": [["3", 3, 3, 3, 3, None, None, None]]}
+    assert responses.json() == {"Флешка": [["3", "3", "3", 3, 3, None, None, None]]}
 
 
 def test_code_flask_all():
@@ -209,12 +210,12 @@ def test_code_flask_all():
     assert responses.status_code == 200
     assert responses.json() == {
         "База": [
-            ["name_one", 1, 1, 1, None, None, None, None],
-            ["name2", 2, 2, 2, 2, 2, 2, 2],
-            ["3", 3, 3, 3, 3, None, None, None],
-            ["4", 4, 4, 4, "four", "four", 4, "four"],
-            ["5", 5, 5, 5, "five", 5, "five", "five"],
-            ["six", 6, 6, 6, 6, 6, 6, 6],
+            ["name_one", "1", "1", 1, None, None, None, None],
+            ["name2", "2", "2", 2, 2, "2", 2, "2"],
+            ["3", "3", "3", 3, 3, None, None, None],
+            ["4", "4", "4", 4, "four", "four", 4, "four"],
+            ["5", "5", "5", 5, "five", "5", "five", "five"],
+            ["six", "6", "6", 6, 6, "6", 6, "6"],
         ]
     }
 
@@ -228,10 +229,14 @@ def test_name_flask():
 def test_true_name_flask():
     responses = test_client.get("/name_flask?fiotab=four")
     assert responses.status_code == 200
-    assert responses.json() == {"Флешка": [["4", 4, 4, 4, "four", "four", 4, "four"]]}
+    assert responses.json() == {
+        "Флешка": [["4", "4", "4", 4, "four", "four", 4, "four"]]
+    }
 
 
 def test_true_tabnum_flask():
     responses = test_client.get("/name_flask?fiotab=five")
     assert responses.status_code == 200
-    assert responses.json() == {"Флешка": [["5", 5, 5, 5, "five", 5, "five", "five"]]}
+    assert responses.json() == {
+        "Флешка": [["5", "5", "5", 5, "five", "5", "five", "five"]]
+    }
