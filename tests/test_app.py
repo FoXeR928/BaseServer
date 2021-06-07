@@ -1,32 +1,22 @@
 import mimesis
-import sqlite3
 import sys
 import pytest
-
 from fastapi.testclient import TestClient
 
 sys.path.append("./")
 import app
-from config import base, tabl
+from sql import tabl
+import sql
 
 test_client = TestClient(app.app)
 
-
 @pytest.yield_fixture(autouse=True)
 def base_create():
-    connect_sql = sqlite3.connect(f"{base}.db", timeout=5)
-    curs = connect_sql.cursor()
-    curs.execute(f"DELETE FROM {tabl}")
-    curs.execute(
-        f"""INSERT INTO {tabl}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
-                    VALUES ('name_one','1','1','1',NULL,NULL,NULL,NULL),
-                    ('name2','2','2','2','2','2','2','2'),
-                    ('3','3','3','3','3',NULL,NULL,NULL),
-                    ('4',4,4,4,'four','four',4,'four'),
-                    ('5',5,5,5,'five',5,'five','five'),
-                    ('six',6,6,6,6,6,6,6);"""
-    )
-    connect_sql.commit()
+    session=sql.open_base()
+    session.query(tabl).delete()
+    record=tabl(device_id='name_one', device_path='1', device_reg='1', date_in='1')
+    session.add(record)
+    session.commit()
 
 
 en = mimesis.Person("en")
