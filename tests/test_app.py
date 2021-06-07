@@ -93,6 +93,18 @@ def test_false_2_upload_file():
     assert responses.json() == ["Вы добавили 2 файла с одинаковыми расширениями"]
 
 
+def test_false3_upload_file():
+    responses = test_client.post(
+        "/upload_file",
+        files={
+            "file_txt": "usb_deviceID_name_one.txt",
+            "file_reg": "usb_deviceID_P1601450070867E90D1B6301.reg",
+        },
+    )
+    assert responses.status_code == 400
+    assert responses.json() == ["Не верное название файла"]
+
+
 def test_upload_file():
     responses = test_client.post(
         "/upload_file", files={"file_txt": "1", "file_reg": "1"}
@@ -178,7 +190,7 @@ def test_true_give_file():
         "/give_flask?device_id=name_one&fio=1&tabnum=1&department=1"
     )
     assert responses.status_code == 201
-    assert responses.json() == ["Данные о флешке name_one добавлены"]
+    assert responses.json() == ["Флешка name_one выдана 1"]
 
 
 def test_device_id_get():

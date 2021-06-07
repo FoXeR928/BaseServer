@@ -21,17 +21,26 @@ def upload_file(
     """
     Чтение содержимого файлов и добавление в базу имени и содержимого
     """
-    if "usb_deviceID_" in file_txt.filename and file_reg.filename:
+    device_id1 = (
+        file_txt.filename.replace("usb_deviceID_", "")
+        .replace(".txt", "")
+        .replace(".reg", "")
+    )
+    device_id2 = (
+        file_reg.filename.replace("usb_deviceID_", "")
+        .replace(".txt", "")
+        .replace(".reg", "")
+    )
+    if (
+        "usb_deviceID_" in (file_txt.filename and file_reg.filename)
+        and device_id1 == device_id2
+    ):
         read_reg = file_reg
         read_txt = file_txt
         if ".reg" in file_txt.filename and ".txt" in file_reg.filename:
             read_reg = file_txt
             read_txt = file_reg
-        device_id = (
-            file_txt.filename.replace("usb_deviceID_", "")
-            .replace(".txt", "")
-            .replace(".reg", "")
-        )
+
         date = datetime.datetime.now()
         if (".reg" in file_txt.filename and ".reg" in file_reg.filename) or (
             ".txt" in file_txt.filename and ".txt" in file_reg.filename
@@ -42,12 +51,12 @@ def upload_file(
             file_read = read_txt.file.read().decode("utf-16")
             regist_read = read_reg.file.read().decode("utf-16")
             result = sql.write_to_database_flash_drive(
-                device_id, file_read, regist_read, date
+                device_id1, file_read, regist_read, date
             )
             if result == 208:
-                message = {f"Уже есть в базе {device_id}"}
+                message = {f"Уже есть в базе {device_id1}"}
                 code.status_code = fastapi.status.HTTP_208_ALREADY_REPORTED
-            else:
+            elif result == 201:
                 message = {"Добавлено в базу"}
         else:
             message = {"Не поддерживаемый формат файла"}
@@ -123,8 +132,8 @@ def give_file(
         if result == 404:
             message = {"Не найдено id"}
             code.status_code = fastapi.status.HTTP_404_NOT_FOUND
-        else:
-            message = {f"Данные о флешке {device_id} добавлены"}
+        elif result == 201:
+            message = {f"Флешка {device_id} выдана {fio}"}
         logger.debug(f"Page /give_flask work, base '{device_id}' update")
     except Exception as err:
         message = {f"Ошибка: {err}"}
@@ -143,7 +152,7 @@ def get_flask(code: fastapi.Response, device_id: str):
         if result == 404:
             message = {"Нету такой флешки"}
             code.status_code = fastapi.status.HTTP_404_NOT_FOUND
-        else:
+        elif result == 201:
             message = {f"База флешки {device_id} очищена"}
         logger.debug(f"Page /get_flask work, base '{device_id}' update")
     except Exception as err:
@@ -159,8 +168,10 @@ def all_flask(code: fastapi.Response):
     Вывод флешек
     """
     try:
-        message = {f"База": sql.all_flash_drives_of_base()}
-        logger.debug(f"Page /all_flask work")
+        result = sql.all_flash_drives_of_base()
+        if result[0] == 200:
+            message = {"База": result[1]}
+        logger.debug("Page /all_flask work")
     except Exception as err:
         message = {f"Ошибка: {err}"}
         code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -175,12 +186,12 @@ def id_flask(code: fastapi.Response, device_id: str):
     """
     try:
         result = sql.search_flash_drive_based_on_id(device_id)
-        if result == 404:
+        if result[0] == 404:
             message = {"Нету такой флешки"}
             code.status_code = fastapi.status.HTTP_404_NOT_FOUND
-        else:
-            message = {f"Флешка": {device_id}}
-        logger.debug(f"Page /id_flask work")
+        elif result[0] == 200:
+            message = {"Флешка": result[1]}
+        logger.debug("Page /id_flask work")
     except Exception as err:
         message = {f"Ошибка: {err}"}
         code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -195,12 +206,12 @@ def name_flask(code: fastapi.Response, fiotab: str):
     """
     check = sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab)
     try:
-        if check == 404:
+        if check[0] == 404:
             message = {"Нету такой флешки"}
             code.status_code = fastapi.status.HTTP_404_NOT_FOUND
-        else:
-            message = {f"Флешка": check}
-        logger.debug(f"Page /name_flask work")
+        elif check[0] == 200:
+            message = {"Флешка": check[1]}
+        logger.debug("Page /name_flask work")
     except Exception as err:
         message = {f"Ошибка: {err}"}
         code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -215,12 +226,12 @@ def off_flask(code: fastapi.Response):
     """
     check = sql.search_decommissioned_flash_drives()
     try:
-        if check == 404:
+        if check[0] == 404:
             message = {"Нету такой флешки"}
             code.status_code = fastapi.status.HTTP_404_NOT_FOUND
-        else:
-            message = {f"Флешка": check}
-        logger.debug(f"Page /off_flask work")
+        elif check[0] == 200:
+            message = {"Флешка": check[1]}
+        logger.debug("Page /off_flask work")
     except Exception as err:
         message = {f"Ошибка: {err}"}
         code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -235,11 +246,11 @@ def date_flask(code: fastapi.Response, device_id: str):
     """
     flask = sql.file_search_based_on_id(device_id)
     try:
-        if flask == 404:
+        if flask[0] == 404:
             message = {"Нету такой флешки"}
             code.status_code = fastapi.status.HTTP_404_NOT_FOUND
-        else:
-            message = {f"Флешка": flask}
+        elif flask[0] == 200:
+            message = {"Флешка": flask[1]}
         logger.debug(f"Page /date_flask work")
     except Exception as err:
         message = {f"Ошибка: {err}"}

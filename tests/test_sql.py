@@ -32,6 +32,29 @@ text = mimesis.Text("en")
 date = mimesis.Datetime("en")
 
 
+def test_write_to_database_flash_drive():
+    device_id = "7"
+    content = text.text()
+    regist = text.text()
+    date_in = date.datetime()
+    curs = sql.open_base()
+    assert sql.write_to_database_flash_drive(device_id, content, regist, date_in) == 201
+    curs.execute(f"SELECT * FROM {tabl} WHERE device_id='{device_id}'")
+    result = curs.fetchall()
+    assert result == [
+        (
+            f"{device_id}",
+            f"{content}",
+            f"{regist}",
+            f"{date_in}",
+            None,
+            None,
+            None,
+            None,
+        )
+    ]
+
+
 def test_write_to_database_issuing_flash_drive():
     device_id = en.username()
     date_out = date.datetime()
@@ -51,19 +74,31 @@ def test_cleaning_resulting_flash_drive():
     assert sql.cleaning_resulting_flash_drive(device_id) == 404
 
 
+def test_cleaning_resulting_flash_drive():
+    device_id = "name2"
+    curs = sql.open_base()
+    assert sql.cleaning_resulting_flash_drive(device_id) == 201
+    curs.execute(f"SELECT * FROM {tabl} WHERE device_id='name2'")
+    result = curs.fetchall()
+    assert result == [(f"name2", "2", "2", 2, None, None, None, None)]
+
+
 def test_search_flash_drive_based_on_id():
     device_id = en.username()
-    assert sql.search_flash_drive_based_on_id(device_id) == 404
+    result = sql.search_flash_drive_based_on_id(device_id)
+    assert result[0] == 404
 
 
 def test_search_flash_drive_based_on_fio_or_tadnumder():
     fiotab = ru.full_name() or gen.code.imei()
-    assert sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab) == 404
+    result = sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab)
+    assert result[0] == 404
 
 
 def test_file_search_based_on_id():
     device_id = en.username()
-    assert sql.file_search_based_on_id(device_id) == 404
+    result = sql.file_search_based_on_id(device_id)
+    assert result[0] == 404
 
 
 def test_true_write_to_database_issuing_flash_drive():
@@ -76,7 +111,7 @@ def test_true_write_to_database_issuing_flash_drive():
         sql.write_to_database_issuing_flash_drive(
             "name_one", date_out, fio, tabnum, department
         )
-        == "Флешка выдана"
+        == 201
     )
     curs.execute(f"SELECT * FROM {tabl} WHERE device_id='name_one'")
     result = curs.fetchall()
@@ -95,30 +130,28 @@ def test_true_write_to_database_issuing_flash_drive():
 
 
 def test_true_search_flash_drive_based_on_id():
-    assert sql.search_flash_drive_based_on_id("six") == [
-        ("six", "6", "6", 6, 6, "6", 6, "6")
-    ]
+    result = sql.search_flash_drive_based_on_id("six")
+    assert result[0] == 200
 
 
 def test_true_search_decommissioned_flash_drives():
     answer = sql.search_decommissioned_flash_drives()
-    assert answer == [("3", "3", "3", 3, 3, None, None, None)]
+    assert answer[0] == 200
 
 
 def test_true_file_search_based_on_id():
     device_id = "name_one"
-    assert sql.file_search_based_on_id(device_id) == [("1", "1")]
+    result = sql.file_search_based_on_id(device_id)
+    assert result[0] == 200
 
 
 def test_true_search_flash_drive_based_on_fio():
     fiotab = "four"
-    assert sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab) == [
-        ("4", "4", "4", 4, "four", "four", 4, "four")
-    ]
+    result = sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab)
+    assert result[0] == 200
 
 
 def test_true_search_flash_drive_based_on_tadnumder():
     fiotab = "five"
-    assert sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab) == [
-        ("5", "5", "5", 5, "five", "5", "five", "five")
-    ]
+    result = sql.search_flash_drive_based_on_fio_or_tadnumder(fiotab)
+    assert result[0] == 200
