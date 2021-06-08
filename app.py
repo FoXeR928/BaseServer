@@ -2,7 +2,7 @@ import fastapi
 from loguru import logger
 import sql
 import datetime
-
+from config import tabl
 # import typing
 
 app = fastapi.FastAPI()

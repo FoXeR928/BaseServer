@@ -1,9 +1,9 @@
 import sqlite3
 from loguru import logger
-from config import base, tabl
+from config import base
 
 
-def open_base():
+def open_base(base):
     connect_sql = sqlite3.connect(f"{base}.db")
     curs = connect_sql.cursor()
     open_base.connect = connect_sql
@@ -19,11 +19,11 @@ def check_result(result):
         return {'err': 0, 'result':result}
 
 
-def write_to_database_flash_drive(device_id, content, regist, date_in):
+def write_to_database_flash_drive(tabl, device_id, content, regist, date_in):
     """
-    Функция добавления в базу Файла
+    Добавления в базу Файла
     """
-    curs = open_base()
+    curs = open_base(base)
     curs.execute(f"SELECT device_id FROM {tabl} WHERE device_id='{device_id}'")
     if len(curs.fetchall()) == 0:
         try:
@@ -39,11 +39,11 @@ def write_to_database_flash_drive(device_id, content, regist, date_in):
         return {'err': 1, 'result':'Has already'} 
 
 
-def write_to_database_issuing_flash_drive(device_id, date_out, fio, tabnum, department):
+def write_to_database_issuing_flash_drive(tabl, device_id, date_out, fio, tabnum, department):
     """
-    Функция добавления в базу выдачи флешки
+    Добавления в базу выдачи флешки
     """
-    curs = open_base()
+    curs = open_base(base)
     curs.execute(f"SELECT device_id FROM {tabl} WHERE device_id='{device_id}'")
     if len(curs.fetchall()) != 0:
         try:
@@ -60,11 +60,11 @@ def write_to_database_issuing_flash_drive(device_id, date_out, fio, tabnum, depa
         return {'err': 1, 'result':"Not result"}
 
 
-def cleaning_resulting_flash_drive(device_id):
+def cleaning_resulting_flash_drive(tabl, device_id):
     """
-    Функция очистки базу выданной флешки
+    Очистка базы выданной флешки
     """
-    curs = open_base()
+    curs = open_base(base)
     curs.execute(
         f"SELECT date_out, fio, tabnum, department FROM {tabl} WHERE device_id='{device_id}'"
     )
@@ -82,24 +82,24 @@ def cleaning_resulting_flash_drive(device_id):
         logger.debug(f"Clear or not in base. {device_id}")
         return {'err': 1, 'result':"Not result"}
 
-def all_flash_drives_of_base():
+def all_flash_drives_of_base(tabl):
     """
-    Функция вывода всех данных из базу
+    Вывода всех данных из базу
     """
     try:
-        curs = open_base()
+        curs = open_base(base)
         curs.execute(f"SELECT * FROM {tabl}")
         return {'err': 0, 'result':curs.fetchall()}
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
 
 
-def search_flash_drive_based_on_id(device_id):
+def search_flash_drive_based_on_id(tabl, device_id):
     """
-    Функция вывода данных на основе id из базу
+    Вывода данных на основе id из базу
     """
     try:
-        curs = open_base()
+        curs = open_base(base)
         curs.execute(f"SELECT * FROM {tabl} WHERE device_id like '%{device_id}%'")
         result = curs.fetchall()
         return check_result(result)
@@ -107,12 +107,12 @@ def search_flash_drive_based_on_id(device_id):
         logger.error(f"Base recording. ERROR: {err}")
 
 
-def search_flash_drive_based_on_fio_or_tadnumder(fiotab):
+def search_flash_drive_based_on_fio_or_tadnumder(tabl, fiotab):
     """
-    Функция вывода данных на основе имени или таб.ном из базу
+    Вывода данных на основе имени или таб.ном из базу
     """
     try:
-        curs = open_base()
+        curs = open_base(base)
         curs.execute(
             f"SELECT * FROM {tabl} WHERE fio like '%{fiotab}%' OR tabnum like '%{fiotab}%'"
         )
@@ -122,12 +122,12 @@ def search_flash_drive_based_on_fio_or_tadnumder(fiotab):
         logger.error(f"Base recording. ERROR: {err}")
 
 
-def search_decommissioned_flash_drives():
+def search_decommissioned_flash_drives(tabl):
     """
-    Функция вывода данных о списанных флешках из базу
+    Вывода данных о списанных флешках из базу
     """
     try:
-        curs = open_base()
+        curs = open_base(base)
         curs.execute(
             f"SELECT * FROM {tabl} WHERE date_out IS NOT NULL AND (fio IS NULL OR tabnum IS NULL)"
         )
@@ -137,12 +137,12 @@ def search_decommissioned_flash_drives():
         logger.error(f"Base recording. ERROR: {err}")
 
 
-def file_search_based_on_id(device_id):
+def file_search_based_on_id(tabl, device_id):
     """
-    Функция вывода данных на основе id из базу
+    Вывода данных на основе id из базу
     """
     try:
-        curs = open_base()
+        curs = open_base(base)
         curs.execute(
             f"SELECT device_path, device_reg FROM {tabl} WHERE device_id='{device_id}'"
         )
