@@ -59,6 +59,82 @@ def test_write_to_database_flash_drive():
     ]
 
 
+def test_false_write_to_database_flash_drive():
+    device_id = "name_one"
+    content = "text veryyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy looooooooooooooooooooooooooooooooooong text"
+    regist = "text veryyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy looooooooooooooooooooooooooooooooooong text2222222222222222222222222222222222222222222222222222"
+    date_in = date.datetime()
+    curs = sql.open_base(base)
+    result = sql.write_to_database_flash_drive(
+        tabl, device_id, content, regist, date_in
+    )
+    assert result["err"] == 0
+    curs.execute(f"SELECT * FROM {tabl}")
+    result = curs.fetchall()
+    assert result == [
+        (
+            "name_one",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            None,
+            None,
+            None,
+            None,
+        ),
+        (
+            "name2",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            "Кетрин Чимоканова",
+            359254064417561,
+            "Режиссер",
+        ),
+        (
+            "name3",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            None,
+            None,
+            None,
+        ),
+        (
+            "name4",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            "Велигор Миссюров",
+            353166055808564,
+            "Травматолог",
+        ),
+        (
+            "name5",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            "Хосе Подюков",
+            329304008876062,
+            "Психиатр",
+        ),
+        (
+            "name6",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            "Ынтымак Горляков",
+            358240054017520,
+            "Кассир",
+        ),
+    ]
+
+
 def test_write_to_database_issuing_flash_drive():
     device_id = "7"
     date_out = date.datetime()
@@ -139,10 +215,10 @@ def test_write_to_database_issuing_flash_drive():
 def test_cleaning_resulting_flash_drive():
     device_id = "7"
     result = sql.cleaning_resulting_flash_drive(tabl, device_id)
-    assert result["err"] == 1
+    assert result["err"] == 0
 
 
-def test_cleaning_resulting_flash_drive():
+def test_true_cleaning_resulting_flash_drive():
     device_id = "name2"
     curs = sql.open_base(base)
     result = sql.cleaning_resulting_flash_drive(tabl, device_id)

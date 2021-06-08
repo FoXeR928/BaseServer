@@ -196,20 +196,14 @@ def test_true_give_file():
 
 def test_device_id_get():
     responses = test_client.post("/get_flask?device_id=1")
-    assert responses.status_code == 404
-    assert responses.json() == ["Данных и так нет"]
+    assert responses.status_code == 201
+    assert responses.json() == ["База флешки 1 очищена"]
 
 
-def test_device_id_get():
+def test_true_device_id_get():
     responses = test_client.post("/get_flask?device_id=name_one")
     assert responses.status_code == 201
     assert responses.json() == ["База флешки name_one очищена"]
-
-
-def test_device_id():
-    responses = test_client.get("/id_flask/?device_id=1")
-    assert responses.status_code == 404
-    assert responses.json() == ["Нету такой флешки"]
 
 
 def test_code_flask_off():
@@ -300,7 +294,7 @@ def test_code_flask_all():
     }
 
 
-def test_name_flask():
+def test_false_name_flask():
     responses = test_client.get("/name_flask?fiotab=n")
     assert responses.status_code == 404
     assert responses.json() == ["Нету такой флешки"]
