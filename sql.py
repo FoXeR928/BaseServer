@@ -13,10 +13,10 @@ def open_base():
 def check_result(result):
     if len(result) == 0:
         logger.debug(f"Такого нету. {result}")
-        return [404, "Not result"]
+        return {'err': 1, 'result':"Not result"}
     else:
         logger.debug(f"Найден. {result}")
-        return [200, result]
+        return {'err': 0, 'result':result}
 
 
 def write_to_database_flash_drive(device_id, content, regist, date_in):
@@ -34,9 +34,9 @@ def write_to_database_flash_drive(device_id, content, regist, date_in):
             open_base.connect.commit()
         except Exception as err:
             logger.error(f"Base recording. ERROR: {err}")
-        return 201
+        return {'err': 0, 'result':'Record created'}
     else:
-        return 208
+        return {'err': 1, 'result':'Has already'} 
 
 
 def write_to_database_issuing_flash_drive(device_id, date_out, fio, tabnum, department):
@@ -52,12 +52,12 @@ def write_to_database_issuing_flash_drive(device_id, date_out, fio, tabnum, depa
             )
             logger.debug(f"Base recording. {device_id}")
             open_base.connect.commit()
-            return 201
+            return {'err': 0, 'result':'Record created'}
         except Exception as err:
             logger.error(f"Base recording. ERROR: {err}")
     else:
         logger.debug(f"Такого нету. {device_id}")
-        return 404
+        return {'err': 1, 'result':"Not result"}
 
 
 def cleaning_resulting_flash_drive(device_id):
@@ -75,12 +75,12 @@ def cleaning_resulting_flash_drive(device_id):
             )
             logger.debug(f"Base clear. {device_id}")
             open_base.connect.commit()
-            return 201
+            return {'err': 0, 'result':'Record created'}
         except Exception as err:
             logger.error(f"Base recording. ERROR: {err}")
     else:
         logger.debug(f"Clear or not in base. {device_id}")
-        return 404
+        return {'err': 1, 'result':"Not result"}
 
 
 def all_flash_drives_of_base():
@@ -90,7 +90,7 @@ def all_flash_drives_of_base():
     try:
         curs = open_base()
         curs.execute(f"SELECT * FROM {tabl}")
-        return (200, curs.fetchall())
+        return {'err': 0, 'result':curs.fetchall()}
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
 
