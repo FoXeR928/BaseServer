@@ -56,10 +56,10 @@ def upload_file(
                 tabl, device_id1, file_read, regist_read, date
             )
             if result["err"] == 1:
-                message = {f"Уже есть в базе {device_id1}"}
-                code.status_code = fastapi.status.HTTP_208_ALREADY_REPORTED
+                message = {f"Ошибка": result["result"]}
+                code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
             elif result["err"] == 0:
-                message = {"Добавлено в базу"}
+                message = {"Добавлено в базу, если не было"}
         else:
             message = {"Не поддерживаемый формат файла"}
             code.status_code = fastapi.status.HTTP_400_BAD_REQUEST
@@ -132,8 +132,8 @@ def give_file(
             tabl, device_id, date_out, fio, tabnum, department
         )
         if result["err"] == 1:
-            message = {"Не найдено id"}
-            code.status_code = fastapi.status.HTTP_404_NOT_FOUND
+            message = {f"Ошибка": result["result"]}
+            code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
         elif result["err"] == 0:
             message = {f"Флешка {device_id} выдана {fio}"}
         logger.debug(f"Page /give_flask work, base '{device_id}' update")
@@ -152,8 +152,8 @@ def get_flask(code: fastapi.Response, device_id: str):
     try:
         result = sql.cleaning_resulting_flash_drive(tabl, device_id)
         if result["err"] == 1:
-            message = {"Нету такой флешки"}
-            code.status_code = fastapi.status.HTTP_404_NOT_FOUND
+            message = {f"Ошибка": result["result"]}
+            code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
         elif result["err"] == 0:
             message = {f"База флешки {device_id} очищена"}
         logger.debug(f"Page /get_flask work, base '{device_id}' update")

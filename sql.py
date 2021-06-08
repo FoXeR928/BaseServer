@@ -24,19 +24,16 @@ def write_to_database_flash_drive(tabl, device_id, content, regist, date_in):
     Добавления в базу Файла
     """
     curs = open_base(base)
-    curs.execute(f"SELECT device_id FROM {tabl} WHERE device_id='{device_id}'")
-    if len(curs.fetchall()) == 0:
-        try:
-            curs.execute(
-                f"INSERT INTO {tabl}(device_id, device_path, device_reg, date_in) VALUES ('{device_id}', '{content}', '{regist}', '{date_in}');"
-            )
-            logger.debug(f"Base recording. {device_id}")
-            open_base.connect.commit()
-        except Exception as err:
-            logger.error(f"Base recording. ERROR: {err}")
+    try:
+        curs.execute(
+            f"INSERT or IGNORE INTO {tabl}(device_id, device_path, device_reg, date_in) VALUES ('{device_id}', '{content}', '{regist}', '{date_in}');"
+        )
+        logger.debug(f"Base recording. {device_id}")
+        open_base.connect.commit()
         return {"err": 0, "result": "Record created"}
-    else:
-        return {"err": 1, "result": "Has already"}
+    except Exception as err:
+        logger.error(f"Base recording. ERROR: {err}")
+        return {"err": 1, "result": err}
 
 
 def write_to_database_issuing_flash_drive(
@@ -46,20 +43,16 @@ def write_to_database_issuing_flash_drive(
     Добавления в базу выдачи флешки
     """
     curs = open_base(base)
-    curs.execute(f"SELECT device_id FROM {tabl} WHERE device_id='{device_id}'")
-    if len(curs.fetchall()) != 0:
-        try:
-            curs.execute(
-                f"UPDATE {tabl} SET date_out='{date_out}', fio= '{fio}', tabnum='{tabnum}', department='{department}' WHERE device_id='{device_id}'"
-            )
-            logger.debug(f"Base recording. {device_id}")
-            open_base.connect.commit()
-            return {"err": 0, "result": "Record created"}
-        except Exception as err:
-            logger.error(f"Base recording. ERROR: {err}")
-    else:
-        logger.debug(f"Такого нету. {device_id}")
-        return {"err": 1, "result": "Not result"}
+    try:
+        curs.execute(
+            f"UPDATE {tabl} SET date_out='{date_out}', fio= '{fio}', tabnum='{tabnum}', department='{department}' WHERE device_id='{device_id}'"
+        )
+        logger.debug(f"Base recording. {device_id}")
+        open_base.connect.commit()
+        return {"err": 0, "result": "Record created"}
+    except Exception as err:
+        logger.error(f"Base recording. ERROR: {err}")
+        return {"err": 1, "result": err}
 
 
 def cleaning_resulting_flash_drive(tabl, device_id):
@@ -67,22 +60,16 @@ def cleaning_resulting_flash_drive(tabl, device_id):
     Очистка базы выданной флешки
     """
     curs = open_base(base)
-    curs.execute(
-        f"SELECT date_out, fio, tabnum, department FROM {tabl} WHERE device_id='{device_id}'"
-    )
-    if len(curs.fetchall()) != 0:
-        try:
-            curs.execute(
-                f"UPDATE {tabl} SET date_out=NULL, fio= NULL, tabnum=NULL, department=NULL WHERE device_id='{device_id}'"
-            )
-            logger.debug(f"Base clear. {device_id}")
-            open_base.connect.commit()
-            return {"err": 0, "result": "Record created"}
-        except Exception as err:
-            logger.error(f"Base recording. ERROR: {err}")
-    else:
-        logger.debug(f"Clear or not in base. {device_id}")
-        return {"err": 1, "result": "Not result"}
+    try:
+        curs.execute(
+            f"UPDATE {tabl} SET date_out=NULL, fio= NULL, tabnum=NULL, department=NULL WHERE device_id='{device_id}'"
+        )
+        logger.debug(f"Base clear. {device_id}")
+        open_base.connect.commit()
+        return {"err": 0, "result": "Record created"}
+    except Exception as err:
+        logger.error(f"Base recording. ERROR: {err}")
+        return {"err": 1, "result": err}
 
 
 def all_flash_drives_of_base(tabl):

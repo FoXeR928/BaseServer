@@ -35,8 +35,8 @@ date = mimesis.Datetime("en")
 
 def test_write_to_database_flash_drive():
     device_id = "7"
-    content = text.text()
-    regist = text.text()
+    content = "text veryyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy looooooooooooooooooooooooooooooooooong text"
+    regist = "text veryyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy looooooooooooooooooooooooooooooooooong text2222222222222222222222222222222222222222222222222222"
     date_in = date.datetime()
     curs = sql.open_base(base)
     result = sql.write_to_database_flash_drive(
@@ -60,19 +60,84 @@ def test_write_to_database_flash_drive():
 
 
 def test_write_to_database_issuing_flash_drive():
-    device_id = en.username()
+    device_id = "7"
     date_out = date.datetime()
     fio = ru.full_name()
     tabnum = gen.code.imei()
     department = ru.occupation()
+    curs = sql.open_base(base)
     result = sql.write_to_database_issuing_flash_drive(
         tabl, device_id, date_out, fio, tabnum, department
     )
-    assert result["err"] == 1
+    assert result["err"] == 0
+    curs.execute(f"SELECT * FROM {tabl}")
+    result = curs.fetchall()
+    assert result == [
+        (
+            "name_one",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            None,
+            None,
+            None,
+            None,
+        ),
+        (
+            "name2",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            "Кетрин Чимоканова",
+            359254064417561,
+            "Режиссер",
+        ),
+        (
+            "name3",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            None,
+            None,
+            None,
+        ),
+        (
+            "name4",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            "Велигор Миссюров",
+            353166055808564,
+            "Травматолог",
+        ),
+        (
+            "name5",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            "Хосе Подюков",
+            329304008876062,
+            "Психиатр",
+        ),
+        (
+            "name6",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            "Ынтымак Горляков",
+            358240054017520,
+            "Кассир",
+        ),
+    ]
 
 
 def test_cleaning_resulting_flash_drive():
-    device_id = en.username()
+    device_id = "7"
     result = sql.cleaning_resulting_flash_drive(tabl, device_id)
     assert result["err"] == 1
 
@@ -99,19 +164,19 @@ def test_cleaning_resulting_flash_drive():
 
 
 def test_search_flash_drive_based_on_id():
-    device_id = en.username()
+    device_id = "7"
     result = sql.search_flash_drive_based_on_id(tabl, device_id)
     assert result["err"] == 1
 
 
 def test_search_flash_drive_based_on_fio_or_tadnumder():
-    fiotab = ru.full_name() or gen.code.imei()
+    fiotab = "It is name" or "4654646464646464444444444444444444444444444444"
     result = sql.search_flash_drive_based_on_fio_or_tadnumder(tabl, fiotab)
     assert result["err"] == 1
 
 
 def test_file_search_based_on_id():
-    device_id = en.username()
+    device_id = "7"
     result = sql.file_search_based_on_id(tabl, device_id)
     assert result["err"] == 1
 
@@ -126,7 +191,6 @@ def test_true_write_to_database_issuing_flash_drive():
         tabl, "name_one", date_out, fio, tabnum, department
     )
     assert result["err"] == 0
-
     curs.execute(f"SELECT * FROM {tabl} WHERE device_id='name_one'")
     result = curs.fetchall()
     assert result == [

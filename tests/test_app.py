@@ -49,7 +49,7 @@ def test_true_upload_file():
     ]
     responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == 201
-    assert responses.json() == ["Добавлено в базу"]
+    assert responses.json() == ["Добавлено в базу, если не было"]
 
 
 def test_true_2_upload_file():
@@ -65,7 +65,7 @@ def test_true_2_upload_file():
     ]
     responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == 201
-    assert responses.json() == ["Добавлено в базу"]
+    assert responses.json() == ["Добавлено в базу, если не было"]
 
 
 def test_false_upload_file():
@@ -74,8 +74,8 @@ def test_false_upload_file():
         ("file_reg", (open("tests/test_file/usb_deviceID_name_one.reg", "rb"))),
     ]
     responses = test_client.post("/upload_file", files=files)
-    assert responses.status_code == 208
-    assert responses.json() == ["Уже есть в базе name_one"]
+    assert responses.status_code == 201
+    assert responses.json() == ["Добавлено в базу, если не было"]
 
 
 def test_false_2_upload_file():
@@ -175,15 +175,15 @@ def test_true_device_id_date():
 
 
 def test_give_file():
-    device_id = en.password()
+    device_id = "7"
     fio = ru.full_name()
     tabnum = gen.code.imei()
     department = ru.occupation()
     responses = test_client.post(
         f"/give_flask?device_id={device_id}&fio={fio}&tabnum={tabnum}&department={department}"
     )
-    assert responses.status_code == 404
-    assert responses.json() == ["Не найдено id"]
+    assert responses.status_code == 201
+    assert responses.json() == [f"Флешка {device_id} выдана {fio}"]
 
 
 def test_true_give_file():
@@ -340,5 +340,73 @@ def test_true_tabnum_flask():
                 358240054017520,
                 "Кассир",
             ]
+        ]
+    }
+
+
+def test_name_flask_only_one_letter():
+    responses = test_client.get("/name_flask?fiotab=В")
+    assert responses.status_code == 200
+    assert responses.json() == {
+        "Флешка": [
+            [
+                "name4",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Велигор Миссюров",
+                353166055808564,
+                "Травматолог",
+            ]
+        ]
+    }
+
+
+def test_tabnum_flask_only_one_number():
+    responses = test_client.get("/name_flask?fiotab=3")
+    assert responses.status_code == 200
+    assert responses.json() == {
+        "Флешка": [
+            [
+                "name2",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Кетрин Чимоканова",
+                359254064417561,
+                "Режиссер",
+            ],
+            [
+                "name4",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Велигор Миссюров",
+                353166055808564,
+                "Травматолог",
+            ],
+            [
+                "name5",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Хосе Подюков",
+                329304008876062,
+                "Психиатр",
+            ],
+            [
+                "name6",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Ынтымак Горляков",
+                358240054017520,
+                "Кассир",
+            ],
         ]
     }
