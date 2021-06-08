@@ -19,15 +19,16 @@ def base_create():
     curs.execute(f"DELETE FROM {tabl}")
     curs.execute(
         f"""INSERT INTO {tabl}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
-                    VALUES ('name_one','1','1','1',NULL,NULL,NULL,NULL),
-                    ('name2','2','2','2','2','2','2','2'),
-                    ('3','3','3','3','3',NULL,NULL,NULL),
-                    ('4',4,4,4,'four','four',4,'four'),
-                    ('5',5,5,5,'five',5,'five','five'),
-                    ('six',6,6,6,6,6,6,6);"""
+                    VALUES ('name_one','text_txt','text_reg', '2011-10-13 16:23:16.083572',NULL,NULL,NULL,NULL),
+                    ('name2','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Кетрин Чимоканова',359254064417561,'Режиссер'),
+                    ('name3','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051',NULL,NULL,NULL),
+                    ('name4','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Велигор Миссюров',353166055808564,'Травматолог'),
+                    ('name5','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Хосе Подюков',329304008876062,'Психиатр'),
+                    ('name6','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Ынтымак Горляков',358240054017520,'Кассир');"""
     )
     connect_sql.commit()
     yield
+
 
 en = mimesis.Person("en")
 ru = mimesis.Person("ru")
@@ -170,7 +171,7 @@ def test_device_id_date():
 def test_true_device_id_date():
     responses = test_client.get("/date_flask/?device_id=name_one")
     assert responses.status_code == 200
-    assert responses.json() == {"Флешка": [["1", "1"]]}
+    assert responses.json() == {"Флешка": [["text_txt", "text_reg"]]}
 
 
 def test_give_file():
@@ -214,7 +215,20 @@ def test_device_id():
 def test_code_flask_off():
     responses = test_client.get("/off_flask")
     assert responses.status_code == 200
-    assert responses.json() == {"Флешка": [["3", "3", "3", 3, 3, None, None, None]]}
+    assert responses.json() == {
+        "Флешка": [
+            [
+                "name3",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                None,
+                None,
+                None,
+            ]
+        ]
+    }
 
 
 def test_code_flask_all():
@@ -222,33 +236,109 @@ def test_code_flask_all():
     assert responses.status_code == 200
     assert responses.json() == {
         "База": [
-            ["name_one", "1", "1", 1, None, None, None, None],
-            ["name2", "2", "2", 2, 2, "2", 2, "2"],
-            ["3", "3", "3", 3, 3, None, None, None],
-            ["4", "4", "4", 4, "four", "four", 4, "four"],
-            ["5", "5", "5", 5, "five", "5", "five", "five"],
-            ["six", "6", "6", 6, 6, "6", 6, "6"],
+            [
+                "name_one",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                None,
+                None,
+                None,
+                None,
+            ],
+            [
+                "name2",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Кетрин Чимоканова",
+                359254064417561,
+                "Режиссер",
+            ],
+            [
+                "name3",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                None,
+                None,
+                None,
+            ],
+            [
+                "name4",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Велигор Миссюров",
+                353166055808564,
+                "Травматолог",
+            ],
+            [
+                "name5",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Хосе Подюков",
+                329304008876062,
+                "Психиатр",
+            ],
+            [
+                "name6",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Ынтымак Горляков",
+                358240054017520,
+                "Кассир",
+            ],
         ]
     }
 
 
 def test_name_flask():
-    responses = test_client.get("/name_flask?fiotab=1")
+    responses = test_client.get("/name_flask?fiotab=n")
     assert responses.status_code == 404
     assert responses.json() == ["Нету такой флешки"]
 
 
 def test_true_name_flask():
-    responses = test_client.get("/name_flask?fiotab=four")
+    responses = test_client.get("/name_flask?fiotab=Велигор Миссюров")
     assert responses.status_code == 200
     assert responses.json() == {
-        "Флешка": [["4", "4", "4", 4, "four", "four", 4, "four"]]
+        "Флешка": [
+            [
+                "name4",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Велигор Миссюров",
+                353166055808564,
+                "Травматолог",
+            ]
+        ]
     }
 
 
 def test_true_tabnum_flask():
-    responses = test_client.get("/name_flask?fiotab=five")
+    responses = test_client.get("/name_flask?fiotab=358240054017520")
     assert responses.status_code == 200
     assert responses.json() == {
-        "Флешка": [["5", "5", "5", 5, "five", "5", "five", "five"]]
+        "Флешка": [
+            [
+                "name6",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Ынтымак Горляков",
+                358240054017520,
+                "Кассир",
+            ]
+        ]
     }

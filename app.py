@@ -3,6 +3,7 @@ from loguru import logger
 import sql
 import datetime
 from config import tabl
+
 # import typing
 
 app = fastapi.FastAPI()
@@ -54,10 +55,10 @@ def upload_file(
             result = sql.write_to_database_flash_drive(
                 tabl, device_id1, file_read, regist_read, date
             )
-            if result['err'] == 1:
+            if result["err"] == 1:
                 message = {f"Уже есть в базе {device_id1}"}
                 code.status_code = fastapi.status.HTTP_208_ALREADY_REPORTED
-            elif result['err'] == 0:
+            elif result["err"] == 0:
                 message = {"Добавлено в базу"}
         else:
             message = {"Не поддерживаемый формат файла"}
@@ -130,10 +131,10 @@ def give_file(
         result = sql.write_to_database_issuing_flash_drive(
             tabl, device_id, date_out, fio, tabnum, department
         )
-        if result['err'] == 1:
+        if result["err"] == 1:
             message = {"Не найдено id"}
             code.status_code = fastapi.status.HTTP_404_NOT_FOUND
-        elif result['err'] == 0:
+        elif result["err"] == 0:
             message = {f"Флешка {device_id} выдана {fio}"}
         logger.debug(f"Page /give_flask work, base '{device_id}' update")
     except Exception as err:
@@ -150,10 +151,10 @@ def get_flask(code: fastapi.Response, device_id: str):
     """
     try:
         result = sql.cleaning_resulting_flash_drive(tabl, device_id)
-        if result['err'] == 1:
+        if result["err"] == 1:
             message = {"Нету такой флешки"}
             code.status_code = fastapi.status.HTTP_404_NOT_FOUND
-        elif result['err'] == 0:
+        elif result["err"] == 0:
             message = {f"База флешки {device_id} очищена"}
         logger.debug(f"Page /get_flask work, base '{device_id}' update")
     except Exception as err:
@@ -170,8 +171,8 @@ def all_flask(code: fastapi.Response):
     """
     try:
         check = sql.all_flash_drives_of_base(tabl)
-        if check['err'] == 0:
-            message = {"База": check['result']}
+        if check["err"] == 0:
+            message = {"База": check["result"]}
         logger.debug("Page /all_flask work")
     except Exception as err:
         message = {f"Ошибка: {err}"}
@@ -187,11 +188,11 @@ def id_flask(code: fastapi.Response, device_id: str):
     """
     try:
         check = sql.search_flash_drive_based_on_id(tabl, device_id)
-        if check['err'] == 1:
+        if check["err"] == 1:
             message = {"Нету такой флешки"}
             code.status_code = fastapi.status.HTTP_404_NOT_FOUND
-        elif check['err'] == 0:
-            message = {"Флешка": check['result']}
+        elif check["err"] == 0:
+            message = {"Флешка": check["result"]}
         logger.debug("Page /id_flask work")
     except Exception as err:
         message = {f"Ошибка: {err}"}
@@ -207,11 +208,11 @@ def name_flask(code: fastapi.Response, fiotab: str):
     """
     check = sql.search_flash_drive_based_on_fio_or_tadnumder(tabl, fiotab)
     try:
-        if check['err'] == 1:
+        if check["err"] == 1:
             message = {"Нету такой флешки"}
             code.status_code = fastapi.status.HTTP_404_NOT_FOUND
-        elif check['err'] == 0:
-            message = {"Флешка": check['result']}
+        elif check["err"] == 0:
+            message = {"Флешка": check["result"]}
         logger.debug("Page /name_flask work")
     except Exception as err:
         message = {f"Ошибка: {err}"}
@@ -227,11 +228,11 @@ def off_flask(code: fastapi.Response):
     """
     check = sql.search_decommissioned_flash_drives(tabl)
     try:
-        if check['err'] == 1:
+        if check["err"] == 1:
             message = {"Нету такой флешки"}
             code.status_code = fastapi.status.HTTP_404_NOT_FOUND
-        elif check['err'] == 0:
-            message = {"Флешка": check['result']}
+        elif check["err"] == 0:
+            message = {"Флешка": check["result"]}
         logger.debug("Page /off_flask work")
     except Exception as err:
         message = {f"Ошибка: {err}"}
@@ -247,11 +248,11 @@ def date_flask(code: fastapi.Response, device_id: str):
     """
     flask = sql.file_search_based_on_id(tabl, device_id)
     try:
-        if flask['err'] == 1:
+        if flask["err"] == 1:
             message = {"Нету такой флешки"}
             code.status_code = fastapi.status.HTTP_404_NOT_FOUND
-        elif flask['err'] == 0:
-            message = {"Флешка": flask['result']}
+        elif flask["err"] == 0:
+            message = {"Флешка": flask["result"]}
         logger.debug(f"Page /date_flask work")
     except Exception as err:
         message = {f"Ошибка: {err}"}

@@ -15,15 +15,16 @@ def base_create():
     curs.execute(f"DELETE FROM {tabl}")
     curs.execute(
         f"""INSERT INTO {tabl}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
-                    VALUES ('name_one','1','1','1',NULL,NULL,NULL,NULL),
-                    ('name2','2','2','2','2','2','2','2'),
-                    ('3','3','3','3','3',NULL,NULL,NULL),
-                    ('4',4,4,4,'four','four',4,'four'),
-                    ('5',5,5,5,'five',5,'five','five'),
-                    ('six',6,6,6,6,6,6,6);"""
+                    VALUES ('name_one','text_txt','text_reg', '2011-10-13 16:23:16.083572',NULL,NULL,NULL,NULL),
+                    ('name2','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Кетрин Чимоканова',359254064417561,'Режиссер'),
+                    ('name3','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051',NULL,NULL,NULL),
+                    ('name4','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Велигор Миссюров',353166055808564,'Травматолог'),
+                    ('name5','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Хосе Подюков',329304008876062,'Психиатр'),
+                    ('name6','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Ынтымак Горляков',358240054017520,'Кассир');"""
     )
     connect_sql.commit()
     yield
+
 
 en = mimesis.Person("en")
 ru = mimesis.Person("ru")
@@ -38,8 +39,10 @@ def test_write_to_database_flash_drive():
     regist = text.text()
     date_in = date.datetime()
     curs = sql.open_base(base)
-    result=sql.write_to_database_flash_drive(tabl, device_id, content, regist, date_in)
-    assert result['err'] == 0
+    result = sql.write_to_database_flash_drive(
+        tabl, device_id, content, regist, date_in
+    )
+    assert result["err"] == 0
     curs.execute(f"SELECT * FROM {tabl} WHERE device_id='{device_id}'")
     result = curs.fetchall()
     assert result == [
@@ -62,44 +65,55 @@ def test_write_to_database_issuing_flash_drive():
     fio = ru.full_name()
     tabnum = gen.code.imei()
     department = ru.occupation()
-    result=sql.write_to_database_issuing_flash_drive(
-            tabl, device_id, date_out, fio, tabnum, department
-        )
-    assert result['err'] == 1
+    result = sql.write_to_database_issuing_flash_drive(
+        tabl, device_id, date_out, fio, tabnum, department
+    )
+    assert result["err"] == 1
 
 
 def test_cleaning_resulting_flash_drive():
     device_id = en.username()
-    result=sql.cleaning_resulting_flash_drive(tabl, device_id)
-    assert result['err'] == 1
+    result = sql.cleaning_resulting_flash_drive(tabl, device_id)
+    assert result["err"] == 1
 
 
 def test_cleaning_resulting_flash_drive():
     device_id = "name2"
     curs = sql.open_base(base)
-    result=sql.cleaning_resulting_flash_drive(tabl, device_id)
-    assert result['err'] == 0
+    result = sql.cleaning_resulting_flash_drive(tabl, device_id)
+    assert result["err"] == 0
     curs.execute(f"SELECT * FROM {tabl} WHERE device_id='name2'")
     result = curs.fetchall()
-    assert result == [(f"name2", "2", "2", 2, None, None, None, None)]
+    assert result == [
+        (
+            f"name2",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            None,
+            None,
+            None,
+            None,
+        )
+    ]
 
 
 def test_search_flash_drive_based_on_id():
     device_id = en.username()
     result = sql.search_flash_drive_based_on_id(tabl, device_id)
-    assert result['err'] == 1
+    assert result["err"] == 1
 
 
 def test_search_flash_drive_based_on_fio_or_tadnumder():
     fiotab = ru.full_name() or gen.code.imei()
     result = sql.search_flash_drive_based_on_fio_or_tadnumder(tabl, fiotab)
-    assert result['err'] == 1
+    assert result["err"] == 1
 
 
 def test_file_search_based_on_id():
     device_id = en.username()
     result = sql.file_search_based_on_id(tabl, device_id)
-    assert result['err'] == 1
+    assert result["err"] == 1
 
 
 def test_true_write_to_database_issuing_flash_drive():
@@ -108,18 +122,19 @@ def test_true_write_to_database_issuing_flash_drive():
     tabnum = gen.code.imei()
     department = ru.occupation()
     curs = sql.open_base(base)
-    result=sql.write_to_database_issuing_flash_drive(
-            tabl, "name_one", date_out, fio, tabnum, department)
-    assert result['err'] == 0
-    
+    result = sql.write_to_database_issuing_flash_drive(
+        tabl, "name_one", date_out, fio, tabnum, department
+    )
+    assert result["err"] == 0
+
     curs.execute(f"SELECT * FROM {tabl} WHERE device_id='name_one'")
     result = curs.fetchall()
     assert result == [
         (
             f"name_one",
-            "1",
-            "1",
-            1,
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
             f"{date_out}",
             f"{fio}",
             int(tabnum),
@@ -129,28 +144,28 @@ def test_true_write_to_database_issuing_flash_drive():
 
 
 def test_true_search_flash_drive_based_on_id():
-    result = sql.search_flash_drive_based_on_id(tabl, "six")
-    assert result['err'] == 0
+    result = sql.search_flash_drive_based_on_id(tabl, "name6")
+    assert result["err"] == 0
 
 
 def test_true_search_decommissioned_flash_drives():
     answer = sql.search_decommissioned_flash_drives(tabl)
-    assert answer['err'] == 0
+    assert answer["err"] == 0
 
 
 def test_true_file_search_based_on_id():
     device_id = "name_one"
     result = sql.file_search_based_on_id(tabl, device_id)
-    assert result['err'] == 0
+    assert result["err"] == 0
 
 
 def test_true_search_flash_drive_based_on_fio():
-    fiotab = "four"
+    fiotab = "Велигор Миссюров"
     result = sql.search_flash_drive_based_on_fio_or_tadnumder(tabl, fiotab)
-    assert result['err'] == 0
+    assert result["err"] == 0
 
 
 def test_true_search_flash_drive_based_on_tadnumder():
-    fiotab = "five"
+    fiotab = 358240054017520
     result = sql.search_flash_drive_based_on_fio_or_tadnumder(tabl, fiotab)
-    assert result['err'] == 0
+    assert result["err"] == 0

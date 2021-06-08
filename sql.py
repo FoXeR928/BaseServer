@@ -13,10 +13,10 @@ def open_base(base):
 def check_result(result):
     if len(result) == 0:
         logger.debug(f"Такого нету. {result}")
-        return {'err': 1, 'result':"Not result"}
+        return {"err": 1, "result": "Not result"}
     else:
         logger.debug(f"Найден. {result}")
-        return {'err': 0, 'result':result}
+        return {"err": 0, "result": result}
 
 
 def write_to_database_flash_drive(tabl, device_id, content, regist, date_in):
@@ -34,12 +34,14 @@ def write_to_database_flash_drive(tabl, device_id, content, regist, date_in):
             open_base.connect.commit()
         except Exception as err:
             logger.error(f"Base recording. ERROR: {err}")
-        return {'err': 0, 'result':'Record created'}
+        return {"err": 0, "result": "Record created"}
     else:
-        return {'err': 1, 'result':'Has already'} 
+        return {"err": 1, "result": "Has already"}
 
 
-def write_to_database_issuing_flash_drive(tabl, device_id, date_out, fio, tabnum, department):
+def write_to_database_issuing_flash_drive(
+    tabl, device_id, date_out, fio, tabnum, department
+):
     """
     Добавления в базу выдачи флешки
     """
@@ -52,12 +54,12 @@ def write_to_database_issuing_flash_drive(tabl, device_id, date_out, fio, tabnum
             )
             logger.debug(f"Base recording. {device_id}")
             open_base.connect.commit()
-            return {'err': 0, 'result':'Record created'}
+            return {"err": 0, "result": "Record created"}
         except Exception as err:
             logger.error(f"Base recording. ERROR: {err}")
     else:
         logger.debug(f"Такого нету. {device_id}")
-        return {'err': 1, 'result':"Not result"}
+        return {"err": 1, "result": "Not result"}
 
 
 def cleaning_resulting_flash_drive(tabl, device_id):
@@ -75,12 +77,13 @@ def cleaning_resulting_flash_drive(tabl, device_id):
             )
             logger.debug(f"Base clear. {device_id}")
             open_base.connect.commit()
-            return {'err': 0, 'result':'Record created'}
+            return {"err": 0, "result": "Record created"}
         except Exception as err:
             logger.error(f"Base recording. ERROR: {err}")
     else:
         logger.debug(f"Clear or not in base. {device_id}")
-        return {'err': 1, 'result':"Not result"}
+        return {"err": 1, "result": "Not result"}
+
 
 def all_flash_drives_of_base(tabl):
     """
@@ -89,7 +92,7 @@ def all_flash_drives_of_base(tabl):
     try:
         curs = open_base(base)
         curs.execute(f"SELECT * FROM {tabl}")
-        return {'err': 0, 'result':curs.fetchall()}
+        return {"err": 0, "result": curs.fetchall()}
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
 
