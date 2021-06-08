@@ -82,7 +82,6 @@ def cleaning_resulting_flash_drive(device_id):
         logger.debug(f"Clear or not in base. {device_id}")
         return {'err': 1, 'result':"Not result"}
 
-
 def all_flash_drives_of_base():
     """
     Функция вывода всех данных из базу

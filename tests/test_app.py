@@ -1,89 +1,32 @@
 import mimesis
+import sqlite3
 import sys
 import pytest
+
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 sys.path.append("./")
 import app
-from db_set import tabl, base
-import sql
+from config import base, tabl
 
 test_client = TestClient(app.app)
 
 
-def open_base():
-    engine = create_engine("sqlite:///flask-date.db")
-    base.metadata.bind = engine
-    DBSession = sessionmaker(bind=engine)
-    session = DBSession()
-    return session
-
-
 @pytest.yield_fixture(autouse=True)
 def base_create():
-    session = open_base()
-    session.query(tabl).delete()
-    record = (tabl(device_id="name_one", device_path="1", device_reg="1", date_in="1"),)
-    record2 = (
-        tabl(
-            device_id="name2",
-            device_path="2",
-            device_reg="2",
-            date_in="2",
-            date_out="2",
-            fio="2",
-            tabnum="2",
-            department="2",
-        ),
+    connect_sql = sqlite3.connect(f"{base}.db", timeout=5)
+    curs = connect_sql.cursor()
+    curs.execute(f"DELETE FROM {tabl}")
+    curs.execute(
+        f"""INSERT INTO {tabl}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
+                    VALUES ('name_one','1','1','1',NULL,NULL,NULL,NULL),
+                    ('name2','2','2','2','2','2','2','2'),
+                    ('3','3','3','3','3',NULL,NULL,NULL),
+                    ('4',4,4,4,'four','four',4,'four'),
+                    ('5',5,5,5,'five',5,'five','five'),
+                    ('six',6,6,6,6,6,6,6);"""
     )
-    record3 = (
-        tabl(
-            device_id="3",
-            device_path="3",
-            device_reg="3",
-            date_in="3",
-            date_out="3",
-            fio="3",
-        ),
-    )
-    record4 = (
-        tabl(
-            device_id="4",
-            device_path="4",
-            device_reg="4",
-            date_in="4",
-            date_out="four",
-            fio="four",
-            tabnum="4",
-            department="four",
-        ),
-    )
-    record5 = (
-        tabl(
-            device_id="5",
-            device_path="5",
-            device_reg="5",
-            date_in="5",
-            date_out="five",
-            fio="5",
-            tabnum="five",
-            department="five",
-        ),
-    )
-    record6 = tabl(
-        device_id="six",
-        device_path="6",
-        device_reg="6",
-        date_in="6",
-        date_out="6",
-        fio="6",
-        tabnum="6",
-        department="6",
-    )
-    session.add([record, record2, record3, record4, record5, record6])
-    session.commit()
+    connect_sql.commit()
 
 
 en = mimesis.Person("en")
