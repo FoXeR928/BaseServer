@@ -27,7 +27,7 @@ def base_create():
                     ('six',6,6,6,6,6,6,6);"""
     )
     connect_sql.commit()
-
+    yield
 
 en = mimesis.Person("en")
 ru = mimesis.Person("ru")
