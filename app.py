@@ -15,10 +15,10 @@ def start():
 
 def check_result(code, check):
     if check["err"] == 1:
-        message = {"Нету такой флешки"}
+        message = {check["result"]}
         code.status_code = fastapi.status.HTTP_404_NOT_FOUND
     elif check["err"] == 0:
-        message = {"Флешка": check["result"]}
+        message = {"Flask": check["result"]}
         code.status_code = fastapi.status.HTTP_200_OK
     return {"code": code, "message": message}
 
@@ -57,7 +57,7 @@ def upload_file(
             ".txt" in file_txt.filename and ".txt" in file_reg.filename
         ):
             code.status_code = fastapi.status.HTTP_206_PARTIAL_CONTENT
-            message = {"Вы добавили 2 файла с одинаковыми расширениями"}
+            message = {"You have added 2 files with the same extensions"}
         elif ".txt" in read_txt.filename and ".reg" in read_reg.filename:
             file_read = read_txt.file.read().decode("utf-16")
             regist_read = read_reg.file.read().decode("utf-16")
@@ -65,21 +65,21 @@ def upload_file(
                 tabl, device_id1, file_read, regist_read, date
             )
             if result["err"] == 1:
-                message = {f"Ошибка: {result['result']}"}
-                code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+                message = {f"ERROR: {result['result']}"}
+                code.status_code = fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY
             elif result["err"] == 0:
-                message = {"Добавлено в базу"}
+                message = {"Added to base"}
         else:
-            message = {"Не поддерживаемый формат файла"}
+            message = {"Unsupported file format"}
             code.status_code = fastapi.status.HTTP_400_BAD_REQUEST
 
     else:
         code.status_code = fastapi.status.HTTP_400_BAD_REQUEST
-        message = {"Не верное название файла"}
+        message = {"Incorrect file name"}
     return message
 
 
-@app.post("/give_flask", status_code=fastapi.status.HTTP_201_CREATED)
+@app.put("/give_flask", status_code=fastapi.status.HTTP_201_CREATED)
 def give_file(
     code: fastapi.Response, device_id: str, fio: str, tabnum: int, department: str
 ):
@@ -92,19 +92,19 @@ def give_file(
             tabl, device_id, date_out, fio, tabnum, department
         )
         if result["err"] == 1:
-            message = {f"Ошибка: {result['result']}"}
-            code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+            message = {f"ERROR: {result['result']}"}
+            code.status_code = fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY
         elif result["err"] == 0:
-            message = {f"Флешка {device_id} выдана {fio}"}
+            message = {f"Flask {device_id} give to {fio}"}
         logger.debug(f"Page /give_flask work, base '{device_id}' update")
     except Exception as err:
-        message = {f"Ошибка: {err}"}
-        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+        message = {f"Error: {err}"}
+        code.status_code = fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY
         logger.error(f"Server not work. ERROR: {err}")
     return message
 
 
-@app.post("/get_flask", status_code=fastapi.status.HTTP_201_CREATED)
+@app.put("/get_flask", status_code=fastapi.status.HTTP_201_CREATED)
 def get_flask(code: fastapi.Response, device_id: str):
     """
     Возврат флешки
@@ -112,14 +112,14 @@ def get_flask(code: fastapi.Response, device_id: str):
     try:
         result = sql.cleaning_resulting_flash_drive(tabl, device_id)
         if result["err"] == 1:
-            message = {f"Ошибка: {result['result']}"}
-            code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+            message = {f"ERROR: {result['result']}"}
+            code.status_code = fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY
         elif result["err"] == 0:
-            message = {f"База флешки {device_id} очищена"}
+            message = {f"Flash drive base {device_id} cleared"}
         logger.debug(f"Page /get_flask work, base '{device_id}' update")
     except Exception as err:
-        message = {f"Ошибка: {err}"}
-        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+        message = {f"ERROR: {err}"}
+        code.status_code = fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY
         logger.error(f"Server not work. ERROR: {err}")
     return message
 
@@ -132,11 +132,11 @@ def all_flask(code: fastapi.Response):
     try:
         check = sql.all_flash_drives_of_base(tabl)
         if check["err"] == 0:
-            message = {"База": check["result"]}
+            message = {"Base": check["result"]}
         logger.debug("Page /all_flask work")
     except Exception as err:
-        message = {f"Ошибка: {err}"}
-        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+        message = {f"ERROR: {err}"}
+        code.status_code = fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY
         logger.error(f"Server not work. ERROR: {err}")
     return message
 
@@ -152,8 +152,8 @@ def id_flask(code: fastapi.Response, device_id: str):
         message = result["message"]
         logger.debug("Page /id_flask work")
     except Exception as err:
-        message = {f"Ошибка: {err}"}
-        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+        message = {f"ERROR: {err}"}
+        code.status_code = fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY
         logger.error(f"Server not work. ERROR: {err}")
     return message
 
@@ -169,8 +169,8 @@ def name_flask(code: fastapi.Response, fio: str):
         message = result["message"]
         logger.debug("Page /name_flask work")
     except Exception as err:
-        message = {f"Ошибка: {err}"}
-        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+        message = {f"ERROR: {err}"}
+        code.status_code = fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY
         logger.error(f"Server not work. ERROR: {err}")
     return message
 
@@ -186,8 +186,8 @@ def tabnum_flask(code: fastapi.Response, tabnum: int):
         message = result["message"]
         logger.debug("Page /name_flask work")
     except Exception as err:
-        message = {f"Ошибка: {err}"}
-        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+        message = {f"ERROR: {err}"}
+        code.status_code = fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY
         logger.error(f"Server not work. ERROR: {err}")
     return message
 
@@ -203,8 +203,8 @@ def off_flask(code: fastapi.Response):
         message = result["message"]
         logger.debug("Page /off_flask work")
     except Exception as err:
-        message = {f"Ошибка: {err}"}
-        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+        message = {f"ERROR: {err}"}
+        code.status_code = fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY
         logger.error(f"Server not work. ERROR: {err}")
     return message
 
@@ -220,8 +220,8 @@ def date_flask(code: fastapi.Response, device_id: str):
         message = result["message"]
         logger.debug(f"Page /date_flask work")
     except Exception as err:
-        message = {f"Ошибка: {err}"}
-        code.status_code = fastapi.status.HTTP_500_INTERNAL_SERVER_ERROR
+        message = {f"ERROR: {err}"}
+        code.status_code = fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY
         logger.error(f"Server not work. ERROR: {err}")
     return message
 

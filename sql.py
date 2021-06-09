@@ -21,7 +21,7 @@ def check_result(result):
 
 def write_to_database_flash_drive(tabl, device_id, content, regist, date_in):
     """
-    Добавления в базу Файла
+    Добавление в базу Файла и id
     """
     curs = open_base(base)
     try:
@@ -41,7 +41,7 @@ def write_to_database_issuing_flash_drive(
     tabl, device_id, date_out, fio, tabnum, department
 ):
     """
-    Добавления в базу выдачи флешки
+    Добавление в базу выданных флешек
     """
     curs = open_base(base)
     try:
@@ -75,7 +75,7 @@ def cleaning_resulting_flash_drive(tabl, device_id):
 
 def all_flash_drives_of_base(tabl):
     """
-    Вывода всех данных из базу
+    Вывод всех данных из базу
     """
     try:
         curs = open_base(base)
@@ -88,7 +88,7 @@ def all_flash_drives_of_base(tabl):
 
 def search_flash_drive_based_on_id(tabl, device_id):
     """
-    Вывода данных на основе id из базу
+    Вывод данных из базу на основе id
     """
     try:
         curs = open_base(base)
@@ -102,7 +102,7 @@ def search_flash_drive_based_on_id(tabl, device_id):
 
 def search_flash_drive_based_on_fio(tabl, fio):
     """
-    Вывода данных на основе имени или таб.ном из базу
+    Вывод данных из базу на основе ФИО
     """
     try:
         curs = open_base(base)
@@ -116,13 +116,11 @@ def search_flash_drive_based_on_fio(tabl, fio):
 
 def search_flash_drive_based_on_tadnum(tabl, tabnum):
     """
-    Вывода данных на основе имени или таб.ном из базу
+    Вывод данных из базу на основе табельного номера
     """
     try:
         curs = open_base(base)
-        curs.execute(
-            f"SELECT * FROM {tabl} WHERE fio like '%{tabnum}%' OR tabnum like '%{tabnum}%'"
-        )
+        curs.execute(f"SELECT * FROM {tabl} WHERE tabnum like '%{tabnum}%'")
         result = curs.fetchall()
         return check_result(result)
     except Exception as err:
@@ -132,7 +130,7 @@ def search_flash_drive_based_on_tadnum(tabl, tabnum):
 
 def search_decommissioned_flash_drives(tabl):
     """
-    Вывода данных о списанных флешках из базу
+    Вывод данных из базу, о списанных флешках
     """
     try:
         curs = open_base(base)
@@ -148,7 +146,7 @@ def search_decommissioned_flash_drives(tabl):
 
 def file_search_based_on_id(tabl, device_id):
     """
-    Вывода данных на основе id из базу
+    Вывод данных из базу на основе id
     """
     try:
         curs = open_base(base)

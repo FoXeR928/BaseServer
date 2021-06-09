@@ -14,6 +14,14 @@ from sql import open_base
 test_client = TestClient(app.app)
 
 
+code_200 = 200
+code_201 = 201
+code_206 = 206
+code_400 = 400
+code_404 = 404
+code_422 = 422
+
+
 @pytest.yield_fixture(autouse=True)
 def base_create():
     connect_sql = sqlite3.connect(f"{base}.db", timeout=5)
@@ -50,8 +58,8 @@ def test_true_upload_file():
         ),
     ]
     responses = test_client.post("/upload_file", files=files)
-    assert responses.status_code == 201
-    assert responses.json() == ["Добавлено в базу"]
+    assert responses.status_code == code_201
+    assert responses.json() == ["Added to base"]
     curs = open_base(base)
     curs.execute(
         f"SELECT device_id, device_path, device_reg FROM {tabl} WHERE device_id='P1601450070867E90D1B6300'"
@@ -78,8 +86,8 @@ def test_true_2_upload_file():
         ),
     ]
     responses = test_client.post("/upload_file", files=files)
-    assert responses.status_code == 201
-    assert responses.json() == ["Добавлено в базу"]
+    assert responses.status_code == code_201
+    assert responses.json() == ["Added to base"]
 
 
 def test_false_upload_file():
@@ -88,8 +96,8 @@ def test_false_upload_file():
         ("file_reg", (open("tests/test_file/usb_deviceID_name_one.reg", "rb"))),
     ]
     responses = test_client.post("/upload_file", files=files)
-    assert responses.status_code == 500
-    assert responses.json() == ["Ошибка: UNIQUE constraint failed: tabl2.device_id"]
+    assert responses.status_code == code_422
+    assert responses.json() == ["ERROR: UNIQUE constraint failed: tabl2.device_id"]
 
 
 def test_false_2_upload_file():
@@ -104,8 +112,8 @@ def test_false_2_upload_file():
         ),
     ]
     responses = test_client.post("/upload_file", files=files)
-    assert responses.status_code == 206
-    assert responses.json() == ["Вы добавили 2 файла с одинаковыми расширениями"]
+    assert responses.status_code == code_206
+    assert responses.json() == ["You have added 2 files with the same extensions"]
 
 
 def test_false3_upload_file():
@@ -116,28 +124,28 @@ def test_false3_upload_file():
             "file_reg": "usb_deviceID_P1601450070867E90D1B6301.reg",
         },
     )
-    assert responses.status_code == 400
-    assert responses.json() == ["Не верное название файла"]
+    assert responses.status_code == code_400
+    assert responses.json() == ["Incorrect file name"]
 
 
 def test_upload_file():
     responses = test_client.post(
         "/upload_file", files={"file_txt": "1", "file_reg": "1"}
     )
-    assert responses.status_code == 400
-    assert responses.json() == ["Не верное название файла"]
+    assert responses.status_code == code_400
+    assert responses.json() == ["Incorrect file name"]
 
 
 def test_device_id_date():
     responses = test_client.get("/date_flask/?device_id=1")
-    assert responses.status_code == 404
-    assert responses.json() == ["Нету такой флешки"]
+    assert responses.status_code == code_404
+    assert responses.json() == ["Not result"]
 
 
 def test_true_device_id_date():
     responses = test_client.get("/date_flask/?device_id=name_one")
-    assert responses.status_code == 200
-    assert responses.json() == {"Флешка": [["text_txt", "text_reg"]]}
+    assert responses.status_code == code_200
+    assert responses.json() == {"Flask": [["text_txt", "text_reg"]]}
 
 
 def test_give_file():
@@ -145,38 +153,38 @@ def test_give_file():
     fio = ru.full_name()
     tabnum = gen.code.imei()
     department = ru.occupation()
-    responses = test_client.post(
+    responses = test_client.put(
         f"/give_flask?device_id={device_id}&fio={fio}&tabnum={tabnum}&department={department}"
     )
-    assert responses.status_code == 201
-    assert responses.json() == [f"Флешка {device_id} выдана {fio}"]
+    assert responses.status_code == code_201
+    assert responses.json() == [f"Flask {device_id} give to {fio}"]
 
 
 def test_true_give_file():
-    responses = test_client.post(
+    responses = test_client.put(
         "/give_flask?device_id=name_one&fio=1&tabnum=1&department=1"
     )
-    assert responses.status_code == 201
-    assert responses.json() == ["Флешка name_one выдана 1"]
+    assert responses.status_code == code_201
+    assert responses.json() == ["Flask name_one give to 1"]
 
 
 def test_device_id_get():
-    responses = test_client.post("/get_flask?device_id=1")
-    assert responses.status_code == 201
-    assert responses.json() == ["База флешки 1 очищена"]
+    responses = test_client.put("/get_flask?device_id=1")
+    assert responses.status_code == code_201
+    assert responses.json() == ["Flash drive base 1 cleared"]
 
 
 def test_true_device_id_get():
-    responses = test_client.post("/get_flask?device_id=name_one")
-    assert responses.status_code == 201
-    assert responses.json() == ["База флешки name_one очищена"]
+    responses = test_client.put("/get_flask?device_id=name_one")
+    assert responses.status_code == code_201
+    assert responses.json() == ["Flash drive base name_one cleared"]
 
 
 def test_code_flask_off():
     responses = test_client.get("/off_flask")
-    assert responses.status_code == 200
+    assert responses.status_code == code_200
     assert responses.json() == {
-        "Флешка": [
+        "Flask": [
             [
                 "name3",
                 "text_txt",
@@ -193,9 +201,9 @@ def test_code_flask_off():
 
 def test_code_flask_all():
     responses = test_client.get("/all_flask")
-    assert responses.status_code == 200
+    assert responses.status_code == code_200
     assert responses.json() == {
-        "База": [
+        "Base": [
             [
                 "name_one",
                 "text_txt",
@@ -262,15 +270,15 @@ def test_code_flask_all():
 
 def test_false_name_flask():
     responses = test_client.get("/name_flask?fio=n")
-    assert responses.status_code == 404
-    assert responses.json() == ["Нету такой флешки"]
+    assert responses.status_code == code_404
+    assert responses.json() == ["Not result"]
 
 
 def test_true_name_flask():
     responses = test_client.get("/name_flask?fio=Велигор Миссюров")
-    assert responses.status_code == 200
+    assert responses.status_code == code_200
     assert responses.json() == {
-        "Флешка": [
+        "Flask": [
             [
                 "name4",
                 "text_txt",
@@ -287,9 +295,9 @@ def test_true_name_flask():
 
 def test_true_tabnum_flask():
     responses = test_client.get("/tabnum_flask?tabnum=358240054017520")
-    assert responses.status_code == 200
+    assert responses.status_code == code_200
     assert responses.json() == {
-        "Флешка": [
+        "Flask": [
             [
                 "name6",
                 "text_txt",
@@ -306,9 +314,9 @@ def test_true_tabnum_flask():
 
 def test_name_flask_only_one_letter():
     responses = test_client.get("/name_flask?fio=В")
-    assert responses.status_code == 200
+    assert responses.status_code == code_200
     assert responses.json() == {
-        "Флешка": [
+        "Flask": [
             [
                 "name4",
                 "text_txt",
@@ -325,9 +333,9 @@ def test_name_flask_only_one_letter():
 
 def test_tabnum_flask_only_one_number():
     responses = test_client.get("/tabnum_flask?tabnum=3")
-    assert responses.status_code == 200
+    assert responses.status_code == code_200
     assert responses.json() == {
-        "Флешка": [
+        "Flask": [
             [
                 "name2",
                 "text_txt",
