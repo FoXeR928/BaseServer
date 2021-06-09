@@ -26,13 +26,14 @@ def write_to_database_flash_drive(tabl, device_id, content, regist, date_in):
     curs = open_base(base)
     try:
         curs.execute(
-            f"INSERT or IGNORE INTO {tabl}(device_id, device_path, device_reg, date_in) VALUES ('{device_id}', '{content}', '{regist}', '{date_in}');"
+            f"INSERT INTO {tabl}(device_id, device_path, device_reg, date_in) VALUES ('{device_id}', '{content}', '{regist}', '{date_in}');"
         )
         logger.debug(f"Base recording. {device_id}")
         open_base.connect.commit()
         return {"err": 0, "result": "Record created"}
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
+        open_base.connect.commit()
         return {"err": 1, "result": err}
 
 
@@ -82,6 +83,7 @@ def all_flash_drives_of_base(tabl):
         return {"err": 0, "result": curs.fetchall()}
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
+        return {"err": 1, "result": err}
 
 
 def search_flash_drive_based_on_id(tabl, device_id):
@@ -95,21 +97,37 @@ def search_flash_drive_based_on_id(tabl, device_id):
         return check_result(result)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
+        return {"err": 1, "result": err}
 
 
-def search_flash_drive_based_on_fio_or_tadnumder(tabl, fiotab):
+def search_flash_drive_based_on_fio(tabl, fio):
+    """
+    Вывода данных на основе имени или таб.ном из базу
+    """
+    try:
+        curs = open_base(base)
+        curs.execute(f"SELECT * FROM {tabl} WHERE fio like '%{fio}%'")
+        result = curs.fetchall()
+        return check_result(result)
+    except Exception as err:
+        logger.error(f"Base recording. ERROR: {err}")
+        return {"err": 1, "result": err}
+
+
+def search_flash_drive_based_on_tadnum(tabl, tabnum):
     """
     Вывода данных на основе имени или таб.ном из базу
     """
     try:
         curs = open_base(base)
         curs.execute(
-            f"SELECT * FROM {tabl} WHERE fio like '%{fiotab}%' OR tabnum like '%{fiotab}%'"
+            f"SELECT * FROM {tabl} WHERE fio like '%{tabnum}%' OR tabnum like '%{tabnum}%'"
         )
         result = curs.fetchall()
         return check_result(result)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
+        return {"err": 1, "result": err}
 
 
 def search_decommissioned_flash_drives(tabl):
@@ -125,6 +143,7 @@ def search_decommissioned_flash_drives(tabl):
         return check_result(result)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
+        return {"err": 1, "result": err}
 
 
 def file_search_based_on_id(tabl, device_id):
@@ -140,3 +159,4 @@ def file_search_based_on_id(tabl, device_id):
         return check_result(result)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
+        return {"err": 1, "result": err}

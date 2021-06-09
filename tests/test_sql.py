@@ -68,71 +68,10 @@ def test_false_write_to_database_flash_drive():
     result = sql.write_to_database_flash_drive(
         tabl, device_id, content, regist, date_in
     )
-    assert result["err"] == 0
+    assert result["err"] == 1
     curs.execute(f"SELECT * FROM {tabl}")
     result = curs.fetchall()
-    assert result == [
-        (
-            "name_one",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            None,
-            None,
-            None,
-            None,
-        ),
-        (
-            "name2",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            "Кетрин Чимоканова",
-            359254064417561,
-            "Режиссер",
-        ),
-        (
-            "name3",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            None,
-            None,
-            None,
-        ),
-        (
-            "name4",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            "Велигор Миссюров",
-            353166055808564,
-            "Травматолог",
-        ),
-        (
-            "name5",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            "Хосе Подюков",
-            329304008876062,
-            "Психиатр",
-        ),
-        (
-            "name6",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            "Ынтымак Горляков",
-            358240054017520,
-            "Кассир",
-        ),
-    ]
+    assert len(result) == 6
 
 
 def test_write_to_database_issuing_flash_drive():
@@ -148,68 +87,7 @@ def test_write_to_database_issuing_flash_drive():
     assert result["err"] == 0
     curs.execute(f"SELECT * FROM {tabl}")
     result = curs.fetchall()
-    assert result == [
-        (
-            "name_one",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            None,
-            None,
-            None,
-            None,
-        ),
-        (
-            "name2",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            "Кетрин Чимоканова",
-            359254064417561,
-            "Режиссер",
-        ),
-        (
-            "name3",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            None,
-            None,
-            None,
-        ),
-        (
-            "name4",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            "Велигор Миссюров",
-            353166055808564,
-            "Травматолог",
-        ),
-        (
-            "name5",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            "Хосе Подюков",
-            329304008876062,
-            "Психиатр",
-        ),
-        (
-            "name6",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            "Ынтымак Горляков",
-            358240054017520,
-            "Кассир",
-        ),
-    ]
+    assert len(result) == 6
 
 
 def test_cleaning_resulting_flash_drive():
@@ -245,9 +123,15 @@ def test_search_flash_drive_based_on_id():
     assert result["err"] == 1
 
 
-def test_search_flash_drive_based_on_fio_or_tadnumder():
-    fiotab = "It is name" or "4654646464646464444444444444444444444444444444"
-    result = sql.search_flash_drive_based_on_fio_or_tadnumder(tabl, fiotab)
+def test_search_flash_drive_based_on_fio():
+    fio = "It is name"
+    result = sql.search_flash_drive_based_on_fio(tabl, fio)
+    assert result["err"] == 1
+
+
+def test_search_flash_drive_based_on_tabnum():
+    tabnum = "4654646464646464444444444444444444444444444444"
+    result = sql.search_flash_drive_based_on_tadnum(tabl, tabnum)
     assert result["err"] == 1
 
 
@@ -300,12 +184,84 @@ def test_true_file_search_based_on_id():
 
 
 def test_true_search_flash_drive_based_on_fio():
-    fiotab = "Велигор Миссюров"
-    result = sql.search_flash_drive_based_on_fio_or_tadnumder(tabl, fiotab)
+    fio = "Велигор Миссюров"
+    result = sql.search_flash_drive_based_on_fio(tabl, fio)
     assert result["err"] == 0
 
 
 def test_true_search_flash_drive_based_on_tadnumder():
-    fiotab = 358240054017520
-    result = sql.search_flash_drive_based_on_fio_or_tadnumder(tabl, fiotab)
+    tabnum = 358240054017520
+    result = sql.search_flash_drive_based_on_tadnum(tabl, tabnum)
     assert result["err"] == 0
+
+
+def test_true_result_search_flash_drive_based_on_id():
+    result = sql.search_flash_drive_based_on_id(tabl, "name6")
+    assert result["result"] == [
+        (
+            "name6",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            "Ынтымак Горляков",
+            358240054017520,
+            "Кассир",
+        )
+    ]
+
+
+def test_true_result_search_decommissioned_flash_drives():
+    answer = sql.search_decommissioned_flash_drives(tabl)
+    assert answer["result"] == [
+        (
+            "name3",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            None,
+            None,
+            None,
+        ),
+    ]
+
+
+def test_true_result_file_search_based_on_id():
+    device_id = "name_one"
+    result = sql.file_search_based_on_id(tabl, device_id)
+    assert result["result"] == [("text_txt", "text_reg")]
+
+
+def test_true_result_search_flash_drive_based_on_fio():
+    fio = "Велигор Миссюров"
+    result = sql.search_flash_drive_based_on_fio(tabl, fio)
+    assert result["result"] == [
+        (
+            "name4",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            "Велигор Миссюров",
+            353166055808564,
+            "Травматолог",
+        )
+    ]
+
+
+def test_true_result_search_flash_drive_based_on_tadnumder():
+    tabnum = 358240054017520
+    result = sql.search_flash_drive_based_on_tadnum(tabl, tabnum)
+    assert result["result"] == [
+        (
+            "name6",
+            "text_txt",
+            "text_reg",
+            "2011-10-13 16:23:16.083572",
+            "2019-03-07 23:17:50.848051",
+            "Ынтымак Горляков",
+            358240054017520,
+            "Кассир",
+        )
+    ]

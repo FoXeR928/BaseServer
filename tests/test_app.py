@@ -1,3 +1,4 @@
+from datetime import datetime
 import mimesis
 import sqlite3
 import sys
@@ -8,6 +9,7 @@ from fastapi.testclient import TestClient
 sys.path.append("./")
 import app
 from config import base, tabl
+from sql import open_base
 
 test_client = TestClient(app.app)
 
@@ -49,7 +51,19 @@ def test_true_upload_file():
     ]
     responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == 201
-    assert responses.json() == ["Добавлено в базу, если не было"]
+    assert responses.json() == ["Добавлено в базу"]
+    curs = open_base(base)
+    curs.execute(
+        f"SELECT device_id, device_path, device_reg FROM {tabl} WHERE device_id='P1601450070867E90D1B6300'"
+    )
+    result = curs.fetchall()
+    assert result == [
+        (
+            "P1601450070867E90D1B6300",
+            "Здесь сообщение, которое проверяет правильность записи в базу, но сообщение я не придумал поэтому psoskgepgodfle[porypoyietor[glhkrpoyitrpyglkfg;hnmf]]",
+            "А тут написан другой текст для проверки работоспособности записи в базу и текст этот из себя представляет p[rtier0934-0534lkjfldfgt3048po;egkdhdlgypeortyiglmmdbr454k]",
+        )
+    ]
 
 
 def test_true_2_upload_file():
@@ -65,7 +79,7 @@ def test_true_2_upload_file():
     ]
     responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == 201
-    assert responses.json() == ["Добавлено в базу, если не было"]
+    assert responses.json() == ["Добавлено в базу"]
 
 
 def test_false_upload_file():
@@ -74,8 +88,8 @@ def test_false_upload_file():
         ("file_reg", (open("tests/test_file/usb_deviceID_name_one.reg", "rb"))),
     ]
     responses = test_client.post("/upload_file", files=files)
-    assert responses.status_code == 201
-    assert responses.json() == ["Добавлено в базу, если не было"]
+    assert responses.status_code == 500
+    assert responses.json() == ["Ошибка: UNIQUE constraint failed: tabl2.device_id"]
 
 
 def test_false_2_upload_file():
@@ -112,54 +126,6 @@ def test_upload_file():
     )
     assert responses.status_code == 400
     assert responses.json() == ["Не верное название файла"]
-
-
-# def test_upload_file():
-#     responses = test_client.post("/upload_file", files={"files": "1", "files": "1"})
-#     assert responses.status_code == 201
-#     assert responses.json() == ["Не верное название файла"]
-
-
-# def test_reg_upload_file():
-#     responses = test_client.post(
-#         "/upload_file",
-#         files={
-#             "files": open(
-#                 "tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb"
-#             )
-#         },
-#     )
-#     assert responses.status_code == 201
-#     assert responses.json() == [
-#         "Файла .reg [] и .txt ['usb_deviceID_P1601450070867E90D1B6300'] не хватает"
-#     ]
-
-
-# def test_txt_upload_file():
-#     responses = test_client.post(
-#         "/upload_file",
-#         files={
-#             "files": open(
-#                 "tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb"
-#             )
-#         },
-#     )
-#     assert responses.status_code == 201
-#     assert responses.json() == [
-#         "Файла .reg ['usb_deviceID_P1601450070867E90D1B6300'] и .txt [] не хватает"w
-#     ]
-
-
-# def test_all_upload_file():
-#     files = [
-#         "files",
-#         open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.reg", "rb"),
-#         "files",
-#         open("tests/test_file/usb_deviceID_P1601450070867E90D1B6300.txt", "rb"),
-#     ]
-#     responses = test_client.post("/upload_file", files=files)
-#     assert responses.status_code == 201
-#     assert responses.json() == ["Файл добавлен в базу"]
 
 
 def test_device_id_date():
@@ -295,13 +261,13 @@ def test_code_flask_all():
 
 
 def test_false_name_flask():
-    responses = test_client.get("/name_flask?fiotab=n")
+    responses = test_client.get("/name_flask?fio=n")
     assert responses.status_code == 404
     assert responses.json() == ["Нету такой флешки"]
 
 
 def test_true_name_flask():
-    responses = test_client.get("/name_flask?fiotab=Велигор Миссюров")
+    responses = test_client.get("/name_flask?fio=Велигор Миссюров")
     assert responses.status_code == 200
     assert responses.json() == {
         "Флешка": [
@@ -320,7 +286,7 @@ def test_true_name_flask():
 
 
 def test_true_tabnum_flask():
-    responses = test_client.get("/name_flask?fiotab=358240054017520")
+    responses = test_client.get("/tabnum_flask?tabnum=358240054017520")
     assert responses.status_code == 200
     assert responses.json() == {
         "Флешка": [
@@ -339,7 +305,7 @@ def test_true_tabnum_flask():
 
 
 def test_name_flask_only_one_letter():
-    responses = test_client.get("/name_flask?fiotab=В")
+    responses = test_client.get("/name_flask?fio=В")
     assert responses.status_code == 200
     assert responses.json() == {
         "Флешка": [
@@ -358,7 +324,7 @@ def test_name_flask_only_one_letter():
 
 
 def test_tabnum_flask_only_one_number():
-    responses = test_client.get("/name_flask?fiotab=3")
+    responses = test_client.get("/tabnum_flask?tabnum=3")
     assert responses.status_code == 200
     assert responses.json() == {
         "Флешка": [
