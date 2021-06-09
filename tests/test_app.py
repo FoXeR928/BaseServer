@@ -1,15 +1,13 @@
-from datetime import datetime
 import mimesis
 import sqlite3
 import sys
 import pytest
-
 from fastapi.testclient import TestClient
 
 sys.path.append("./")
 import app
-from config import base, tabl
 from sql import open_base
+from db_set import Base, Tabl
 
 test_client = TestClient(app.app)
 
@@ -22,22 +20,22 @@ code_404 = 404
 code_422 = 422
 
 
-@pytest.yield_fixture(autouse=True)
-def base_create():
-    connect_sql = sqlite3.connect(f"{base}.db", timeout=5)
-    curs = connect_sql.cursor()
-    curs.execute(f"DELETE FROM {tabl}")
-    curs.execute(
-        f"""INSERT INTO {tabl}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
-                    VALUES ('name_one','text_txt','text_reg', '2011-10-13 16:23:16.083572',NULL,NULL,NULL,NULL),
-                    ('name2','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Кетрин Чимоканова',359254064417561,'Режиссер'),
-                    ('name3','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051',NULL,NULL,NULL),
-                    ('name4','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Велигор Миссюров',353166055808564,'Травматолог'),
-                    ('name5','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Хосе Подюков',329304008876062,'Психиатр'),
-                    ('name6','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Ынтымак Горляков',358240054017520,'Кассир');"""
-    )
-    connect_sql.commit()
-    yield
+# @pytest.yield_fixture(autouse=True)
+# def base_create():
+#     connect_sql = sqlite3.connect(f"{base}.db", timeout=5)
+#     curs = connect_sql.cursor()
+#     curs.execute(f"DELETE FROM {tabl}")
+#     curs.execute(
+#         f"""INSERT INTO {tabl}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
+#                     VALUES ('name_one','text_txt','text_reg', '2011-10-13 16:23:16.083572',NULL,NULL,NULL,NULL),
+#                     ('name2','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Кетрин Чимоканова',359254064417561,'Режиссер'),
+#                     ('name3','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051',NULL,NULL,NULL),
+#                     ('name4','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Велигор Миссюров',353166055808564,'Травматолог'),
+#                     ('name5','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Хосе Подюков',329304008876062,'Психиатр'),
+#                     ('name6','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Ынтымак Горляков',358240054017520,'Кассир');"""
+#     )
+#     connect_sql.commit()
+#     yield
 
 
 en = mimesis.Person("en")
@@ -60,11 +58,10 @@ def test_true_upload_file():
     responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == code_201
     assert responses.json() == ["Added to base"]
-    curs = open_base(base)
-    curs.execute(
-        f"SELECT device_id, device_path, device_reg FROM {tabl} WHERE device_id='P1601450070867E90D1B6300'"
+    session = open_base(Base)
+    result = (
+        session.query(Tabl.device_id, Tabl.device_path, Tabl.device_reg).filter(Tabl.device_id == "P1601450070867E90D1B6300").all()
     )
-    result = curs.fetchall()
     assert result == [
         (
             "P1601450070867E90D1B6300",
@@ -145,7 +142,9 @@ def test_device_id_date():
 def test_true_device_id_date():
     responses = test_client.get("/date_flask/?device_id=name_one")
     assert responses.status_code == code_200
-    assert responses.json() == {"Flask": [["text_txt", "text_reg"]]}
+    assert responses.json() == {
+        "Flask": [{"device_path": "text_txt", "device_reg": "text_reg"}]
+    }
 
 
 def test_give_file():
@@ -279,16 +278,16 @@ def test_true_name_flask():
     assert responses.status_code == code_200
     assert responses.json() == {
         "Flask": [
-            [
-                "name4",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                "2019-03-07 23:17:50.848051",
-                "Велигор Миссюров",
-                353166055808564,
-                "Травматолог",
-            ]
+            {
+                "date_in": "2011-10-13 16:23:16.083572",
+                "date_out": "2019-03-07 23:17:50.848051",
+                "department": "Травматолог",
+                "device_id": "name4",
+                "device_path": "text_txt",
+                "device_reg": "text_reg",
+                "fio": "Велигор Миссюров",
+                "tabnum": 353166055808564,
+            }
         ]
     }
 
@@ -298,17 +297,17 @@ def test_true_tabnum_flask():
     assert responses.status_code == code_200
     assert responses.json() == {
         "Flask": [
-            [
-                "name6",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                "2019-03-07 23:17:50.848051",
-                "Ынтымак Горляков",
-                358240054017520,
-                "Кассир",
-            ]
-        ]
+            {
+                "date_in": "2011-10-13 16:23:16.083572",
+                "date_out": "2019-03-07 23:17:50.848051",
+                "department": "Кассир",
+                "device_id": "name6",
+                "device_path": "text_txt",
+                "device_reg": "text_reg",
+                "fio": "Ынтымак Горляков",
+                "tabnum": 358240054017520,
+            }
+        ],
     }
 
 
@@ -316,18 +315,14 @@ def test_name_flask_only_one_letter():
     responses = test_client.get("/name_flask?fio=В")
     assert responses.status_code == code_200
     assert responses.json() == {
-        "Flask": [
-            [
-                "name4",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                "2019-03-07 23:17:50.848051",
-                "Велигор Миссюров",
-                353166055808564,
-                "Травматолог",
-            ]
-        ]
+        'Flask': [{'date_in': '2011-10-13 16:23:16.083572',
+                'date_out': '2019-03-07 23:17:50.848051',
+                'department': 'Травматолог',
+                'device_id': 'name4',
+                'device_path': 'text_txt',
+                'device_reg': 'text_reg',
+                'fio': 'Велигор Миссюров',
+                'tabnum': 353166055808564}]
     }
 
 

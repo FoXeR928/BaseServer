@@ -1,13 +1,16 @@
-import sqlite3
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from loguru import logger
 from config import base
+from db_set import Base
 
 
 def open_base(base):
-    connect_sql = sqlite3.connect(f"{base}.db")
-    curs = connect_sql.cursor()
-    open_base.connect = connect_sql
-    return curs
+    engine = create_engine(f"sqlite:///{base}.db")
+    Base.metadata.bind = engine
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    return session
 
 
 def check_result(result):
@@ -23,17 +26,20 @@ def write_to_database_flash_drive(tabl, device_id, content, regist, date_in):
     """
     Добавление в базу Файла и id
     """
-    curs = open_base(base)
+    session = open_base(base)
     try:
-        curs.execute(
-            f"INSERT INTO {tabl}(device_id, device_path, device_reg, date_in) VALUES ('{device_id}', '{content}', '{regist}', '{date_in}');"
+        record = tabl(
+            device_id=device_id,
+            device_path=content,
+            device_reg=regist,
+            date_in=date_in,
         )
+        session.add(record)
         logger.debug(f"Base recording. {device_id}")
-        open_base.connect.commit()
+        session.commit()
         return {"err": 0, "result": "Record created"}
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
-        open_base.connect.commit()
         return {"err": 1, "result": err}
 
 
@@ -43,13 +49,16 @@ def write_to_database_issuing_flash_drive(
     """
     Добавление в базу выданных флешек
     """
-    curs = open_base(base)
+    session = open_base(base)
     try:
-        curs.execute(
-            f"UPDATE {tabl} SET date_out='{date_out}', fio= '{fio}', tabnum='{tabnum}', department='{department}' WHERE device_id='{device_id}'"
-        )
+        check = session.query(tabl).filter(tabl.device_id == device_id).one()
+        check.date_out = date_out
+        check.fio = fio
+        check.tabnum = tabnum
+        check.department = department
+        session.add(check)
+        session.commit()
         logger.debug(f"Base recording. {device_id}")
-        open_base.connect.commit()
         return {"err": 0, "result": "Record created"}
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
@@ -60,13 +69,16 @@ def cleaning_resulting_flash_drive(tabl, device_id):
     """
     Очистка базы выданной флешки
     """
-    curs = open_base(base)
+    session = open_base(base)
     try:
-        curs.execute(
-            f"UPDATE {tabl} SET date_out=NULL, fio= NULL, tabnum=NULL, department=NULL WHERE device_id='{device_id}'"
-        )
+        check = session.query(tabl).filter(tabl.device_id == device_id).one()
+        check.date_out = None
+        check.fio = None
+        check.tabnum = None
+        check.department = None
+        session.add(check)
+        session.commit()
         logger.debug(f"Base clear. {device_id}")
-        open_base.connect.commit()
         return {"err": 0, "result": "Record created"}
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
@@ -78,9 +90,9 @@ def all_flash_drives_of_base(tabl):
     Вывод всех данных из базу
     """
     try:
-        curs = open_base(base)
-        curs.execute(f"SELECT * FROM {tabl}")
-        return {"err": 0, "result": curs.fetchall()}
+        session = open_base(base)
+        check = session.query(tabl).all()
+        return {"err": 0, "result": check}
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
         return {"err": 1, "result": err}
@@ -91,10 +103,9 @@ def search_flash_drive_based_on_id(tabl, device_id):
     Вывод данных из базу на основе id
     """
     try:
-        curs = open_base(base)
-        curs.execute(f"SELECT * FROM {tabl} WHERE device_id like '%{device_id}%'")
-        result = curs.fetchall()
-        return check_result(result)
+        session = open_base(base)
+        check = session.query(tabl).filter_by(device_id=device_id).all()
+        return check_result(check)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
         return {"err": 1, "result": err}
@@ -105,10 +116,9 @@ def search_flash_drive_based_on_fio(tabl, fio):
     Вывод данных из базу на основе ФИО
     """
     try:
-        curs = open_base(base)
-        curs.execute(f"SELECT * FROM {tabl} WHERE fio like '%{fio}%'")
-        result = curs.fetchall()
-        return check_result(result)
+        session = open_base(base)
+        check = session.query(tabl).filter(tabl.fio.like("%" + fio + "%")).all()
+        return check_result(check)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
         return {"err": 1, "result": err}
@@ -119,10 +129,9 @@ def search_flash_drive_based_on_tadnum(tabl, tabnum):
     Вывод данных из базу на основе табельного номера
     """
     try:
-        curs = open_base(base)
-        curs.execute(f"SELECT * FROM {tabl} WHERE tabnum like '%{tabnum}%'")
-        result = curs.fetchall()
-        return check_result(result)
+        session = open_base(base)
+        check = session.query(tabl).filter(tabl.tabnum.like("%" + tabnum + "%")).all()
+        return check_result(check)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
         return {"err": 1, "result": err}
@@ -133,12 +142,9 @@ def search_decommissioned_flash_drives(tabl):
     Вывод данных из базу, о списанных флешках
     """
     try:
-        curs = open_base(base)
-        curs.execute(
-            f"SELECT * FROM {tabl} WHERE date_out IS NOT NULL AND (fio IS NULL OR tabnum IS NULL)"
-        )
-        result = curs.fetchall()
-        return check_result(result)
+        session = open_base(base)
+        check = session.query(tabl).filter(tabl.fio == None, tabl.tabnum == None).all()
+        return check_result(check)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
         return {"err": 1, "result": err}
@@ -149,12 +155,13 @@ def file_search_based_on_id(tabl, device_id):
     Вывод данных из базу на основе id
     """
     try:
-        curs = open_base(base)
-        curs.execute(
-            f"SELECT device_path, device_reg FROM {tabl} WHERE device_id='{device_id}'"
+        session = open_base(base)
+        check = (
+            session.query(tabl.device_path, tabl.device_reg)
+            .filter(tabl.device_id == device_id)
+            .all()
         )
-        result = curs.fetchall()
-        return check_result(result)
+        return check_result(check)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
         return {"err": 1, "result": err}

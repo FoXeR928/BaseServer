@@ -2,7 +2,7 @@ import fastapi
 from loguru import logger
 import sql
 import datetime
-from config import tabl
+from db_set import Tabl
 
 
 app = fastapi.FastAPI()
@@ -62,7 +62,7 @@ def upload_file(
             file_read = read_txt.file.read().decode("utf-16")
             regist_read = read_reg.file.read().decode("utf-16")
             result = sql.write_to_database_flash_drive(
-                tabl, device_id1, file_read, regist_read, date
+                Tabl, device_id1, file_read, regist_read, date
             )
             if result["err"] == 1:
                 message = {f"ERROR: {result['result']}"}
@@ -89,7 +89,7 @@ def give_file(
     date_out = datetime.datetime.now()
     try:
         result = sql.write_to_database_issuing_flash_drive(
-            tabl, device_id, date_out, fio, tabnum, department
+            Tabl, device_id, date_out, fio, tabnum, department
         )
         if result["err"] == 1:
             message = {f"ERROR: {result['result']}"}
@@ -110,7 +110,7 @@ def get_flask(code: fastapi.Response, device_id: str):
     Возврат флешки
     """
     try:
-        result = sql.cleaning_resulting_flash_drive(tabl, device_id)
+        result = sql.cleaning_resulting_flash_drive(Tabl, device_id)
         if result["err"] == 1:
             message = {f"ERROR: {result['result']}"}
             code.status_code = fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY
@@ -130,7 +130,7 @@ def all_flask(code: fastapi.Response):
     Вывод флешек
     """
     try:
-        check = sql.all_flash_drives_of_base(tabl)
+        check = sql.all_flash_drives_of_base(Tabl)
         if check["err"] == 0:
             message = {"Base": check["result"]}
         logger.debug("Page /all_flask work")
@@ -147,7 +147,7 @@ def id_flask(code: fastapi.Response, device_id: str):
     Поиск флешки по id
     """
     try:
-        check = sql.search_flash_drive_based_on_id(tabl, device_id)
+        check = sql.search_flash_drive_based_on_id(Tabl, device_id)
         result = check_result(code, check)
         message = result["message"]
         logger.debug("Page /id_flask work")
@@ -164,7 +164,7 @@ def name_flask(code: fastapi.Response, fio: str):
     Поиск флешки по ФИО
     """
     try:
-        check = sql.search_flash_drive_based_on_fio(tabl, fio)
+        check = sql.search_flash_drive_based_on_fio(Tabl, fio)
         result = check_result(code, check)
         message = result["message"]
         logger.debug("Page /name_flask work")
@@ -181,7 +181,7 @@ def tabnum_flask(code: fastapi.Response, tabnum: int):
     Поиск флешки по табельному номеру
     """
     try:
-        check = sql.search_flash_drive_based_on_tadnum(tabl, tabnum)
+        check = sql.search_flash_drive_based_on_tadnum(Tabl, tabnum)
         result = check_result(code, check)
         message = result["message"]
         logger.debug("Page /name_flask work")
@@ -198,7 +198,7 @@ def off_flask(code: fastapi.Response):
     Вывод списанных флешек
     """
     try:
-        check = sql.search_decommissioned_flash_drives(tabl)
+        check = sql.search_decommissioned_flash_drives(Tabl)
         result = check_result(code, check)
         message = result["message"]
         logger.debug("Page /off_flask work")
@@ -214,7 +214,7 @@ def date_flask(code: fastapi.Response, device_id: str):
     """
     Данные флешек
     """
-    flask = sql.file_search_based_on_id(tabl, device_id)
+    flask = sql.file_search_based_on_id(Tabl, device_id)
     try:
         result = check_result(code, flask)
         message = result["message"]
