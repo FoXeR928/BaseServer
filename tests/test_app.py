@@ -60,7 +60,9 @@ def test_true_upload_file():
     assert responses.json() == ["Added to base"]
     session = open_base(Base)
     result = (
-        session.query(Tabl.device_id, Tabl.device_path, Tabl.device_reg).filter(Tabl.device_id == "P1601450070867E90D1B6300").all()
+        session.query(Tabl.device_id, Tabl.device_path, Tabl.device_reg)
+        .filter(Tabl.device_id == "P1601450070867E90D1B6300")
+        .all()
     )
     assert result == [
         (
@@ -315,14 +317,18 @@ def test_name_flask_only_one_letter():
     responses = test_client.get("/name_flask?fio=В")
     assert responses.status_code == code_200
     assert responses.json() == {
-        'Flask': [{'date_in': '2011-10-13 16:23:16.083572',
-                'date_out': '2019-03-07 23:17:50.848051',
-                'department': 'Травматолог',
-                'device_id': 'name4',
-                'device_path': 'text_txt',
-                'device_reg': 'text_reg',
-                'fio': 'Велигор Миссюров',
-                'tabnum': 353166055808564}]
+        "Flask": [
+            {
+                "date_in": "2011-10-13 16:23:16.083572",
+                "date_out": "2019-03-07 23:17:50.848051",
+                "department": "Травматолог",
+                "device_id": "name4",
+                "device_path": "text_txt",
+                "device_reg": "text_reg",
+                "fio": "Велигор Миссюров",
+                "tabnum": 353166055808564,
+            }
+        ]
     }
 
 
