@@ -130,7 +130,9 @@ def search_flash_drive_based_on_tadnum(tabl, tabnum):
     """
     try:
         session = open_base(base)
-        check = session.query(tabl).filter(tabl.tabnum.like("%" + tabnum + "%")).all()
+        check = (
+            session.query(tabl).filter(tabl.tabnum.like("%" + str(tabnum) + "%")).all()
+        )
         return check_result(check)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")

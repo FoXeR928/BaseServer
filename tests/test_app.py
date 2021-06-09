@@ -1,13 +1,14 @@
 import mimesis
-import sqlite3
 import sys
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 sys.path.append("./")
 import app
-from sql import open_base
 from db_set import Base, Tabl
+import config
 
 test_client = TestClient(app.app)
 
@@ -20,22 +21,77 @@ code_404 = 404
 code_422 = 422
 
 
-# @pytest.yield_fixture(autouse=True)
-# def base_create():
-#     connect_sql = sqlite3.connect(f"{base}.db", timeout=5)
-#     curs = connect_sql.cursor()
-#     curs.execute(f"DELETE FROM {tabl}")
-#     curs.execute(
-#         f"""INSERT INTO {tabl}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
-#                     VALUES ('name_one','text_txt','text_reg', '2011-10-13 16:23:16.083572',NULL,NULL,NULL,NULL),
-#                     ('name2','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Кетрин Чимоканова',359254064417561,'Режиссер'),
-#                     ('name3','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051',NULL,NULL,NULL),
-#                     ('name4','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Велигор Миссюров',353166055808564,'Травматолог'),
-#                     ('name5','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Хосе Подюков',329304008876062,'Психиатр'),
-#                     ('name6','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Ынтымак Горляков',358240054017520,'Кассир');"""
-#     )
-#     connect_sql.commit()
-#     yield
+def open_base(base):
+    sys.path.append("../")
+    engine = create_engine(f"sqlite:///{base}.db")
+    Base.metadata.bind = engine
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    return session
+
+
+@pytest.yield_fixture(autouse=True)
+def base_create():
+    session = open_base(config.base)
+    session.query(Tabl).delete()
+    session.commit()
+    record = Tabl(
+        device_id="name_one",
+        device_path="text_txt",
+        device_reg="text_reg",
+        date_in="2011-10-13 16:23:16.083572",
+    )
+    record2 = Tabl(
+        device_id="name2",
+        device_path="text_txt",
+        device_reg="text_reg",
+        date_in="2011-10-13 16:23:16.083572",
+        date_out="2019-03-07 23:17:50.848051",
+        fio="Кетрин Чимоканова",
+        tabnum=359254064417561,
+        department="Режиссер",
+    )
+    record3 = Tabl(
+        device_id="name3",
+        device_path="text_txt",
+        device_reg="text_reg",
+        date_in="2011-10-13 16:23:16.083572",
+        date_out="2019-03-07 23:17:50.848051",
+    )
+    record4 = Tabl(
+        device_id="name4",
+        device_path="text_txt",
+        device_reg="text_reg",
+        date_in="2011-10-13 16:23:16.083572",
+        date_out="2019-03-07 23:17:50.848051",
+        fio="Велигор Миссюров",
+        tabnum=353166055808564,
+        department="Травматолог",
+    )
+    record5 = Tabl(
+        device_id="name5",
+        device_path="text_txt",
+        device_reg="text_reg",
+        date_in="2011-10-13 16:23:16.083572",
+        date_out="2019-03-07 23:17:50.848051",
+        fio="Хосе Подюков",
+        tabnum=329304008876062,
+        department="Психиатр",
+    )
+    record6 = Tabl(
+        device_id="name6",
+        device_path="text_txt",
+        device_reg="text_reg",
+        date_in="2011-10-13 16:23:16.083572",
+        date_out="2019-03-07 23:17:50.848051",
+        fio="Ынтымак Горляков",
+        tabnum=358240054017520,
+        department="Кассир",
+    )
+    session.add_all([record, record2, record3, record4, record5, record6])
+    session.commit()
+    session.close()
+    yield
 
 
 en = mimesis.Person("en")
@@ -96,7 +152,9 @@ def test_false_upload_file():
     ]
     responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == code_422
-    assert responses.json() == ["ERROR: UNIQUE constraint failed: tabl2.device_id"]
+    assert responses.json() == [
+        "ERROR: (sqlite3.IntegrityError) UNIQUE constraint failed: tabl.device_id\n[SQL: INSERT INTO tabl (device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department) VALUES (?, ?, ?, ?, ?, ?, ?, ?)]\n[parameters: ('name_one', 'ответ', 'ответ', datetime.datetime(2021, 6, 9, 22, 50, 54, 724111), None, None, None, None)]\n(Background on this error at: http://sqlalche.me/e/14/gkpj)"
+    ]
 
 
 def test_false_2_upload_file():
@@ -186,16 +244,16 @@ def test_code_flask_off():
     assert responses.status_code == code_200
     assert responses.json() == {
         "Flask": [
-            [
-                "name3",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                "2019-03-07 23:17:50.848051",
-                None,
-                None,
-                None,
-            ]
+            {
+                "device_id": "name3",
+                "device_path": "text_txt",
+                "date_in": "2011-10-13 16:23:16.083572",
+                "fio": None,
+                "department": None,
+                "date_out": "2019-03-07 23:17:50.848051",
+                "device_reg": "text_reg",
+                "tabnum": None,
+            }
         ]
     }
 
@@ -205,66 +263,66 @@ def test_code_flask_all():
     assert responses.status_code == code_200
     assert responses.json() == {
         "Base": [
-            [
-                "name_one",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                None,
-                None,
-                None,
-                None,
-            ],
-            [
-                "name2",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                "2019-03-07 23:17:50.848051",
-                "Кетрин Чимоканова",
-                359254064417561,
-                "Режиссер",
-            ],
-            [
-                "name3",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                "2019-03-07 23:17:50.848051",
-                None,
-                None,
-                None,
-            ],
-            [
-                "name4",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                "2019-03-07 23:17:50.848051",
-                "Велигор Миссюров",
-                353166055808564,
-                "Травматолог",
-            ],
-            [
-                "name5",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                "2019-03-07 23:17:50.848051",
-                "Хосе Подюков",
-                329304008876062,
-                "Психиатр",
-            ],
-            [
-                "name6",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                "2019-03-07 23:17:50.848051",
-                "Ынтымак Горляков",
-                358240054017520,
-                "Кассир",
-            ],
+            {
+                "device_id": "name_one",
+                "device_path": "text_txt",
+                "date_in": "2011-10-13 16:23:16.083572",
+                "fio": None,
+                "department": None,
+                "date_out": None,
+                "device_reg": "text_reg",
+                "tabnum": None,
+            },
+            {
+                "device_id": "name2",
+                "device_path": "text_txt",
+                "date_in": "2011-10-13 16:23:16.083572",
+                "fio": "Кетрин Чимоканова",
+                "department": "Режиссер",
+                "date_out": "2019-03-07 23:17:50.848051",
+                "device_reg": "text_reg",
+                "tabnum": 359254064417561,
+            },
+            {
+                "device_id": "name3",
+                "device_path": "text_txt",
+                "date_in": "2011-10-13 16:23:16.083572",
+                "fio": None,
+                "department": None,
+                "date_out": "2019-03-07 23:17:50.848051",
+                "device_reg": "text_reg",
+                "tabnum": None,
+            },
+            {
+                "device_id": "name4",
+                "device_path": "text_txt",
+                "date_in": "2011-10-13 16:23:16.083572",
+                "fio": "Велигор Миссюров",
+                "department": "Травматолог",
+                "date_out": "2019-03-07 23:17:50.848051",
+                "device_reg": "text_reg",
+                "tabnum": 353166055808564,
+            },
+            {
+                "device_id": "name5",
+                "device_path": "text_txt",
+                "date_in": "2011-10-13 16:23:16.083572",
+                "fio": "Хосе Подюков",
+                "department": "Психиатр",
+                "date_out": "2019-03-07 23:17:50.848051",
+                "device_reg": "text_reg",
+                "tabnum": 329304008876062,
+            },
+            {
+                "device_id": "name6",
+                "device_path": "text_txt",
+                "date_in": "2011-10-13 16:23:16.083572",
+                "fio": "Ынтымак Горляков",
+                "department": "Кассир",
+                "date_out": "2019-03-07 23:17:50.848051",
+                "device_reg": "text_reg",
+                "tabnum": 358240054017520,
+            },
         ]
     }
 
@@ -337,45 +395,45 @@ def test_tabnum_flask_only_one_number():
     assert responses.status_code == code_200
     assert responses.json() == {
         "Flask": [
-            [
-                "name2",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                "2019-03-07 23:17:50.848051",
-                "Кетрин Чимоканова",
-                359254064417561,
-                "Режиссер",
-            ],
-            [
-                "name4",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                "2019-03-07 23:17:50.848051",
-                "Велигор Миссюров",
-                353166055808564,
-                "Травматолог",
-            ],
-            [
-                "name5",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                "2019-03-07 23:17:50.848051",
-                "Хосе Подюков",
-                329304008876062,
-                "Психиатр",
-            ],
-            [
-                "name6",
-                "text_txt",
-                "text_reg",
-                "2011-10-13 16:23:16.083572",
-                "2019-03-07 23:17:50.848051",
-                "Ынтымак Горляков",
-                358240054017520,
-                "Кассир",
-            ],
+            {
+                "device_id": "name2",
+                "device_path": "text_txt",
+                "date_in": "2011-10-13 16:23:16.083572",
+                "fio": "Кетрин Чимоканова",
+                "department": "Режиссер",
+                "date_out": "2019-03-07 23:17:50.848051",
+                "device_reg": "text_reg",
+                "tabnum": 359254064417561,
+            },
+            {
+                "device_id": "name4",
+                "device_path": "text_txt",
+                "date_in": "2011-10-13 16:23:16.083572",
+                "fio": "Велигор Миссюров",
+                "department": "Травматолог",
+                "date_out": "2019-03-07 23:17:50.848051",
+                "device_reg": "text_reg",
+                "tabnum": 353166055808564,
+            },
+            {
+                "device_id": "name5",
+                "device_path": "text_txt",
+                "date_in": "2011-10-13 16:23:16.083572",
+                "fio": "Хосе Подюков",
+                "department": "Психиатр",
+                "date_out": "2019-03-07 23:17:50.848051",
+                "device_reg": "text_reg",
+                "tabnum": 329304008876062,
+            },
+            {
+                "device_id": "name6",
+                "device_path": "text_txt",
+                "date_in": "2011-10-13 16:23:16.083572",
+                "fio": "Ынтымак Горляков",
+                "department": "Кассир",
+                "date_out": "2019-03-07 23:17:50.848051",
+                "device_reg": "text_reg",
+                "tabnum": 358240054017520,
+            },
         ]
     }
