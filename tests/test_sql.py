@@ -210,17 +210,8 @@ def test_true_search_flash_drive_based_on_tadnumder():
 
 def test_true_result_search_flash_drive_based_on_id():
     result = sql.search_flash_drive_based_on_id(Tabl, "name6")
-    for x in result["result"]:
-        assert [
-            x.device_id,
-            x.device_path,
-            x.device_reg,
-            x.date_in,
-            x.date_out,
-            x.fio,
-            x.tabnum,
-            x.department,
-        ] == [
+    assert result["result"] == [
+        [
             "name6",
             "text_txt",
             "text_reg",
@@ -230,21 +221,13 @@ def test_true_result_search_flash_drive_based_on_id():
             358240054017520,
             "Кассир",
         ]
+    ]
 
 
 def test_true_result_search_decommissioned_flash_drives():
-    result = sql.search_decommissioned_flash_drives(Tabl)
-    for x in result["result"]:
-        assert [
-            x.device_id,
-            x.device_path,
-            x.device_reg,
-            x.date_in,
-            x.date_out,
-            x.fio,
-            x.tabnum,
-            x.department,
-        ] == [
+    answer = sql.search_decommissioned_flash_drives(Tabl)
+    assert answer["result"] == [
+        [
             "name3",
             "text_txt",
             "text_reg",
@@ -254,32 +237,20 @@ def test_true_result_search_decommissioned_flash_drives():
             None,
             None,
         ]
+    ]
 
 
 def test_true_result_file_search_based_on_id():
     device_id = "name_one"
     result = sql.file_search_based_on_id(Tabl, device_id)
-    for x in result["result"]:
-        assert [x.device_path, x.device_reg,] == [
-            "text_txt",
-            "text_reg",
-        ]
+    assert result["result"] == ["text_txt", "text_reg"]
 
 
 def test_true_result_search_flash_drive_based_on_fio():
     fio = "Велигор Миссюров"
     result = sql.search_flash_drive_based_on_fio(Tabl, fio)
-    for x in result["result"]:
-        assert [
-            x.device_id,
-            x.device_path,
-            x.device_reg,
-            x.date_in,
-            x.date_out,
-            x.fio,
-            x.tabnum,
-            x.department,
-        ] == [
+    assert result["result"] == [
+        [
             "name4",
             "text_txt",
             "text_reg",
@@ -289,22 +260,14 @@ def test_true_result_search_flash_drive_based_on_fio():
             353166055808564,
             "Травматолог",
         ]
+    ]
 
 
 def test_true_result_search_flash_drive_based_on_tadnumder():
     tabnum = 358240054017520
     result = sql.search_flash_drive_based_on_tadnum(Tabl, tabnum)
-    for x in result["result"]:
-        assert [
-            x.device_id,
-            x.device_path,
-            x.device_reg,
-            x.date_in,
-            x.date_out,
-            x.fio,
-            x.tabnum,
-            x.department,
-        ] == [
+    assert result["result"] == [
+        [
             "name6",
             "text_txt",
             "text_reg",
@@ -314,3 +277,4 @@ def test_true_result_search_flash_drive_based_on_tadnumder():
             358240054017520,
             "Кассир",
         ]
+    ]

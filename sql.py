@@ -19,7 +19,21 @@ def check_result(result):
         return {"err": 1, "result": "Not result"}
     else:
         logger.debug(f"Найден. {result}")
-        return {"err": 0, "result": result}
+        result_list = []
+        result_list.clear()
+        for x in result:
+            check_result = [
+                x.device_id,
+                x.device_path,
+                x.device_reg,
+                x.date_in,
+                x.date_out,
+                x.fio,
+                x.tabnum,
+                x.department,
+            ]
+            result_list.append(check_result)
+        return {"err": 0, "result": result_list}
 
 
 def write_to_database_flash_drive(tabl, device_id, content, regist, date_in):
@@ -92,7 +106,21 @@ def all_flash_drives_of_base(tabl):
     try:
         session = open_base(base)
         check = session.query(tabl).all()
-        return {"err": 0, "result": check}
+        result_list = []
+        result_list.clear()
+        for x in check:
+            result = [
+                x.device_id,
+                x.device_path,
+                x.device_reg,
+                x.date_in,
+                x.date_out,
+                x.fio,
+                x.tabnum,
+                x.department,
+            ]
+            result_list.append(result)
+        return {"err": 0, "result": result_list}
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
         return {"err": 1, "result": err}
@@ -104,7 +132,9 @@ def search_flash_drive_based_on_id(tabl, device_id):
     """
     try:
         session = open_base(base)
-        check = session.query(tabl).filter_by(device_id=device_id).all()
+        check = (
+            session.query(tabl).filter(tabl.device_id.like("%" + device_id + "%")).all()
+        )
         return check_result(check)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
@@ -167,6 +197,13 @@ def file_search_based_on_id(tabl, device_id):
             .filter(tabl.device_id == device_id)
             .all()
         )
+        if len(check) == 0:
+            logger.debug(f"Такого нету. {check}")
+            return {"err": 1, "result": "Not result"}
+        else:
+            logger.debug(f"Найден. {check}")
+            for x in check:
+                return {"err": 0, "result": [x.device_path, x.device_reg]}
         return check_result(check)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")

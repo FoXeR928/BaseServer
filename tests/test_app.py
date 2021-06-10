@@ -120,15 +120,13 @@ def test_true_upload_file():
     assert responses.status_code == code_200
     assert responses.json() == {
         "Flask": [
-            {
-                "device_path": "Здесь сообщение, которое проверяет правильность "
-                "записи в базу, но сообщение я не придумал поэтому "
-                "psoskgepgodfle[porypoyietor[glhkrpoyitrpyglkfg;hnmf]]",
-                "device_reg": "А тут написан другой текст для проверки "
-                "работоспособности записи в базу и текст этот из "
-                "себя представляет "
-                "p[rtier0934-0534lkjfldfgt3048po;egkdhdlgypeortyiglmmdbr454k]",
-            }
+            "Здесь сообщение, которое проверяет правильность "
+            "записи в базу, но сообщение я не придумал поэтому "
+            "psoskgepgodfle[porypoyietor[glhkrpoyitrpyglkfg;hnmf]]",
+            "А тут написан другой текст для проверки "
+            "работоспособности записи в базу и текст этот из "
+            "себя представляет "
+            "p[rtier0934-0534lkjfldfgt3048po;egkdhdlgypeortyiglmmdbr454k]",
         ],
     }
 
@@ -203,16 +201,16 @@ def test_true_search_device_id():
     assert responses.status_code == code_200
     assert responses.json() == {
         "Flask": [
-            {
-                "date_in": "2011-10-13 16:23:16.083572",
-                "date_out": None,
-                "department": None,
-                "device_id": "name_one",
-                "device_path": "text_txt",
-                "device_reg": "text_reg",
-                "fio": None,
-                "tabnum": None,
-            }
+            [
+                "name_one",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                None,
+                None,
+                None,
+                None,
+            ]
         ],
     }
 
@@ -232,9 +230,7 @@ def test_device_id_date():
 def test_true_device_id_date():
     responses = test_client.get("/date_flask/?device_id=name_one")
     assert responses.status_code == code_200
-    assert responses.json() == {
-        "Flask": [{"device_path": "text_txt", "device_reg": "text_reg"}]
-    }
+    assert responses.json() == {"Flask": ["text_txt", "text_reg"]}
 
 
 def test_give_file():
@@ -274,16 +270,16 @@ def test_code_flask_off():
     assert responses.status_code == code_200
     assert responses.json() == {
         "Flask": [
-            {
-                "device_id": "name3",
-                "device_path": "text_txt",
-                "date_in": "2011-10-13 16:23:16.083572",
-                "fio": None,
-                "department": None,
-                "date_out": "2019-03-07 23:17:50.848051",
-                "device_reg": "text_reg",
-                "tabnum": None,
-            }
+            [
+                "name3",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                None,
+                None,
+                None,
+            ]
         ]
     }
 
@@ -293,66 +289,66 @@ def test_code_flask_all():
     assert responses.status_code == code_200
     assert responses.json() == {
         "Base": [
-            {
-                "device_id": "name_one",
-                "device_path": "text_txt",
-                "date_in": "2011-10-13 16:23:16.083572",
-                "fio": None,
-                "department": None,
-                "date_out": None,
-                "device_reg": "text_reg",
-                "tabnum": None,
-            },
-            {
-                "device_id": "name2",
-                "device_path": "text_txt",
-                "date_in": "2011-10-13 16:23:16.083572",
-                "fio": "Кетрин Чимоканова",
-                "department": "Режиссер",
-                "date_out": "2019-03-07 23:17:50.848051",
-                "device_reg": "text_reg",
-                "tabnum": 359254064417561,
-            },
-            {
-                "device_id": "name3",
-                "device_path": "text_txt",
-                "date_in": "2011-10-13 16:23:16.083572",
-                "fio": None,
-                "department": None,
-                "date_out": "2019-03-07 23:17:50.848051",
-                "device_reg": "text_reg",
-                "tabnum": None,
-            },
-            {
-                "device_id": "name4",
-                "device_path": "text_txt",
-                "date_in": "2011-10-13 16:23:16.083572",
-                "fio": "Велигор Миссюров",
-                "department": "Травматолог",
-                "date_out": "2019-03-07 23:17:50.848051",
-                "device_reg": "text_reg",
-                "tabnum": 353166055808564,
-            },
-            {
-                "device_id": "name5",
-                "device_path": "text_txt",
-                "date_in": "2011-10-13 16:23:16.083572",
-                "fio": "Хосе Подюков",
-                "department": "Психиатр",
-                "date_out": "2019-03-07 23:17:50.848051",
-                "device_reg": "text_reg",
-                "tabnum": 329304008876062,
-            },
-            {
-                "device_id": "name6",
-                "device_path": "text_txt",
-                "date_in": "2011-10-13 16:23:16.083572",
-                "fio": "Ынтымак Горляков",
-                "department": "Кассир",
-                "date_out": "2019-03-07 23:17:50.848051",
-                "device_reg": "text_reg",
-                "tabnum": 358240054017520,
-            },
+            [
+                "name_one",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                None,
+                None,
+                None,
+                None,
+            ],
+            [
+                "name2",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Кетрин Чимоканова",
+                359254064417561,
+                "Режиссер",
+            ],
+            [
+                "name3",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                None,
+                None,
+                None,
+            ],
+            [
+                "name4",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Велигор Миссюров",
+                353166055808564,
+                "Травматолог",
+            ],
+            [
+                "name5",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Хосе Подюков",
+                329304008876062,
+                "Психиатр",
+            ],
+            [
+                "name6",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Ынтымак Горляков",
+                358240054017520,
+                "Кассир",
+            ],
         ]
     }
 
@@ -368,16 +364,16 @@ def test_true_name_flask():
     assert responses.status_code == code_200
     assert responses.json() == {
         "Flask": [
-            {
-                "date_in": "2011-10-13 16:23:16.083572",
-                "date_out": "2019-03-07 23:17:50.848051",
-                "department": "Травматолог",
-                "device_id": "name4",
-                "device_path": "text_txt",
-                "device_reg": "text_reg",
-                "fio": "Велигор Миссюров",
-                "tabnum": 353166055808564,
-            }
+            [
+                "name4",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Велигор Миссюров",
+                353166055808564,
+                "Травматолог",
+            ]
         ]
     }
 
@@ -395,17 +391,17 @@ def test_true_tabnum_flask():
     assert responses.status_code == code_200
     assert responses.json() == {
         "Flask": [
-            {
-                "date_in": "2011-10-13 16:23:16.083572",
-                "date_out": "2019-03-07 23:17:50.848051",
-                "department": "Кассир",
-                "device_id": "name6",
-                "device_path": "text_txt",
-                "device_reg": "text_reg",
-                "fio": "Ынтымак Горляков",
-                "tabnum": 358240054017520,
-            }
-        ],
+            [
+                "name6",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Ынтымак Горляков",
+                358240054017520,
+                "Кассир",
+            ]
+        ]
     }
 
 
@@ -414,16 +410,16 @@ def test_name_flask_only_one_letter():
     assert responses.status_code == code_200
     assert responses.json() == {
         "Flask": [
-            {
-                "date_in": "2011-10-13 16:23:16.083572",
-                "date_out": "2019-03-07 23:17:50.848051",
-                "department": "Травматолог",
-                "device_id": "name4",
-                "device_path": "text_txt",
-                "device_reg": "text_reg",
-                "fio": "Велигор Миссюров",
-                "tabnum": 353166055808564,
-            }
+            [
+                "name4",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Велигор Миссюров",
+                353166055808564,
+                "Травматолог",
+            ]
         ]
     }
 
@@ -433,45 +429,45 @@ def test_tabnum_flask_only_one_number():
     assert responses.status_code == code_200
     assert responses.json() == {
         "Flask": [
-            {
-                "device_id": "name2",
-                "device_path": "text_txt",
-                "date_in": "2011-10-13 16:23:16.083572",
-                "fio": "Кетрин Чимоканова",
-                "department": "Режиссер",
-                "date_out": "2019-03-07 23:17:50.848051",
-                "device_reg": "text_reg",
-                "tabnum": 359254064417561,
-            },
-            {
-                "device_id": "name4",
-                "device_path": "text_txt",
-                "date_in": "2011-10-13 16:23:16.083572",
-                "fio": "Велигор Миссюров",
-                "department": "Травматолог",
-                "date_out": "2019-03-07 23:17:50.848051",
-                "device_reg": "text_reg",
-                "tabnum": 353166055808564,
-            },
-            {
-                "device_id": "name5",
-                "device_path": "text_txt",
-                "date_in": "2011-10-13 16:23:16.083572",
-                "fio": "Хосе Подюков",
-                "department": "Психиатр",
-                "date_out": "2019-03-07 23:17:50.848051",
-                "device_reg": "text_reg",
-                "tabnum": 329304008876062,
-            },
-            {
-                "device_id": "name6",
-                "device_path": "text_txt",
-                "date_in": "2011-10-13 16:23:16.083572",
-                "fio": "Ынтымак Горляков",
-                "department": "Кассир",
-                "date_out": "2019-03-07 23:17:50.848051",
-                "device_reg": "text_reg",
-                "tabnum": 358240054017520,
-            },
+            [
+                "name2",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Кетрин Чимоканова",
+                359254064417561,
+                "Режиссер",
+            ],
+            [
+                "name4",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Велигор Миссюров",
+                353166055808564,
+                "Травматолог",
+            ],
+            [
+                "name5",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Хосе Подюков",
+                329304008876062,
+                "Психиатр",
+            ],
+            [
+                "name6",
+                "text_txt",
+                "text_reg",
+                "2011-10-13 16:23:16.083572",
+                "2019-03-07 23:17:50.848051",
+                "Ынтымак Горляков",
+                358240054017520,
+                "Кассир",
+            ],
         ]
     }
