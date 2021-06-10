@@ -157,7 +157,7 @@ def test_give_file():
         f"/give_flask?device_id={device_id}&fio={fio}&tabnum={tabnum}&department={department}"
     )
     assert responses.status_code == code_422
-    assert responses.json() == [f"Flask {device_id} give to {fio}"]
+    assert responses.json() == ["ERROR: No row was found when one was required"]
 
 
 def test_true_give_file():
@@ -171,7 +171,7 @@ def test_true_give_file():
 def test_device_id_get():
     responses = test_client.put("/get_flask?device_id=1")
     assert responses.status_code == code_422
-    assert responses.json() == ["Flash drive base 1 cleared"]
+    assert responses.json() == ["ERROR: No row was found when one was required"]
 
 
 def test_true_device_id_get():

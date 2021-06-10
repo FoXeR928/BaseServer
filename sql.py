@@ -57,7 +57,7 @@ def write_to_database_issuing_flash_drive(
             logger.error(f"Base recording. ERROR: {err}")
             return {"err": 1, "result": err}
     else:
-        return {"err": 1, "result": 'Уже ессть в базе'}
+        return {"err": 1, "result": 'No row was found when one was required'}
     
 
 
@@ -79,7 +79,7 @@ def cleaning_resulting_flash_drive(tabl, device_id):
             logger.error(f"Base recording. ERROR: {err}")
             return {"err": 1, "result": err}
     else:
-        return {"err": 1, "result": 'Уже ессть в базе'}
+        return {"err": 1, "result": 'No row was found when one was required'}
 
 
 def all_flash_drives_of_base(tabl):
