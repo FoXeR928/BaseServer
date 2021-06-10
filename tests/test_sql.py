@@ -89,7 +89,7 @@ def test_write_to_database_issuing_flash_drive():
     result = sql.write_to_database_issuing_flash_drive(
         tabl, device_id, date_out, fio, tabnum, department
     )
-    assert result["err"] == not_err
+    assert result["err"] == err
     curs.execute(f"SELECT * FROM {tabl}")
     result = curs.fetchall()
     assert len(result) == list_len
@@ -98,7 +98,7 @@ def test_write_to_database_issuing_flash_drive():
 def test_cleaning_resulting_flash_drive():
     device_id = "7"
     result = sql.cleaning_resulting_flash_drive(tabl, device_id)
-    assert result["err"] == not_err
+    assert result["err"] == err
 
 
 def test_true_cleaning_resulting_flash_drive():

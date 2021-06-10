@@ -97,7 +97,7 @@ def test_false_upload_file():
     ]
     responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == code_422
-    assert responses.json() == ["ERROR: UNIQUE constraint failed: tabl2.device_id"]
+    assert responses.json() == ['ERROR: UNIQUE constraint failed: tabl.device_id']
 
 
 def test_false_2_upload_file():
@@ -156,7 +156,7 @@ def test_give_file():
     responses = test_client.put(
         f"/give_flask?device_id={device_id}&fio={fio}&tabnum={tabnum}&department={department}"
     )
-    assert responses.status_code == code_201
+    assert responses.status_code == code_422
     assert responses.json() == [f"Flask {device_id} give to {fio}"]
 
 
@@ -170,7 +170,7 @@ def test_true_give_file():
 
 def test_device_id_get():
     responses = test_client.put("/get_flask?device_id=1")
-    assert responses.status_code == code_201
+    assert responses.status_code == code_422
     assert responses.json() == ["Flash drive base 1 cleared"]
 
 
