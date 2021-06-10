@@ -97,7 +97,7 @@ def test_false_upload_file():
     ]
     responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == code_422
-    assert responses.json() == ['ERROR: UNIQUE constraint failed: tabl.device_id']
+    assert responses.json() == ["ERROR: UNIQUE constraint failed: tabl.device_id"]
 
 
 def test_false_2_upload_file():

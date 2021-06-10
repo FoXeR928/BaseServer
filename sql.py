@@ -45,7 +45,7 @@ def write_to_database_issuing_flash_drive(
     """
     curs = open_base(base)
     curs.execute(f"SELECT device_id FROM {tabl} WHERE device_id='{device_id}'")
-    if len(curs.fetchall())>0:
+    if len(curs.fetchall()) > 0:
         try:
             curs.execute(
                 f"UPDATE {tabl} SET date_out='{date_out}', fio= '{fio}', tabnum='{tabnum}', department='{department}' WHERE device_id='{device_id}'"
@@ -57,8 +57,7 @@ def write_to_database_issuing_flash_drive(
             logger.error(f"Base recording. ERROR: {err}")
             return {"err": 1, "result": err}
     else:
-        return {"err": 1, "result": 'No row was found when one was required'}
-    
+        return {"err": 1, "result": "No row was found when one was required"}
 
 
 def cleaning_resulting_flash_drive(tabl, device_id):
@@ -67,7 +66,7 @@ def cleaning_resulting_flash_drive(tabl, device_id):
     """
     curs = open_base(base)
     curs.execute(f"SELECT device_id FROM {tabl} WHERE device_id='{device_id}'")
-    if len(curs.fetchall())>0:
+    if len(curs.fetchall()) > 0:
         try:
             curs.execute(
                 f"UPDATE {tabl} SET date_out=NULL, fio= NULL, tabnum=NULL, department=NULL WHERE device_id='{device_id}'"
@@ -79,7 +78,7 @@ def cleaning_resulting_flash_drive(tabl, device_id):
             logger.error(f"Base recording. ERROR: {err}")
             return {"err": 1, "result": err}
     else:
-        return {"err": 1, "result": 'No row was found when one was required'}
+        return {"err": 1, "result": "No row was found when one was required"}
 
 
 def all_flash_drives_of_base(tabl):
