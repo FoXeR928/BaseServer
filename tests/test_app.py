@@ -27,6 +27,7 @@ def open_base(base):
     Base.metadata.bind = engine
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
+    open_base.engine=engine
     return session
 
 
@@ -91,6 +92,7 @@ def base_create():
     session.add_all([record, record2, record3, record4, record5, record6])
     session.commit()
     session.close()
+    
     yield
 
 
@@ -114,19 +116,21 @@ def test_true_upload_file():
     responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == code_201
     assert responses.json() == ["Added to base"]
-    session = open_base(Base)
-    result = (
-        session.query(Tabl.device_id, Tabl.device_path, Tabl.device_reg)
-        .filter(Tabl.device_id == "P1601450070867E90D1B6300")
-        .all()
-    )
-    assert result == [
-        (
-            "P1601450070867E90D1B6300",
-            "Здесь сообщение, которое проверяет правильность записи в базу, но сообщение я не придумал поэтому psoskgepgodfle[porypoyietor[glhkrpoyitrpyglkfg;hnmf]]",
-            "А тут написан другой текст для проверки работоспособности записи в базу и текст этот из себя представляет p[rtier0934-0534lkjfldfgt3048po;egkdhdlgypeortyiglmmdbr454k]",
-        )
-    ]
+    responses = test_client.get("/date_flask/?device_id=P1601450070867E90D1B6300")
+    assert responses.status_code == code_200
+    assert responses.json() == {
+        "Flask": [
+            {
+                "device_path": "Здесь сообщение, которое проверяет правильность "
+                "записи в базу, но сообщение я не придумал поэтому "
+                "psoskgepgodfle[porypoyietor[glhkrpoyitrpyglkfg;hnmf]]",
+                "device_reg": "А тут написан другой текст для проверки "
+                "работоспособности записи в базу и текст этот из "
+                "себя представляет "
+                "p[rtier0934-0534lkjfldfgt3048po;egkdhdlgypeortyiglmmdbr454k]",
+            }
+        ],
+    }
 
 
 def test_true_2_upload_file():
@@ -152,9 +156,8 @@ def test_false_upload_file():
     ]
     responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == code_422
-    assert responses.json() == [
-        "ERROR: (sqlite3.IntegrityError) UNIQUE constraint failed: tabl.device_id\n[SQL: INSERT INTO tabl (device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department) VALUES (?, ?, ?, ?, ?, ?, ?, ?)]\n[parameters: ('name_one', 'ответ', 'ответ', datetime.datetime(2021, 6, 9, 22, 50, 54, 724111), None, None, None, None)]\n(Background on this error at: http://sqlalche.me/e/14/gkpj)"
-    ]
+    assert responses.json()==["""ERROR: (sqlite3.IntegrityError) UNIQUE constraint failed: tabl2.device_id\n[SQL: INSERT INTO tabl2 (device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department) VALUES (?, ?, ?, ?, 
+?, ?, ?, ?)]\n[parameters: ('name_one', 'ответ', 'ответ', datetime.datetime(2021, 6, 10, 10, 0, 11, 541568), None, None, None, None)]\n(Background on this error at: http://sqlalche.me/e/14/gkpj)"""]
 
 
 def test_false_2_upload_file():
@@ -193,6 +196,31 @@ def test_upload_file():
     assert responses.json() == ["Incorrect file name"]
 
 
+def test_true_search_device_id():
+    responses = test_client.get("/id_flask?device_id=name_one")
+    assert responses.status_code == code_200
+    assert responses.json() == {
+        "Flask": [
+            {
+                "date_in": "2011-10-13 16:23:16.083572",
+                "date_out": None,
+                "department": None,
+                "device_id": "name_one",
+                "device_path": "text_txt",
+                "device_reg": "text_reg",
+                "fio": None,
+                "tabnum": None,
+            }
+        ],
+    }
+
+
+def test_false_search_device_id():
+    responses = test_client.get("/id_flask?device_id=1")
+    assert responses.status_code == code_404
+    assert responses.json() == ["Not result"]
+
+
 def test_device_id_date():
     responses = test_client.get("/date_flask/?device_id=1")
     assert responses.status_code == code_404
@@ -215,8 +243,8 @@ def test_give_file():
     responses = test_client.put(
         f"/give_flask?device_id={device_id}&fio={fio}&tabnum={tabnum}&department={department}"
     )
-    assert responses.status_code == code_201
-    assert responses.json() == [f"Flask {device_id} give to {fio}"]
+    assert responses.status_code == code_422
+    assert responses.json() == ["ERROR: No row was found when one was required"]
 
 
 def test_true_give_file():
@@ -229,8 +257,8 @@ def test_true_give_file():
 
 def test_device_id_get():
     responses = test_client.put("/get_flask?device_id=1")
-    assert responses.status_code == code_201
-    assert responses.json() == ["Flash drive base 1 cleared"]
+    assert responses.status_code == code_422
+    assert responses.json() == ["ERROR: No row was found when one was required"]
 
 
 def test_true_device_id_get():
@@ -350,6 +378,14 @@ def test_true_name_flask():
             }
         ]
     }
+
+
+def test_false_tabnum_flask():
+    responses = test_client.get(
+        "/tabnum_flask?tabnum=3333333333333333333333333333333333"
+    )
+    assert responses.status_code == code_404
+    assert responses.json() == ["Not result"]
 
 
 def test_true_tabnum_flask():

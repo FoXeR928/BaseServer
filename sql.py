@@ -145,7 +145,11 @@ def search_decommissioned_flash_drives(tabl):
     """
     try:
         session = open_base(base)
-        check = session.query(tabl).filter(tabl.fio == None, tabl.tabnum == None).all()
+        check = (
+            session.query(tabl)
+            .filter(tabl.date_out != None, tabl.fio == None, tabl.tabnum == None)
+            .all()
+        )
         return check_result(check)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
