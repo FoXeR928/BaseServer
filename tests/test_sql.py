@@ -114,11 +114,11 @@ def test_true_cleaning_resulting_flash_drive():
     curs = open_base(base)
     result = sql.cleaning_resulting_flash_drive(Tabl, device_id)
     assert result["err"] == not_err
-    curs.execute(f"SELECT * FROM {Tabl} WHERE device_id='name2'")
+    curs.execute(f"SELECT * FROM {tabl} WHERE device_id='name2'")
     result = curs.fetchall()
     assert result == [
         (
-            f"name2",
+            "name2",
             "text_txt",
             "text_reg",
             "2011-10-13 16:23:16.083572",
