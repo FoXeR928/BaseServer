@@ -30,7 +30,7 @@ def upload_file(
     file_reg: fastapi.UploadFile = fastapi.File(...),
 ):
     """
-    Чтение содержимого файлов и добавление в базу id и содержимого
+    Добавление в базу флешки
     """
     device_id1 = (
         file_txt.filename.replace("usb_deviceID_", "")
@@ -84,7 +84,7 @@ def give_file(
     code: fastapi.Response, device_id: str, fio: str, tabnum: int, department: str
 ):
     """
-    Добавление данных о сотруднике к флешке
+    Выдача флешки сотруднику
     """
     date_out = datetime.datetime.now()
     try:
@@ -212,7 +212,7 @@ def off_flask(code: fastapi.Response):
 @app.get("/date_flask", status_code=fastapi.status.HTTP_200_OK)
 def date_flask(code: fastapi.Response, device_id: str):
     """
-    Данные флешек
+    Выдача данных флешки
     """
     flask = sql.file_search_based_on_id(Tabl, device_id)
     try:

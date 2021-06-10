@@ -24,7 +24,7 @@ def check_result(result):
 
 def write_to_database_flash_drive(tabl, device_id, content, regist, date_in):
     """
-    Добавление в базу Файла и id
+    Добавление в базу флешки
     """
     session = open_base(base)
     try:
@@ -47,7 +47,7 @@ def write_to_database_issuing_flash_drive(
     tabl, device_id, date_out, fio, tabnum, department
 ):
     """
-    Добавление в базу выданных флешек
+    Выдача флешек сотрудникам
     """
     session = open_base(base)
     try:
@@ -67,7 +67,7 @@ def write_to_database_issuing_flash_drive(
 
 def cleaning_resulting_flash_drive(tabl, device_id):
     """
-    Очистка базы выданной флешки
+    Возврат флешки
     """
     session = open_base(base)
     try:
@@ -87,7 +87,7 @@ def cleaning_resulting_flash_drive(tabl, device_id):
 
 def all_flash_drives_of_base(tabl):
     """
-    Вывод всех данных из базу
+    Вывод всех данных из базы
     """
     try:
         session = open_base(base)
@@ -100,7 +100,7 @@ def all_flash_drives_of_base(tabl):
 
 def search_flash_drive_based_on_id(tabl, device_id):
     """
-    Вывод данных из базу на основе id
+    Вывод данных из базы на основе id
     """
     try:
         session = open_base(base)
@@ -113,7 +113,7 @@ def search_flash_drive_based_on_id(tabl, device_id):
 
 def search_flash_drive_based_on_fio(tabl, fio):
     """
-    Вывод данных из базу на основе ФИО
+    Вывод данных из базы на основе ФИО
     """
     try:
         session = open_base(base)
@@ -126,7 +126,7 @@ def search_flash_drive_based_on_fio(tabl, fio):
 
 def search_flash_drive_based_on_tadnum(tabl, tabnum):
     """
-    Вывод данных из базу на основе табельного номера
+    Вывод данных из базы на основе табельного номера
     """
     try:
         session = open_base(base)
@@ -141,7 +141,7 @@ def search_flash_drive_based_on_tadnum(tabl, tabnum):
 
 def search_decommissioned_flash_drives(tabl):
     """
-    Вывод данных из базу, о списанных флешках
+    Вывод данных из базы, о списанных флешках
     """
     try:
         session = open_base(base)
@@ -158,7 +158,7 @@ def search_decommissioned_flash_drives(tabl):
 
 def file_search_based_on_id(tabl, device_id):
     """
-    Вывод данных из базу на основе id
+    Вывод данных из базы на основе id
     """
     try:
         session = open_base(base)
