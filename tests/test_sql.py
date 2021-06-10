@@ -15,17 +15,16 @@ err = 1
 not_err = 0
 
 
-
 def open_base(base):
     connect_sql = sqlite3.connect(f"{base}.db", timeout=5)
     curs = connect_sql.cursor()
-    open_base.connect_sql=connect_sql
+    open_base.connect_sql = connect_sql
     return curs
 
 
 @pytest.yield_fixture(autouse=True)
 def base_create():
-    curs=open_base(base)
+    curs = open_base(base)
     curs.execute(f"DELETE FROM {tabl}")
     curs.execute(
         f"""INSERT INTO {tabl}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
@@ -56,7 +55,7 @@ def test_write_to_database_flash_drive():
         Tabl, device_id, content, regist, date_in
     )
     assert result["err"] == not_err
-    curs=open_base(base)
+    curs = open_base(base)
     curs.execute(f"SELECT * FROM {tabl} WHERE device_id='{device_id}'")
     result = curs.fetchall()
     assert result == [
@@ -207,76 +206,3 @@ def test_true_search_flash_drive_based_on_tadnumder():
     tabnum = 358240054017520
     result = sql.search_flash_drive_based_on_tadnum(Tabl, tabnum)
     assert result["err"] == not_err
-
-
-def test_true_result_search_flash_drive_based_on_id():
-    result = sql.search_flash_drive_based_on_id(Tabl, "name6")
-    print(result['result'])
-    assert result["result"] == [
-        (
-            "name6",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            "Ынтымак Горляков",
-            358240054017520,
-            "Кассир",
-        )
-    ]
-
-
-def test_true_result_search_decommissioned_flash_drives():
-    answer = sql.search_decommissioned_flash_drives(Tabl)
-    assert answer["result"] == [
-        (
-            "name3",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            None,
-            None,
-            None,
-        ),
-    ]
-
-
-def test_true_result_file_search_based_on_id():
-    device_id = "name_one"
-    result = sql.file_search_based_on_id(Tabl, device_id)
-    assert result["result"] == [("text_txt", "text_reg")]
-
-
-def test_true_result_search_flash_drive_based_on_fio():
-    fio = "Велигор Миссюров"
-    result = sql.search_flash_drive_based_on_fio(Tabl, fio)
-    assert result["result"] == [
-        (
-            "name4",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            "Велигор Миссюров",
-            353166055808564,
-            "Травматолог",
-        )
-    ]
-
-
-def test_true_result_search_flash_drive_based_on_tadnumder():
-    tabnum = 358240054017520
-    result = sql.search_flash_drive_based_on_tadnum(Tabl, tabnum)
-    assert result["result"] == [
-        (
-            "name6",
-            "text_txt",
-            "text_reg",
-            "2011-10-13 16:23:16.083572",
-            "2019-03-07 23:17:50.848051",
-            "Ынтымак Горляков",
-            358240054017520,
-            "Кассир",
-        )
-    ]

@@ -27,7 +27,7 @@ def open_base(base):
     Base.metadata.bind = engine
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
-    open_base.engine=engine
+    open_base.engine = engine
     return session
 
 
@@ -92,7 +92,7 @@ def base_create():
     session.add_all([record, record2, record3, record4, record5, record6])
     session.commit()
     session.close()
-    
+
     yield
 
 
@@ -156,8 +156,10 @@ def test_false_upload_file():
     ]
     responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == code_422
-    assert responses.json()==["""ERROR: (sqlite3.IntegrityError) UNIQUE constraint failed: tabl2.device_id\n[SQL: INSERT INTO tabl2 (device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department) VALUES (?, ?, ?, ?, 
-?, ?, ?, ?)]\n[parameters: ('name_one', 'ответ', 'ответ', datetime.datetime(2021, 6, 10, 10, 0, 11, 541568), None, None, None, None)]\n(Background on this error at: http://sqlalche.me/e/14/gkpj)"""]
+    assert responses.json() == [
+        """ERROR: (sqlite3.IntegrityError) UNIQUE constraint failed: tabl2.device_id\n[SQL: INSERT INTO tabl2 (device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department) VALUES (?, ?, ?, ?, 
+?, ?, ?, ?)]\n[parameters: ('name_one', 'ответ', 'ответ', datetime.datetime(2021, 6, 10, 10, 0, 11, 541568), None, None, None, None)]\n(Background on this error at: http://sqlalche.me/e/14/gkpj)"""
+    ]
 
 
 def test_false_2_upload_file():
