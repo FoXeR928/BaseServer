@@ -1,3 +1,4 @@
+from datetime import datetime
 import mimesis
 import sqlite3
 import sys
@@ -23,13 +24,12 @@ code_422 = 422
 def open_base(base):
     connect_sql = sqlite3.connect(f"{base}.db", timeout=5)
     curs = connect_sql.cursor()
-    open_base.connect_sql = connect_sql
+    open_base.connect_sql=connect_sql
     return curs
-
 
 @pytest.yield_fixture(autouse=True)
 def base_create():
-    curs = open_base(base)
+    curs=open_base(base)
     curs.execute(f"DELETE FROM {tabl}")
     curs.execute(
         f"""INSERT INTO {tabl}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
@@ -101,7 +101,7 @@ def test_false_upload_file():
     ]
     responses = test_client.post("/upload_file", files=files)
     assert responses.status_code == code_422
-    assert responses.json() == ["ERROR: UNIQUE constraint failed: tabl2.device_id"]
+    assert responses.json() == ["ERROR: UNIQUE constraint failed: tabl.device_id"]
 
 
 def test_false_2_upload_file():
@@ -149,7 +149,7 @@ def test_device_id_date():
 def test_true_device_id_date():
     responses = test_client.get("/date_flask/?device_id=name_one")
     assert responses.status_code == code_200
-    assert responses.json() == {"Flask": ["text_txt", "text_reg"]}
+    assert responses.json() == {"Flask": [["text_txt", "text_reg"]]}
 
 
 def test_give_file():
@@ -161,7 +161,7 @@ def test_give_file():
         f"/give_flask?device_id={device_id}&fio={fio}&tabnum={tabnum}&department={department}"
     )
     assert responses.status_code == code_422
-    assert responses.json() == ['ERROR: No row was found when one was required']
+    assert responses.json() == ["ERROR: No row was found when one was required"]
 
 
 def test_true_give_file():
@@ -175,7 +175,7 @@ def test_true_give_file():
 def test_device_id_get():
     responses = test_client.put("/get_flask?device_id=1")
     assert responses.status_code == code_422
-    assert responses.json() == ['ERROR: No row was found when one was required']
+    assert responses.json() == ["ERROR: No row was found when one was required"]
 
 
 def test_true_device_id_get():
