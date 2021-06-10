@@ -288,7 +288,7 @@ def test_true_result_search_flash_drive_based_on_fio():
             "Велигор Миссюров",
             353166055808564,
             "Травматолог",
-    ]
+        ]
 
 
 def test_true_result_search_flash_drive_based_on_tadnumder():
@@ -313,4 +313,4 @@ def test_true_result_search_flash_drive_based_on_tadnumder():
             "Ынтымак Горляков",
             358240054017520,
             "Кассир",
-    ]
+        ]
