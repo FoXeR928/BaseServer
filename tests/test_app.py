@@ -21,11 +21,15 @@ code_400 = 400
 code_404 = 404
 code_422 = 422
 
+def open_base(base):
+    connect_sql = sqlite3.connect(f"{base}.db", timeout=5)
+    curs = connect_sql.cursor()
+    open_base.connect_sql=connect_sql
+    return curs
 
 @pytest.yield_fixture(autouse=True)
 def base_create():
-    connect_sql = sqlite3.connect(f"{base}.db", timeout=5)
-    curs = connect_sql.cursor()
+    curs=open_base(base)
     curs.execute(f"DELETE FROM {tabl}")
     curs.execute(
         f"""INSERT INTO {tabl}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
@@ -36,7 +40,7 @@ def base_create():
                     ('name5','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Хосе Подюков',329304008876062,'Психиатр'),
                     ('name6','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Ынтымак Горляков',358240054017520,'Кассир');"""
     )
-    connect_sql.commit()
+    open_base.connect_sql.commit()
     yield
 
 
