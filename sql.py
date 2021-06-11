@@ -22,7 +22,7 @@ def check_result(result):
         result_list = []
         result_list.clear()
         for x in result:
-            check_result = [
+            check_result = (
                 x.device_id,
                 x.device_path,
                 x.device_reg,
@@ -31,7 +31,7 @@ def check_result(result):
                 x.fio,
                 x.tabnum,
                 x.department,
-            ]
+            )
             result_list.append(check_result)
         return {"err": 0, "result": result_list}
 
@@ -203,7 +203,7 @@ def file_search_based_on_id(tabl, device_id):
         else:
             logger.debug(f"Найден. {check}")
             for x in check:
-                return {"err": 0, "result": [x.device_path, x.device_reg]}
+                return {"err": 0, "result": [(x.device_path, x.device_reg)]}
         return check_result(check)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
