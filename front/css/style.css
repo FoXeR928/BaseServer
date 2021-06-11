@@ -20,6 +20,21 @@
     align-items: center;
     justify-content: space-between;    
 }
-.form-conteiner{
+.-hide-form{
+    margin: 20px 0;
     display: none;
+    flex-direction: column;
+}
+.inputs-conteiner{
+    display: flex;
+    flex-direction: column;
+}
+.input-conteiner{
+    margin: 20px 0;
+}
+.-button{
+    width: 262px;
+}
+.label{
+    width: 240px;
 }

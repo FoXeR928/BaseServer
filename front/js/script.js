@@ -1,11 +1,11 @@
 $(function(){
     $('#add-flask').click(function(){
-        $('#form_add-flask').show()
+        $('#form_add-flask').slideToggle()
     })
     $('#give-flask').click(function(){
-        $('#form_give-flask').show()
+        $('#form_give-flask').slideToggle()
     })
     $('#get-flask').click(function(){
-        $('#form_get-flask').show()
+        $('#form_get-flask').slideToggle()
     })
 })
