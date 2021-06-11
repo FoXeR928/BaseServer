@@ -1,0 +1,25 @@
+.body{
+    background: #ccc;
+}
+.-h2{
+    font-size: 20px;
+}
+.main{
+    padding: 20px;
+    margin: auto;
+    max-width: 1000px;
+    border-radius: 20px;
+    background: white;
+}
+.-section{
+    padding: 20px 0;
+    border-bottom: 1px solid gray;
+}
+.-no-input{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;    
+}
+.form-conteiner{
+    display: none;
+}
