@@ -7,6 +7,7 @@
     <title>База Флешек</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="img/apple-touch-icon.png">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="js/script.js"></script>
 </head>
@@ -18,17 +19,17 @@
         <section class="section-add_flask -section">
             <article class="article-add_flask -no-input">
                 <h2 class="section-add_flask__h2 -h2">Добавление Флешек</h2>
-                <button class="section-add_flask__button btn btn-primary" id='add-flask'>&or;</button>
+                <button class="section-add_flask__button btn btn-primary -btn-rotate" id='add-flask'>&or;</button>
             </article>
             <form class="form_add-flask -hide-form" id='form_add-flask'>
                 <div class="inputs-conteiner">
                     <div class="input-conteiner input-group flex-nowrap">
                         <label class="input-group-text label-file" for="inputGroupFile01">Добавьте файл txt</label>
-                        <input type="file" class="form-control" id="inputGroupFile01">
+                        <input type="file" name="file_txt" class="form-control" id="inputGroupFile01">
                     </div>
                     <div class="input-conteiner input-group flex-nowrap">
                         <label class="input-group-text label-file" for="inputGroupFile02">Добавьте файл reg</label>
-                        <input type="file" class="form-control" id="inputGroupFile02">
+                        <input type="file" name="file_reg" class="form-control" id="inputGroupFile02">
                     </div>
                     <button class="btn btn-primary">Записать</button>
                 </div>
@@ -37,25 +38,25 @@
         <section class="section-give_flask -section">
             <article class="article-give_flask -no-input">
                 <h2 class="section-give_flask__h2 -h2">Выдача Флешек</h2>
-                <button class="section-give__button btn btn-primary" id='give-flask'>&or;</button>
+                <button class="section-give__button btn btn-primary -btn-rotate" id='give-flask'>&or;</button>
             </article>
             <form class="form_give-flask -hide-form" id='form_give-flask'>
                 <div class="inputs-conteiner">
                     <div class="input-conteiner input-group flex-nowrap">
                         <label class="label input-group-text">ID Флешки</label>
-                        <input type="text" class="form-control" aria-describedby="addon-wrapping">
+                        <input type="text" name="deivce_id" class="form-control" aria-describedby="addon-wrapping">
                     </div>
                     <div class="input-conteiner input-group flex-nowrap">
                         <label class="label input-group-text">ФИО сотрудника</label>
-                        <input type="text" class="form-control" aria-describedby="addon-wrapping">
+                        <input type="text" name="fio" class="form-control" aria-describedby="addon-wrapping">
                     </div>
                     <div class="input-conteiner input-group flex-nowrap">
                         <label class="label input-group-text">Табельный номер сотрудника</label>
-                        <input type="text" class="form-control" aria-describedby="addon-wrapping">
+                        <input type="text" name="tabnum" class="form-control" aria-describedby="addon-wrapping">
                     </div>
                     <div class="input-conteiner input-group flex-nowrap">
                         <label class="label input-group-text">Департамент</label>
-                        <input type="text" class="form-control" aria-describedby="addon-wrapping">
+                        <input type="text" name="department" class="form-control" aria-describedby="addon-wrapping">
                     </div>
                     <button class="btn btn-primary">Записать</button>
                 </div>
@@ -64,13 +65,13 @@
         <section class="section-get_flask -section">
             <article class="article-get_flask -no-input">
                 <h2 class="form__h2 -h2">Возврат Флешек</h2>
-                <button class="section-get_flask__button btn btn-primary" id='get-flask'>&or;</button>
+                <button class="section-get_flask__button btn btn-primary -btn-rotate" id='get-flask'>&or;</button>
             </article>
             <form class="form_get-flask -hide-form" id='form_get-flask'>
                 <div class="inputs-conteiner">
                     <div class="input-conteiner input-group flex-nowrap">
                         <label class="label input-group-text">ID Флешки</label>
-                        <input type="text" class="form-control" aria-describedby="addon-wrapping">
+                        <input type="text" name="device_id" class="form-control" aria-describedby="addon-wrapping">
                     </div>
                     <button class="btn btn-primary">Записать</button>
                 </div>
@@ -106,14 +107,12 @@
         </section>
         <section class="section-tabnum_flask -section">
             <h2 class="section-tabnum_flask__h2 -h2">Поиск флешки по табельному номеру</h2>
-            
             <form action="" method="GET" class="section-tabnum_flask__form -form input-group flex-nowrap">
                 <label class="label input-group-text">Табельный номер сотрудника</label>
                 <input type="text" class="form__input -input form-control">
                 <button class="form__button -button btn btn-primary">Вывести все флешки</button>
             </form>
         </section>
-        
         <section class="section-file_flask -section">
             <h2  class="section-file_flask__h2 -h2">Поиск файлов флешки по id</h2>
             <form action="" method="GET"  class="section-file_flask__form -form input-group flex-nowrap">

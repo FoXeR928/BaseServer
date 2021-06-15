@@ -50,3 +50,8 @@
 .label-file{
     width: 160px;
 }
+.text-help{
+    margin: 0;
+    color: gray;
+    text-align: center;
+}
