@@ -1,11 +1,16 @@
-$(function(){
-    $('#add-flask').click(function(){
-        $('#form_add-flask').slideToggle()
-    })
-    $('#give-flask').click(function(){
-        $('#form_give-flask').slideToggle()
-    })
-    $('#get-flask').click(function(){
-        $('#form_get-flask').slideToggle()
-    })
+var hide={seen_add: false}
+
+
+
+var files_add = new Vue({
+  el: '#add_files',
+  data: hide
+})
+var flask_give = new Vue({
+  el: '#give_flask',
+  data: hide
+})
+var flask_get = new Vue({
+  el: '#get_flask',
+  data: hide
 })
