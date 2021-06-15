@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from loguru import logger
 from config import base
-from db_set import Base, Tabl
+from db_set import Base
 
 
 def open_base(base):
@@ -42,7 +42,7 @@ def write_to_database_flash_drive(tabl, device_id, content, regist, date_in):
     """
     session = open_base(base)
     try:
-        record = Tabl(
+        record = tabl(
             device_id=device_id,
             device_path=content,
             device_reg=regist,
@@ -65,7 +65,7 @@ def write_to_database_issuing_flash_drive(
     """
     session = open_base(base)
     try:
-        check = session.query(Tabl).filter(Tabl.device_id == device_id).one()
+        check = session.query(tabl).filter(tabl.device_id == device_id).one()
         check.date_out = date_out
         check.fio = fio
         check.tabnum = tabnum
@@ -85,7 +85,7 @@ def cleaning_resulting_flash_drive(tabl, device_id):
     """
     session = open_base(base)
     try:
-        check = session.query(Tabl).filter(Tabl.device_id == device_id).one()
+        check = session.query(tabl).filter(tabl.device_id == device_id).one()
         check.date_out = None
         check.fio = None
         check.tabnum = None
@@ -105,7 +105,7 @@ def all_flash_drives_of_base(tabl):
     """
     try:
         session = open_base(base)
-        check = session.query(Tabl).all()
+        check = session.query(tabl).all()
         result_list = []
         result_list.clear()
         for x in check:
@@ -133,7 +133,7 @@ def search_flash_drive_based_on_id(tabl, device_id):
     try:
         session = open_base(base)
         check = (
-            session.query(Tabl).filter(Tabl.device_id.like("%" + device_id + "%")).all()
+            session.query(tabl).filter(tabl.device_id.like("%" + device_id + "%")).all()
         )
         return check_result(check)
     except Exception as err:
@@ -147,7 +147,7 @@ def search_flash_drive_based_on_fio(tabl, fio):
     """
     try:
         session = open_base(base)
-        check = session.query(Tabl).filter(Tabl.fio.like("%" + fio + "%")).all()
+        check = session.query(tabl).filter(tabl.fio.like("%" + fio + "%")).all()
         return check_result(check)
     except Exception as err:
         logger.error(f"Base recording. ERROR: {err}")
@@ -161,7 +161,7 @@ def search_flash_drive_based_on_tadnum(tabl, tabnum):
     try:
         session = open_base(base)
         check = (
-            session.query(Tabl).filter(Tabl.tabnum.like("%" + str(tabnum) + "%")).all()
+            session.query(tabl).filter(tabl.tabnum.like("%" + str(tabnum) + "%")).all()
         )
         return check_result(check)
     except Exception as err:
@@ -176,8 +176,8 @@ def search_decommissioned_flash_drives(tabl):
     try:
         session = open_base(base)
         check = (
-            session.query(Tabl)
-            .filter(Tabl.date_out != None, Tabl.fio == None, Tabl.tabnum == None)
+            session.query(tabl)
+            .filter(tabl.date_out != None, tabl.fio == None, tabl.tabnum == None)
             .all()
         )
         return check_result(check)
@@ -193,8 +193,8 @@ def file_search_based_on_id(tabl, device_id):
     try:
         session = open_base(base)
         check = (
-            session.query(Tabl.device_path, Tabl.device_reg)
-            .filter(Tabl.device_id == device_id)
+            session.query(tabl.device_path, tabl.device_reg)
+            .filter(tabl.device_id == device_id)
             .all()
         )
         if len(check) == 0:

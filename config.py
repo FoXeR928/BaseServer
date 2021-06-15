@@ -36,6 +36,10 @@ class Base:
 
 cfg = load_config()
 base = cfg.base
-tabl = cfg.tabl_file
+tabl_name = cfg.tabl_file
 ip = cfg.ip
 port = cfg.port
+
+from db_set import Tabl
+
+tabl = Tabl

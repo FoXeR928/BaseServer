@@ -5,25 +5,27 @@ import pytest
 
 sys.path.append("./")
 import sql
-from config import base, tabl
+from config import base, tabl_name, tabl
 
 
 list_len = 6
 err = 1
 not_err = 0
 
+
 def open_base(base):
     connect_sql = sqlite3.connect(f"{base}.db", timeout=5)
     curs = connect_sql.cursor()
-    open_base.connect_sql=connect_sql
+    open_base.connect_sql = connect_sql
     return curs
+
 
 @pytest.yield_fixture(autouse=True)
 def base_create():
-    curs=open_base(base)
-    curs.execute(f"DELETE FROM {tabl}")
+    curs = open_base(base)
+    curs.execute(f"DELETE FROM {tabl_name}")
     curs.execute(
-        f"""INSERT INTO {tabl}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
+        f"""INSERT INTO {tabl_name}(device_id, device_path, device_reg, date_in, date_out, fio, tabnum, department)
                     VALUES ('name_one','text_txt','text_reg', '2011-10-13 16:23:16.083572',NULL,NULL,NULL,NULL),
                     ('name2','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051','Кетрин Чимоканова',359254064417561,'Режиссер'),
                     ('name3','text_txt','text_reg','2011-10-13 16:23:16.083572','2019-03-07 23:17:50.848051',NULL,NULL,NULL),
@@ -52,7 +54,7 @@ def test_write_to_database_flash_drive():
         tabl, device_id, content, regist, date_in
     )
     assert result["err"] == not_err
-    curs.execute(f"SELECT * FROM {tabl} WHERE device_id='{device_id}'")
+    curs.execute(f"SELECT * FROM {tabl_name} WHERE device_id='{device_id}'")
     result = curs.fetchall()
     assert result == [
         (
@@ -78,7 +80,7 @@ def test_false_write_to_database_flash_drive():
         tabl, device_id, content, regist, date_in
     )
     assert result["err"] == err
-    curs.execute(f"SELECT * FROM {tabl}")
+    curs.execute(f"SELECT * FROM {tabl_name}")
     result = curs.fetchall()
     assert len(result) == list_len
 
@@ -94,7 +96,7 @@ def test_write_to_database_issuing_flash_drive():
         tabl, device_id, date_out, fio, tabnum, department
     )
     assert result["err"] == err
-    curs.execute(f"SELECT * FROM {tabl}")
+    curs.execute(f"SELECT * FROM {tabl_name}")
     result = curs.fetchall()
     assert len(result) == list_len
 
@@ -110,7 +112,7 @@ def test_true_cleaning_resulting_flash_drive():
     curs = open_base(base)
     result = sql.cleaning_resulting_flash_drive(tabl, device_id)
     assert result["err"] == not_err
-    curs.execute(f"SELECT * FROM {tabl} WHERE device_id='name2'")
+    curs.execute(f"SELECT * FROM {tabl_name} WHERE device_id='name2'")
     result = curs.fetchall()
     assert result == [
         (
@@ -160,7 +162,7 @@ def test_true_write_to_database_issuing_flash_drive():
         tabl, "name_one", date_out, fio, tabnum, department
     )
     assert result["err"] == not_err
-    curs.execute(f"SELECT * FROM {tabl} WHERE device_id='name_one'")
+    curs.execute(f"SELECT * FROM {tabl_name} WHERE device_id='name_one'")
     result = curs.fetchall()
     assert result == [
         (
