@@ -10,21 +10,25 @@
     <q-page-container class="flex flex-center" style="margin: 50px 0">
       <section class="section-add_flask -section" id='all'>
             <nav>
-                <q-btn align="center" class="btn-fixed-width" color="primary" label="Добавить флешку" />
-                <q-btn align="center" class="btn-fixed-width" color="primary" label="Выдать флешку" />
-                <q-btn align="center" class="btn-fixed-width" color="primary" label="Вернуть флешку" />
-                <q-btn align="center" class="btn-fixed-width" color="primary" label="Найти флешку" />
+                <q-btn v-on:click="show = true, show_search = false, show_get = false, show_give = false" align="center" class="btn-fixed-width" color="primary" label="Добавить флешку" />
+                <q-btn v-on:click="show_give = true, show_search = false, show = false, show_get = false" align="center" class="btn-fixed-width" color="primary" label="Выдать флешку" />
+                <q-btn v-on:click="show_get = true, show_search = false, show = false, show_give = false" align="center" class="btn-fixed-width" color="primary" label="Вернуть флешку" />
+                <q-btn v-on:click="show = false, show_search = true, show_get = false, show_give = false" align="center" class="btn-fixed-width" color="primary" label="Найти флешку" />
             </nav>
-            <form action="" method="GET">
+            <form v-if="show_search" action="" method="GET">
               <div class="q-gutter-md">
-                <q-input v-model="text" label="Поиск по имени" />
+                <p>{{fio}}</p>
+                <q-input v-model="fio" label="Поиск по имени" />
               </div>
               <div class="q-gutter-md">
-                <q-input v-model="text" label="Поиск по id" />
+                <q-input v-model="tabnum" label="Поиск по табельному номеру" />
               </div>
-                <div></div>
+              <div class="q-gutter-md">
+                <q-input v-model="device_id" label="Поиск по id" />
+              </div>
+              <div></div>
             </form>
-            <form class="q-gutter-md column items-start flex flex-center" method="POST">
+            <form v-if="show" class="q-gutter-md column items-start flex flex-center" style="margin: 1px 0" method="POST">
               <q-input
                 @input="val => { files = val }"
                 multiple
@@ -41,26 +45,26 @@
               />
               <q-btn align="center" class="btn-fixed-width" color="primary" label="Добавить" />
             </form>
-            <form method="PUT">
+            <form v-if="show_give" method="PUT">
               <div class="q-gutter-md">
-                <q-input v-model="text" label="id флешки" />
+                <q-input v-model="device_id" label="id флешки" />
               </div>
               <div class="q-gutter-md">
-                <q-input v-model="text" label="ФИО получателя" />
+                <q-input v-model="fio" label="ФИО получателя" />
               </div>
               <div class="q-gutter-md">
-                <q-input v-model="text" label="Табельный номер получателя" />
+                <q-input v-model="tabnum" label="Табельный номер получателя" />
               </div>
               <div class="q-gutter-md">
-                <q-input v-model="text" label="Депортамет получателя" />
+                <q-input v-model="department" label="Депортамет получателя" />
               </div>
               <div class="flex flex-center" style="margin: 20px">
                 <q-btn align="center" class="btn-fixed-width" color="primary" label="Выдать" />
               </div>
             </form>
-            <form method="PUT">
+            <form v-if="show_get" method="PUT">
               <div class="q-gutter-md">
-                <q-input v-model="text" label="id флешки" />
+                <q-input v-model="device_id" label="id флешки" />
               </div>
               <div class="flex flex-center" style="margin: 20px">
                 <q-btn align="center" class="btn-fixed-width" color="primary" label="Вернуть" />
@@ -72,14 +76,13 @@
 </template>
 
 <script>
-  
-
 export default {
-  name: 'MainLayout',
-  data () {
-    return {
-      leftDrawerOpen: false,
-      essentialLinks: linksData
+  data(){
+    return{
+      show_search: true,
+      show: false,
+      show_give: false,
+      show_get: false,
     }
   }
 }
