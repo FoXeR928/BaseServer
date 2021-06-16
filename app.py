@@ -1,16 +1,22 @@
 import fastapi
+from fastapi.templating import Jinja2Templates
 from loguru import logger
 import sql
 import datetime
 from db_set import Tabl
 
-
+templates = Jinja2Templates(directory="front") 
 app = fastapi.FastAPI()
 
 
 @app.on_event("startup")
 def start():
     logger.info("Server work")
+
+
+@app.get("/")
+async def serve_home(request: fastapi.Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 def check_result(code, check):
