@@ -167,14 +167,12 @@ export default {
       })
     },
     search_device_id(device_id){
-      return axios.get("/id_flask?device_id="+ device_id,{
-        content: result=Response
-      },
+      return axios.get("/id_flask?device_id="+ device_id,
       {
       headers: {
         'Content-type': 'application/json',
       }
-      })
+      }).then(response => (this.result = response))
     },
     search_date(device_id){
       return axios.get('/date_flask',{
