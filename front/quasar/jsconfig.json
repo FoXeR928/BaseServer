@@ -6,7 +6,7 @@
         "src/*"
       ],
       "app/*": [
-        "*"
+        "base_flask"
       ],
       "components/*": [
         "src/components/*"
