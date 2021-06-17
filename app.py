@@ -1,11 +1,11 @@
 import fastapi
-from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from loguru import logger
+from starlette.responses import HTMLResponse
 import sql
 import datetime
 from db_set import Tabl
 
-templates = Jinja2Templates(directory="front") 
 app = fastapi.FastAPI()
 
 
@@ -13,10 +13,11 @@ app = fastapi.FastAPI()
 def start():
     logger.info("Server work")
 
+app.mount('/', StaticFiles(directory='front/spa', html=True), name='sait')
 
-@app.get("/")
-async def serve_home(request: fastapi.Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+@app.get("/", status_code=fastapi.status.HTTP_200_OK)
+async def serve_home():
+    return HTMLResponse('front/spa/index.html')
 
 
 def check_result(code, check):

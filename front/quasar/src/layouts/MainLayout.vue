@@ -17,7 +17,6 @@
             </nav>
             <form v-if="show_search" action="" method="GET">
               <div class="q-gutter-md">
-                <p>{{fio}}</p>
                 <q-input v-model="fio" label="Поиск по имени" />
               </div>
               <div class="q-gutter-md">
@@ -59,7 +58,7 @@
                 <q-input v-model="department" label="Депортамет получателя" />
               </div>
               <div class="flex flex-center" style="margin: 20px">
-                <q-btn align="center" class="btn-fixed-width" color="primary" label="Выдать" />
+                <q-btn align="center" @click="give_flask(device_id, fio, tabnum, departament)" class="btn-fixed-width" color="primary" label="Выдать" />
               </div>
             </form>
             <form v-if="show_get" method="PUT">
@@ -67,7 +66,7 @@
                 <q-input v-model="device_id" label="id флешки" />
               </div>
               <div class="flex flex-center" style="margin: 20px">
-                <q-btn align="center" class="btn-fixed-width" color="primary" label="Вернуть" />
+                <q-btn align="center" @click="get_flask(device_id)" class="btn-fixed-width" color="primary" label="Вернуть" />
               </div>
             </form>
         </section>
@@ -75,15 +74,34 @@
   </q-layout>
 </template>
 
-<script>
+<script> 
+import axios from 'axios'
 export default {
+ 
+  
   data(){
     return{
+      device_id: '',
+      fio: '',
+      tabnum: '',
+      department: '',
       show_search: true,
       show: false,
       show_give: false,
       show_get: false,
     }
+  },
+  methods: {
+    get_flask(device_id){
+      return axios.put("/get_flask", {
+        content: device_id
+      })
+    },
+    give_flask(device_id, fio, tabnum, departament){
+      return axios.put("/give_flask",{
+        content: device_id, fio, tabnum, departament
+      })
+    }
   }
-}
+} 
 </script>
