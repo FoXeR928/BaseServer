@@ -41,7 +41,7 @@
                   <q-btn @click="search_device_id(device_id)" round dense flat icon="send" />
                 </template>
               </q-input>
-              <div></div>
+              <div>{{result}}</div>
             </form>
             <form v-if="show" class="q-gutter-md column items-start flex flex-center" style="margin: 1px 0" method="POST">
               <q-input
@@ -113,6 +113,7 @@ export default {
       fio: '',
       tabnum: '',
       departament: '',
+      result: axios.get("/all_flask"),
       show_all: true,
       show_search: false,
       show: false,
@@ -166,8 +167,8 @@ export default {
       })
     },
     search_device_id(device_id){
-      return axios.get("/id_flask",{
-        content: device_id
+      return axios.get("/id_flask?device_id="+ device_id,{
+        content: result=Response
       },
       {
       headers: {
