@@ -174,13 +174,13 @@ def test_true_give_file():
 
 
 def test_device_id_get():
-    responses = test_client.put("/get_flask?device_id=1")
+    responses = test_client.delete("/get_flask?device_id=1")
     assert responses.status_code == code_422
     assert responses.json() == ["ERROR: No row was found when one was required"]
 
 
 def test_true_device_id_get():
-    responses = test_client.put("/get_flask?device_id=name_one")
+    responses = test_client.delete("/get_flask?device_id=name_one")
     assert responses.status_code == code_201
     assert responses.json() == ["Flash drive base name_one cleared"]
 
