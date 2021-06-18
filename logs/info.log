@@ -1,0 +1,140 @@
+2021-06-18T10:09:10.892325+0300 INFO Host: localhost and Port: 800
+2021-06-18T10:09:11.117535+0300 INFO Server work
+2021-06-18T10:12:07.186877+0300 DEBUG Page /all_flask work
+2021-06-18T10:12:42.420534+0300 DEBUG Page /all_flask work
+2021-06-18T10:12:46.729097+0300 DEBUG Page /all_flask work
+2021-06-18T10:13:13.986978+0300 DEBUG Page /all_flask work
+2021-06-18T10:13:17.966032+0300 DEBUG Page /all_flask work
+2021-06-18T10:13:44.506892+0300 DEBUG Page /all_flask work
+2021-06-18T10:19:41.819601+0300 DEBUG Page /all_flask work
+2021-06-18T10:19:46.525897+0300 DEBUG Page /all_flask work
+2021-06-18T10:25:24.074638+0300 INFO Server stop work
+2021-06-18T10:25:26.741924+0300 INFO Host: localhost and Port: 800
+2021-06-18T10:25:26.900078+0300 INFO Server work
+2021-06-18T10:25:39.939301+0300 DEBUG Page /all_flask work
+2021-06-18T10:25:44.599377+0300 DEBUG Page /all_flask work
+2021-06-18T10:26:14.949516+0300 INFO Server stop work
+2021-06-18T10:26:17.694726+0300 INFO Host: localhost and Port: 800
+2021-06-18T10:26:17.821848+0300 INFO Server work
+2021-06-18T10:26:32.995873+0300 DEBUG Page /all_flask work
+2021-06-18T10:34:48.442640+0300 DEBUG Page /all_flask work
+2021-06-18T10:34:59.316410+0300 DEBUG Page /all_flask work
+2021-06-18T10:36:01.380917+0300 DEBUG Page /all_flask work
+2021-06-18T10:53:02.642987+0300 DEBUG Page /all_flask work
+2021-06-18T10:53:57.140668+0300 DEBUG Page /all_flask work
+2021-06-18T10:55:07.327023+0300 INFO Server stop work
+2021-06-18T10:55:11.163885+0300 INFO Host: localhost and Port: 800
+2021-06-18T10:55:11.347949+0300 INFO Server work
+2021-06-18T10:55:16.206098+0300 DEBUG Page /all_flask work
+2021-06-18T10:56:23.969108+0300 DEBUG Page /all_flask work
+2021-06-18T10:56:27.566281+0300 DEBUG Page /all_flask work
+2021-06-18T10:56:37.761078+0300 INFO Server stop work
+2021-06-18T10:56:40.407643+0300 INFO Host: localhost and Port: 800
+2021-06-18T11:06:08.536279+0300 INFO Host: localhost and Port: 800
+2021-06-18T11:06:08.778391+0300 INFO Server work
+2021-06-18T11:06:22.744616+0300 DEBUG Page /all_flask work
+2021-06-18T11:06:57.203946+0300 DEBUG Page /all_flask work
+2021-06-18T11:08:47.047146+0300 DEBUG Page /all_flask work
+2021-06-18T11:11:17.083947+0300 DEBUG Page /all_flask work
+2021-06-18T11:11:27.634870+0300 DEBUG Page /all_flask work
+2021-06-18T11:13:42.690706+0300 DEBUG Page /all_flask work
+2021-06-18T11:14:07.167555+0300 DEBUG Page /all_flask work
+2021-06-18T11:14:08.871192+0300 DEBUG Page /all_flask work
+2021-06-18T11:14:14.927929+0300 DEBUG Page /all_flask work
+2021-06-18T11:15:19.028928+0300 DEBUG Page /all_flask work
+2021-06-18T11:15:21.386470+0300 DEBUG Page /all_flask work
+2021-06-18T11:18:52.629860+0300 DEBUG Page /all_flask work
+2021-06-18T11:19:18.706063+0300 DEBUG Page /all_flask work
+2021-06-18T11:19:21.558175+0300 DEBUG Page /all_flask work
+2021-06-18T11:20:01.295259+0300 DEBUG Page /all_flask work
+2021-06-18T11:20:05.237721+0300 DEBUG Найден. [<db_set.Tabl object at 0x01215C58>]
+2021-06-18T11:20:05.243728+0300 DEBUG Page /off_flask work
+2021-06-18T11:20:06.518910+0300 DEBUG Найден. [<db_set.Tabl object at 0x01224820>]
+2021-06-18T11:20:06.525817+0300 DEBUG Page /off_flask work
+2021-06-18T11:20:29.804113+0300 DEBUG Page /all_flask work
+2021-06-18T11:23:37.819288+0300 DEBUG Page /all_flask work
+2021-06-18T11:23:38.212658+0300 DEBUG Page /all_flask work
+2021-06-18T11:23:38.368803+0300 DEBUG Page /all_flask work
+2021-06-18T11:23:38.583004+0300 DEBUG Page /all_flask work
+2021-06-18T11:24:11.211533+0300 DEBUG Page /all_flask work
+2021-06-18T11:24:31.704380+0300 DEBUG Page /all_flask work
+2021-06-18T11:24:47.633634+0300 DEBUG Page /all_flask work
+2021-06-18T11:26:09.418900+0300 DEBUG Page /all_flask work
+2021-06-18T11:26:16.826993+0300 DEBUG Найден. [<db_set.Tabl object at 0x05274748>]
+2021-06-18T11:26:16.832999+0300 DEBUG Page /off_flask work
+2021-06-18T11:27:13.459812+0300 DEBUG Page /all_flask work
+2021-06-18T11:27:28.191129+0300 DEBUG Найден. [<db_set.Tabl object at 0x01224BB0>]
+2021-06-18T11:27:28.198137+0300 DEBUG Page /off_flask work
+2021-06-18T11:27:40.582813+0300 DEBUG Найден. [<db_set.Tabl object at 0x01224118>]
+2021-06-18T11:27:40.592713+0300 DEBUG Page /off_flask work
+2021-06-18T11:37:47.319145+0300 DEBUG Page /all_flask work
+2021-06-18T11:39:09.937172+0300 DEBUG Page /all_flask work
+2021-06-18T11:40:10.772706+0300 DEBUG Page /all_flask work
+2021-06-18T11:40:32.236839+0300 DEBUG Page /all_flask work
+2021-06-18T11:40:45.226859+0300 DEBUG Page /all_flask work
+2021-06-18T11:41:21.611723+0300 DEBUG Page /all_flask work
+2021-06-18T11:41:52.958794+0300 DEBUG Page /all_flask work
+2021-06-18T11:41:57.807187+0300 DEBUG Page /all_flask work
+2021-06-18T11:42:04.664286+0300 DEBUG Page /all_flask work
+2021-06-18T11:44:13.958821+0300 DEBUG Page /all_flask work
+2021-06-18T11:45:30.417810+0300 DEBUG Page /all_flask work
+2021-06-18T12:50:00.963945+0300 DEBUG Найден. [<db_set.Tabl object at 0x012A6D48>, <db_set.Tabl object at 0x012A6D90>, <db_set.Tabl object at 0x012A6DC0>, <db_set.Tabl object at 0x012A6DF0>, <db_set.Tabl object at 0x012A6E20>, <db_set.Tabl object at 0x012A6E50>]
+2021-06-18T12:50:00.991957+0300 DEBUG Page /id_flask work
+2021-06-18T12:50:52.522335+0300 DEBUG Page /all_flask work
+2021-06-18T12:51:24.306152+0300 DEBUG Page /all_flask work
+2021-06-18T12:51:48.182558+0300 DEBUG Page /all_flask work
+2021-06-18T12:52:01.556230+0300 DEBUG Page /all_flask work
+2021-06-18T12:52:23.721613+0300 DEBUG Page /all_flask work
+2021-06-18T12:52:49.542847+0300 DEBUG Page /all_flask work
+2021-06-18T12:53:35.696752+0300 DEBUG Page /all_flask work
+2021-06-18T12:54:07.735102+0300 DEBUG Page /all_flask work
+2021-06-18T12:54:13.626502+0300 DEBUG Найден. [<db_set.Tabl object at 0x05274040>, <db_set.Tabl object at 0x05274D48>, <db_set.Tabl object at 0x05274490>, <db_set.Tabl object at 0x05274B38>, <db_set.Tabl object at 0x05274C70>, <db_set.Tabl object at 0x05274CE8>]
+2021-06-18T12:54:13.637516+0300 DEBUG Page /id_flask work
+2021-06-18T12:54:14.877820+0300 DEBUG Найден. [<db_set.Tabl object at 0x012AF538>, <db_set.Tabl object at 0x012AF5E0>, <db_set.Tabl object at 0x012AF5F8>, <db_set.Tabl object at 0x012AF580>, <db_set.Tabl object at 0x012AF688>, <db_set.Tabl object at 0x012AF640>]
+2021-06-18T12:54:14.888829+0300 DEBUG Page /id_flask work
+2021-06-18T12:54:21.667083+0300 DEBUG Page /all_flask work
+2021-06-18T12:54:23.177543+0300 DEBUG Такого нету. []
+2021-06-18T12:54:23.183547+0300 DEBUG Page /id_flask work
+2021-06-18T12:54:27.901576+0300 DEBUG Такого нету. []
+2021-06-18T12:54:27.907580+0300 DEBUG Page /id_flask work
+2021-06-18T12:56:12.146092+0300 DEBUG Page /all_flask work
+2021-06-18T12:56:18.490808+0300 DEBUG Page /all_flask work
+2021-06-18T12:56:22.436497+0300 DEBUG Найден. [<db_set.Tabl object at 0x012CAF40>, <db_set.Tabl object at 0x012CAF88>, <db_set.Tabl object at 0x012CAFB8>, <db_set.Tabl object at 0x012CAFE8>, <db_set.Tabl object at 0x012D7040>, <db_set.Tabl object at 0x012D7070>]
+2021-06-18T12:56:22.443504+0300 DEBUG Page /id_flask work
+2021-06-18T12:56:28.895821+0300 DEBUG Такого нету. []
+2021-06-18T12:56:28.901823+0300 DEBUG Page /id_flask work
+2021-06-18T12:56:38.849999+0300 DEBUG Найден. [<db_set.Tabl object at 0x012E4640>]
+2021-06-18T12:56:38.853001+0300 DEBUG Page /id_flask work
+2021-06-18T12:58:08.105057+0300 DEBUG Page /all_flask work
+2021-06-18T12:58:22.269766+0300 DEBUG Page /all_flask work
+2021-06-18T12:58:43.869531+0300 DEBUG Такого нету. []
+2021-06-18T12:58:43.906565+0300 DEBUG Page /name_flask work
+2021-06-18T12:59:11.392620+0300 DEBUG Page /all_flask work
+2021-06-18T12:59:42.119046+0300 DEBUG Page /all_flask work
+2021-06-18T12:59:48.184883+0300 DEBUG Page /all_flask work
+2021-06-18T12:59:57.743107+0300 DEBUG Page /all_flask work
+2021-06-18T13:00:05.036621+0300 DEBUG Page /all_flask work
+2021-06-18T13:00:31.808636+0300 DEBUG Найден. [<db_set.Tabl object at 0x012A1598>, <db_set.Tabl object at 0x012A14C0>, <db_set.Tabl object at 0x012A13D0>]
+2021-06-18T13:00:31.821646+0300 DEBUG Page /name_flask work
+2021-06-18T13:00:49.658140+0300 DEBUG Page /all_flask work
+2021-06-18T13:01:27.972601+0300 DEBUG Page /all_flask work
+2021-06-18T13:01:43.486903+0300 INFO Server stop work
+2021-06-18T13:01:49.496669+0300 INFO Host: localhost and Port: 800
+2021-06-18T13:01:49.672836+0300 INFO Server work
+2021-06-18T13:02:06.303762+0300 ERROR Base recording. ERROR: No row was found when one was required
+2021-06-18T13:02:06.323800+0300 DEBUG Page /give_flask work, base '1' update
+2021-06-18T13:04:00.940914+0300 DEBUG Page /all_flask work
+2021-06-18T13:04:12.041876+0300 DEBUG Page /all_flask work
+2021-06-18T13:04:22.970428+0300 DEBUG Page /all_flask work
+2021-06-18T13:04:33.357086+0300 DEBUG Найден. [<db_set.Tabl object at 0x011F53E8>, <db_set.Tabl object at 0x011F5E20>]
+2021-06-18T13:04:33.360087+0300 DEBUG Page /name_flask work
+2021-06-18T13:05:11.660258+0300 DEBUG Найден. [<db_set.Tabl object at 0x05409B38>, <db_set.Tabl object at 0x05409A78>, <db_set.Tabl object at 0x05409700>, <db_set.Tabl object at 0x054096E8>, <db_set.Tabl object at 0x05409238>, <db_set.Tabl object at 0x054096A0>]
+2021-06-18T13:05:11.667260+0300 DEBUG Page /id_flask work
+2021-06-18T13:06:10.308106+0300 DEBUG Base recording. name_one
+2021-06-18T13:06:10.319121+0300 DEBUG Page /give_flask work, base 'name_one' update
+2021-06-18T13:06:18.548237+0300 DEBUG Base clear. name_one
+2021-06-18T13:06:18.554235+0300 DEBUG Page /get_flask work, base 'name_one' update
+2021-06-18T13:06:22.651683+0300 DEBUG Найден. [('text_txt', 'text_reg')]
+2021-06-18T13:06:22.660695+0300 DEBUG Page /date_flask work
+2021-06-18T13:06:25.468269+0300 DEBUG Найден. [<db_set.Tabl object at 0x012337A8>]
+2021-06-18T13:06:25.473277+0300 DEBUG Page /off_flask work

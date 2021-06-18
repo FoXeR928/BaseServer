@@ -1,10 +1,23 @@
 import fastapi
+from fastapi.middleware.cors import CORSMiddleware 
 from loguru import logger
 import sql
 import datetime
 from db_set import Tabl
 
 app = fastapi.FastAPI()
+
+origins = [ 
+ "http://localhost:8080", 
+] 
+
+app.add_middleware( 
+ CORSMiddleware, 
+ allow_origins=origins, 
+ allow_credentials=True, 
+ allow_methods=["*"], 
+ allow_headers=["*"], 
+) 
 
 
 @app.on_event("startup")
@@ -103,7 +116,7 @@ def give_file(
     return message
 
 
-@app.put("/get_flask", status_code=fastapi.status.HTTP_201_CREATED)
+@app.delete("/get_flask", status_code=fastapi.status.HTTP_201_CREATED)
 def get_flask(code: fastapi.Response, device_id: str):
     """
     Возврат флешки
